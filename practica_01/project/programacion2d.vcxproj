@@ -20,10 +20,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="engine.cpp" />
+    <ClCompile Include="loops\glfw_logic.cpp" />
+    <ClCompile Include="loops\glfw_rend.cpp" />
+    <ClCompile Include="loops\game.cpp" />
+    <ClCompile Include="time\time.cpp" />
     <ClCompile Include="vec\vec.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\lib\litegfx.h" />
+    <ClInclude Include="engine.h" />
+    <ClInclude Include="loops\glfw_logic.h" />
+    <ClInclude Include="loops\glfw_rend.h" />
+    <ClInclude Include="loops\game.h" />
+    <ClInclude Include="time\time.h" />
     <ClInclude Include="vec\vec.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
