@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "*.uss": "css",
+        "*.uxml": "xml",
+        "*.clang-format": "yaml",
+        ".ruleset": "xml",
+        ".config": "xml",
+        "algorithm": "cpp",
+        "iterator": "cpp",
+        "xutility": "cpp",
+        "xmemory": "cpp",
+        "xstring": "cpp"
+    }
+}

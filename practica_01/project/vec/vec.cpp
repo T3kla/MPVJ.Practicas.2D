@@ -1,17 +1,19 @@
 #include "vec.h"
 
+// ----------------------------------------------------------------------- vec2
+
 vec2::vec2(const float &x, const float &y) : x(x), y(y)
 {
 }
-vec2::vec2(vec2 &b)
+vec2::vec2(vec2 &_rhs)
 {
-    x = b.x;
-    y = b.y;
+    x = _rhs.x;
+    y = _rhs.y;
 }
-vec2::vec2(vec2 &&b) noexcept
+vec2::vec2(vec2 &&_rhs) noexcept
 {
-    x = b.x;
-    y = b.y;
+    x = _rhs.x;
+    y = _rhs.y;
 }
 float vec2::magnitude() const
 {
@@ -21,60 +23,80 @@ vec2 vec2::normalized() const
 {
     return *this / this->magnitude();
 }
-float vec2::det(const vec2 &b) const
+float vec2::det(const vec2 &a, const vec2 &b)
 {
-    return this->x * b.y - this->y * b.x;
+    return a.x * b.y - a.y * b.x;
 }
-float vec2::dot(const vec2 &b) const
+float vec2::dot(const vec2 &a, const vec2 &b)
 {
-    return this->x * b.x + this->y * b.y;
+    return a.x * b.x + a.y * b.y;
 }
-float vec2::angle(const vec2 &b) const
+vec2 vec2::had(const vec2 &a, const vec2 &b)
 {
-    return std::atan2f(det(b), dot(b));
+    return vec2(a.x * b.x, a.y * b.y);
 }
-float vec2::distance(const vec2 &b) const
+float vec2::ang(const vec2 &a, const vec2 &b)
 {
-    return (b - *this).magnitude();
+    return std::atan2f(det(a, b), dot(a, b));
 }
-vec2 vec2::operator+(const vec2 &b) const
+float vec2::dis(const vec2 &a, const vec2 &b)
 {
-    return vec2(this->x + b.x, this->y + b.y);
+    return (b - a).magnitude();
 }
-void vec2::operator+=(const vec2 &b)
+vec2 vec2::operator+(const vec2 &_rhs) const
 {
-    this->x += b.x;
-    this->y += b.y;
+    return vec2(this->x + _rhs.x, this->y + _rhs.y);
 }
-vec2 vec2::operator-(const vec2 &b) const
+vec2 vec2::operator-(const vec2 &_rhs) const
 {
-    return vec2(this->x - b.x, this->y - b.y);
+    return vec2(this->x - _rhs.x, this->y - _rhs.y);
 }
-void vec2::operator-=(const vec2 &b)
+vec2 vec2::operator*(const float &_rhs) const // scale product
 {
-    this->x *= b.x;
-    this->y *= b.y;
+    return vec2(this->x * _rhs, this->y * _rhs);
 }
-vec2 vec2::operator*(const float &b) const // scale product
+float vec2::operator*(const vec2 &_rhs) const // hadamard product
 {
-    return vec2(this->x * b, this->y * b);
+    return dot(*this, _rhs);
 }
-vec2 vec2::operator*(const vec2 &b) const // hadamard product
+vec2 vec2::operator/(const float &_rhs) const
 {
-    return vec2(this->x * b.x, this->y * b.y);
+    return vec2(this->x / _rhs, this->y / _rhs);
 }
-vec2 vec2::operator/(const float &b) const
+vec2 &vec2::operator+=(const vec2 &_rhs)
 {
-    return vec2(this->x / b, this->y / b);
+    this->x += _rhs.x;
+    this->y += _rhs.y;
+    return *this;
 }
-bool vec2::operator==(const vec2 &b) const
+vec2 &vec2::operator-=(const vec2 &_rhs)
 {
-    return (this->x == b.x) && (this->y == b.y);
+    this->x -= _rhs.x;
+    this->y -= _rhs.y;
+    return *this;
 }
-bool vec2::operator!=(const vec2 &b) const
+vec2 &vec2::operator*=(const float &_rhs)
 {
-    return (this->x != b.x) || (this->y != b.y);
+    this->x *= _rhs;
+    this->y *= _rhs;
+    return *this;
 }
+vec2 &vec2::operator/=(const float &_rhs)
+{
+    this->x /= _rhs;
+    this->y /= _rhs;
+    return *this;
+}
+bool vec2::operator==(const vec2 &_rhs) const
+{
+    return (this->x == _rhs.x) && (this->y == _rhs.y);
+}
+bool vec2::operator!=(const vec2 &_rhs) const
+{
+    return (this->x != _rhs.x) || (this->y != _rhs.y);
+}
+
+// ----------------------------------------------------------------------- vec3
 
 vec3::vec3(const float &x, const float &y, const float &z) : x(x), y(y), z(z)
 {
@@ -87,29 +109,29 @@ vec3 vec3::normalized() const
 {
     return *this / this->magnitude();
 }
-vec3 vec3::operator+(const vec3 &b) const
+vec3 vec3::operator+(const vec3 &_rhs) const
 {
-    return vec3(this->x + b.x, this->y + b.y, this->z + b.z);
+    return vec3(this->x + _rhs.x, this->y + _rhs.y, this->z + _rhs.z);
 }
-vec3 vec3::operator-(const vec3 &b) const
+vec3 vec3::operator-(const vec3 &_rhs) const
 {
-    return vec3(this->x - b.x, this->y - b.y, this->z - b.z);
+    return vec3(this->x - _rhs.x, this->y - _rhs.y, this->z - _rhs.z);
 }
-vec3 vec3::operator*(const float &b) const
+vec3 vec3::operator*(const float &_rhs) const
 {
-    return vec3(this->x * b, this->y * b, this->z * b);
+    return vec3(this->x * _rhs, this->y * _rhs, this->z * _rhs);
 }
-vec3 vec3::operator/(const float &b) const
+vec3 vec3::operator/(const float &_rhs) const
 {
-    return vec3(this->x / b, this->y / b, this->z / b);
+    return vec3(this->x / _rhs, this->y / _rhs, this->z / _rhs);
 }
-bool vec3::operator==(const vec3 &b) const
+bool vec3::operator==(const vec3 &_rhs) const
 {
-    return (this->x == b.x) && (this->y == b.y) && (this->z == b.z);
+    return (this->x == _rhs.x) && (this->y == _rhs.y) && (this->z == _rhs.z);
 }
-bool vec3::operator!=(const vec3 &b) const
+bool vec3::operator!=(const vec3 &_rhs) const
 {
-    return (this->x != b.x) || (this->y != b.y) || (this->z != b.z);
+    return (this->x != _rhs.x) || (this->y != _rhs.y) || (this->z != _rhs.z);
 }
 
 vec2i::vec2i(const int &x, const int &y) : x(x), y(y)
@@ -123,37 +145,37 @@ vec2 vec2i::normalized() const
 {
     return *this / this->magnitude();
 }
-vec2i vec2i::operator+(const vec2i &b) const
+vec2i vec2i::operator+(const vec2i &_rhs) const
 {
-    return vec2i(this->x + b.x, this->y + b.y);
+    return vec2i(this->x + _rhs.x, this->y + _rhs.y);
 }
-vec2i vec2i::operator-(const vec2i &b) const
+vec2i vec2i::operator-(const vec2i &_rhs) const
 {
-    return vec2i(this->x - b.x, this->y - b.y);
+    return vec2i(this->x - _rhs.x, this->y - _rhs.y);
 }
-vec2i vec2i::operator*(const int &b) const
+vec2i vec2i::operator*(const int &_rhs) const
 {
-    return vec2i(this->x * b, this->y * b);
+    return vec2i(this->x * _rhs, this->y * _rhs);
 }
-vec2 vec2i::operator/(const int &b) const
+vec2 vec2i::operator/(const int &_rhs) const
 {
-    return vec2(roundf((float)(this->x / b)), roundf((float)(this->y / b)));
+    return vec2(roundf((float)(this->x / _rhs)), roundf((float)(this->y / _rhs)));
 }
-vec2 vec2i::operator*(const float &b) const
+vec2 vec2i::operator*(const float &_rhs) const
 {
-    return vec2(round(this->x * b), round(this->y * b));
+    return vec2(round(this->x * _rhs), round(this->y * _rhs));
 }
-vec2 vec2i::operator/(const float &b) const
+vec2 vec2i::operator/(const float &_rhs) const
 {
-    return vec2(round(this->x / b), round(this->y / b));
+    return vec2(round(this->x / _rhs), round(this->y / _rhs));
 }
-bool vec2i::operator==(const vec2i &b) const
+bool vec2i::operator==(const vec2i &_rhs) const
 {
-    return (this->x == b.x) && (this->y == b.y);
+    return (this->x == _rhs.x) && (this->y == _rhs.y);
 }
-bool vec2i::operator!=(const vec2i &b) const
+bool vec2i::operator!=(const vec2i &_rhs) const
 {
-    return (this->x != b.x) || (this->y != b.y);
+    return (this->x != _rhs.x) || (this->y != _rhs.y);
 }
 
 vec3i::vec3i(const int &x, const int &y, const int &z) : x(x), y(y), z(z)
@@ -167,35 +189,35 @@ vec3 vec3i::normalized() const
 {
     return *this / this->magnitude();
 }
-vec3i vec3i::operator+(const vec3i &b) const
+vec3i vec3i::operator+(const vec3i &_rhs) const
 {
-    return vec3i(this->x + b.x, this->y + b.y, this->z + b.z);
+    return vec3i(this->x + _rhs.x, this->y + _rhs.y, this->z + _rhs.z);
 }
-vec3i vec3i::operator-(const vec3i &b) const
+vec3i vec3i::operator-(const vec3i &_rhs) const
 {
-    return vec3i(this->x - b.x, this->y - b.y, this->z - b.z);
+    return vec3i(this->x - _rhs.x, this->y - _rhs.y, this->z - _rhs.z);
 }
-vec3i vec3i::operator*(const int &b) const
+vec3i vec3i::operator*(const int &_rhs) const
 {
-    return vec3i(this->x * b, this->y * b, this->z * b);
+    return vec3i(this->x * _rhs, this->y * _rhs, this->z * _rhs);
 }
-vec3 vec3i::operator/(const int &b) const
+vec3 vec3i::operator/(const int &_rhs) const
 {
-    return vec3(roundf((float)(this->x / b)), roundf((float)(this->y / b)), roundf((float)(this->z / b)));
+    return vec3(roundf((float)(this->x / _rhs)), roundf((float)(this->y / _rhs)), roundf((float)(this->z / _rhs)));
 }
-vec3 vec3i::operator*(const float &b) const
+vec3 vec3i::operator*(const float &_rhs) const
 {
-    return vec3(roundf(this->x * b), roundf(this->y * b), roundf(this->z * b));
+    return vec3(roundf(this->x * _rhs), roundf(this->y * _rhs), roundf(this->z * _rhs));
 }
-vec3 vec3i::operator/(const float &b) const
+vec3 vec3i::operator/(const float &_rhs) const
 {
-    return vec3(roundf(this->x / b), roundf(this->y / b), roundf(this->z / b));
+    return vec3(roundf(this->x / _rhs), roundf(this->y / _rhs), roundf(this->z / _rhs));
 }
-bool vec3i::operator==(const vec3i &b) const
+bool vec3i::operator==(const vec3i &_rhs) const
 {
-    return (this->x == b.x) && (this->y == b.y) && (this->z == b.z);
+    return (this->x == _rhs.x) && (this->y == _rhs.y) && (this->z == _rhs.z);
 }
-bool vec3i::operator!=(const vec3i &b) const
+bool vec3i::operator!=(const vec3i &_rhs) const
 {
-    return (this->x != b.x) || (this->y != b.y) || (this->z != b.z);
+    return (this->x != _rhs.x) || (this->y != _rhs.y) || (this->z != _rhs.z);
 }

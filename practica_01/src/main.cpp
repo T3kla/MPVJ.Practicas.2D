@@ -11,10 +11,10 @@ void rend_init()
 {
     auto wat = glfwInit();
     if (wat == 0)
-        ::cout << "pos a petao" << ::endl;
+        ::cout << "Panic!" << ::endl;
 
-    auto monitor = glfwGetPrimaryMonitor();
-    auto window = glfwCreateWindow(800, 640, "lmao", monitor, GLFWwindow * share);
+    // auto monitor = glfwGetPrimaryMonitor(); // for fullscreen only
+    auto window = glfwCreateWindow(800, 640, "lmao", nullptr, nullptr);
 }
 
 void game_init()
