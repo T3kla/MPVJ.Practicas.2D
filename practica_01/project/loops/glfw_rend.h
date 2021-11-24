@@ -1,15 +1,18 @@
 #pragma once
 
+#include "../engine/engine.h"
+
 namespace tkl
 {
 
 class glfw_rend
 {
   private:
-    GLFWwindow *window;
+    engine *m_engine;
 
   public:
-    glfw_rend(GLFWwindow *window = nullptr);
+    glfw_rend(engine *eng);
+
     void init();
     void loop();
     void exit();

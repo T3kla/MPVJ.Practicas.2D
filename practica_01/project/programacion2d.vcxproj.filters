@@ -33,7 +33,7 @@
     <ClCompile Include="loops\game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine.cpp">
+    <ClCompile Include="engine\engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -56,7 +56,7 @@
     <ClInclude Include="loops\game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="engine.h">
+    <ClInclude Include="engine\engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

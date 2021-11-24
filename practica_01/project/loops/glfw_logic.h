@@ -1,6 +1,6 @@
 #pragma once
 
-#include "glfw3.h"
+#include "../engine/engine.h"
 
 namespace tkl
 {
@@ -8,13 +8,14 @@ namespace tkl
 class glfw_logic
 {
   private:
-    GLFWwindow *window;
+    engine *m_engine;
 
   public:
-    glfw_logic(GLFWwindow *window = nullptr);
+    glfw_logic(engine *eng);
+
     void init();
     void loop();
     void exit();
 };
 
-} // namespace eng
+} // namespace tkl

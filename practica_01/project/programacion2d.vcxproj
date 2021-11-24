@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\main.cpp" />
-    <ClCompile Include="engine.cpp" />
+    <ClCompile Include="engine\engine.cpp" />
     <ClCompile Include="loops\glfw_logic.cpp" />
     <ClCompile Include="loops\glfw_rend.cpp" />
     <ClCompile Include="loops\game.cpp" />
@@ -29,7 +29,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\lib\litegfx.h" />
-    <ClInclude Include="engine.h" />
+    <ClInclude Include="engine\engine.h" />
     <ClInclude Include="loops\glfw_logic.h" />
     <ClInclude Include="loops\glfw_rend.h" />
     <ClInclude Include="loops\game.h" />
