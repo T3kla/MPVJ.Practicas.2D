@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../engine/engine.h"
-#include "../time/time.h"
 #include <vector>
 
 namespace tkl
@@ -20,7 +18,6 @@ class game
     static game &get();          //
 
   private:
-    time m_time = time(1.);
     double m_fx_count = 0.;
 
     std::vector<double> m_avg_up = std::vector<double>(TIME_AVG_SAMPLES, 0);

@@ -2,6 +2,7 @@
 #include "../loops/game.h"
 #include "../loops/glfw_logic.h"
 #include "../loops/glfw_rend.h"
+#include "../time/time.h"
 
 namespace tkl
 {
@@ -22,6 +23,7 @@ void engine::run()
     auto &logic = tkl::glfw_logic::get();
     auto &game = tkl::game::get();
     auto &rend = tkl::glfw_rend::get();
+    auto &time = tkl::time::get();
 
     logic.init();
     game.init();
@@ -29,6 +31,7 @@ void engine::run()
 
     while (!glfwWindowShouldClose(get_window()))
     {
+        time.update();
         logic.loop();
         game.loop();
         rend.loop();

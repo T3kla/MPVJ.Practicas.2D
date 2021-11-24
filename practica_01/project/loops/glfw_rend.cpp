@@ -1,5 +1,6 @@
 #include "glfw_rend.h"
-#include "glfw3.h"
+#include "../engine/engine.h"
+#include "../figures/fig_factory.h"
 #include "litegfx.h"
 
 #define LITE_GFX_IMPLEMENTATION
@@ -37,12 +38,9 @@ void glfw_rend::loop()
     lgfx_clearcolorbuffer(1.f, 1.f, 1.f);
 
     // Draw stuff
-    lgfx_setcolor(1.f, 0.f, 0.f, 1.f);
-    lgfx_drawpoint(500.f, 500.f);
-    lgfx_drawline(200.f, 200.f, 500.f, 500.f);
-    lgfx_drawrect(400.f, 100.f, 100.f, 200.f);
-    lgfx_setcolor(0.f, 1.f, 0.f, 1.f);
-    lgfx_drawrect(300.f, 100.f, 200.f, 100.f);
+    auto *figures = figure::fig_factory::get_figures();
+    for (auto &&figure : *figures)
+        figure->draw();
 
     // Swap buffers
     glfwSwapBuffers(engine::get_window());

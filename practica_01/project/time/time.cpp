@@ -63,7 +63,7 @@ double time::get_scale()
     return get().scale;
 }
 
-void time::set_scale(const double &_scale);
+void time::set_scale(const double &_scale)
 {
     get().scale = _scale;
 }

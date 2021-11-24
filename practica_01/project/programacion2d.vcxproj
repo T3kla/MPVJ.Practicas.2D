@@ -20,19 +20,30 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="draw\color.cpp" />
+    <ClCompile Include="figures\fig_factory.cpp" />
+    <ClCompile Include="figures\rect.cpp" />
     <ClCompile Include="engine\engine.cpp" />
     <ClCompile Include="loops\glfw_logic.cpp" />
     <ClCompile Include="loops\glfw_rend.cpp" />
     <ClCompile Include="loops\game.cpp" />
+    <ClCompile Include="practicas\01\practica_01.cpp" />
     <ClCompile Include="time\time.cpp" />
     <ClCompile Include="vec\vec.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\lib\litegfx.h" />
+    <ClInclude Include="draw\color.h" />
+    <ClInclude Include="figures\fig.h" />
+    <ClInclude Include="figures\fig_factory.h" />
+    <ClInclude Include="figures\rect.h" />
+    <ClInclude Include="draw\drawable.h" />
     <ClInclude Include="engine\engine.h" />
+    <ClInclude Include="engine\gameobject\gameobject.h" />
     <ClInclude Include="loops\glfw_logic.h" />
     <ClInclude Include="loops\glfw_rend.h" />
     <ClInclude Include="loops\game.h" />
+    <ClInclude Include="practicas\01\practica_01.h" />
     <ClInclude Include="time\time.h" />
     <ClInclude Include="vec\vec.h" />
   </ItemGroup>
@@ -125,6 +136,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>../lib</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -143,6 +155,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>../lib</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -163,6 +176,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>../lib</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

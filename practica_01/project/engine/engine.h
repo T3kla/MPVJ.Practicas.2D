@@ -1,5 +1,6 @@
 #pragma once
 
+#include "gameobject/gameobject.h"
 #include "glfw3.h"
 
 namespace tkl
@@ -20,6 +21,9 @@ class engine
     double m_mouse_pos_y = 0.;
     double m_mouse_delta_x = 0.;
     double m_mouse_delta_y = 0.;
+
+    friend gameobject;
+    std::vector<gameobject *> m_gameobjects = std::vector<gameobject *>();
 
   public:
     static void run();

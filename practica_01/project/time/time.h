@@ -14,6 +14,8 @@ class time
     static time &get();          //     Singletone getter
 
   private:
+    friend class engine;
+
     void update();
     void update_freq();
 

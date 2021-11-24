@@ -1,4 +1,5 @@
 #include "game.h"
+#include "../time/time.h"
 #include "glfw3.h"
 #include <iostream>
 
@@ -39,9 +40,7 @@ static auto next = [](auto &it) { it += 1u - TIME_AVG_SAMPLES * (it == TIME_AVG_
 
 void game::loop()
 {
-    m_time.update();
-
-    auto delta = m_time.get_delta_unscaled();
+    auto delta = tkl::time::delta_unscl();
 
     m_avg_up[m_avg_up_it] = delta;
     next(m_avg_up_it);
@@ -54,7 +53,7 @@ void game::loop()
         m_avg_fx[m_avg_fx_it] = m_fx_count;
         next(m_avg_fx_it);
 
-        fixed(m_fx_count * m_time.get_scale());
+        fixed(m_fx_count * time::get_scale());
         m_fx_count = 0;
     }
 }
