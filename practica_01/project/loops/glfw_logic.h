@@ -7,11 +7,12 @@ namespace tkl
 
 class glfw_logic
 {
-  private:
-    engine *m_engine;
-
-  public:
-    glfw_logic(engine *eng);
+  private:                                   // SINGLETON
+    glfw_logic();                            //
+    static glfw_logic instance;              //
+  public:                                    //
+    glfw_logic(const glfw_logic &) = delete; //
+    static glfw_logic &get();                //
 
     void init();
     void loop();

@@ -12,21 +12,25 @@ constexpr auto TIME_AVG_SAMPLES = 64u;
 
 class game
 {
+  private:                       // SINGLETON
+    game();                      //
+    static game instance;        //
+  public:                        //
+    game(const game &) = delete; //
+    static game &get();          //
+
   private:
-    engine *m_engine;
-    time m_time;
+    time m_time = time(1.);
     double m_fx_count = 0.;
 
-    std::vector<double> m_avg_up;
-    std::vector<double> m_avg_fx;
-    double m_avg_buffer_up;
-    double m_avg_buffer_fx;
+    std::vector<double> m_avg_up = std::vector<double>(TIME_AVG_SAMPLES, 0);
+    std::vector<double> m_avg_fx = std::vector<double>(TIME_AVG_SAMPLES, 0);
+    double m_avg_buffer_up = 0.;
+    double m_avg_buffer_fx = 0.;
     unsigned int m_avg_up_it = 0u;
     unsigned int m_avg_fx_it = 0u;
 
   public:
-    game(engine *eng);
-
     void init();
     void loop();
     void exit();

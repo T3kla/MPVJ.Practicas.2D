@@ -7,11 +7,12 @@ namespace tkl
 
 class glfw_rend
 {
-  private:
-    engine *m_engine;
-
-  public:
-    glfw_rend(engine *eng);
+  private:                                 // SINGLETON
+    glfw_rend();                           //
+    static glfw_rend instance;             //
+  public:                                  //
+    glfw_rend(const glfw_rend &) = delete; //
+    static glfw_rend &get();               //
 
     void init();
     void loop();

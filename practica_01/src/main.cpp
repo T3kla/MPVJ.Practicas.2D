@@ -13,9 +13,8 @@ using namespace std;
 
 int main()
 {
-    tkl::engine engine;
 
-    engine.run();
+    tkl::engine::run();
 
     return 0;
 }

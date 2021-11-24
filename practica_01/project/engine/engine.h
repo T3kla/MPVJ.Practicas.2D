@@ -7,23 +7,30 @@ namespace tkl
 
 class engine
 {
+  private:                           // SINGLETONE STUFF
+    engine();                        //     Singletone constructor
+    static engine instance;          //     Singletone single instance
+  public:                            //
+    engine(const engine &) = delete; //     Singletone copy constructor deletion
+    static engine &get();            //     Singletone getter
+
   private:
     GLFWwindow *m_window = nullptr;
-    double m_mouse_pos_x;
-    double m_mouse_pos_y;
-    double m_mouse_delta_x;
-    double m_mouse_delta_y;
+    double m_mouse_pos_x = 0.;
+    double m_mouse_pos_y = 0.;
+    double m_mouse_delta_x = 0.;
+    double m_mouse_delta_y = 0.;
 
   public:
-    void run();
+    static void run();
 
-    GLFWwindow *get_window();
-    void set_window(GLFWwindow *window);
+    static GLFWwindow *get_window();
+    static void set_window(GLFWwindow *window);
 
-    void get_mouse_pos(double &pos_x, double &pos_y);
-    void set_mouse_pos(const double &pos_x, const double &pos_y);
-    void get_mouse_delta(double &delta_x, double &delta_y);
-    void set_mouse_delta(const double &delta_x, const double &delta_y);
+    static void get_mouse_pos(double &pos_x, double &pos_y);
+    static void set_mouse_pos(const double &pos_x, const double &pos_y);
+    static void get_mouse_delta(double &delta_x, double &delta_y);
+    static void set_mouse_delta(const double &delta_x, const double &delta_y);
 };
 
 } // namespace tkl

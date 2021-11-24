@@ -6,7 +6,15 @@ namespace tkl
 
 class time
 {
+  private:                       // SINGLETONE STUFF
+    time();                      //     Singletone constructor
+    static time instance;        //     Singletone single instance
+  public:                        //
+    time(const time &) = delete; //     Singletone copy constructor deletion
+    static time &get();          //     Singletone getter
+
   private:
+    void update();
     void update_freq();
 
     LARGE_INTEGER buffer = LARGE_INTEGER();
@@ -20,40 +28,12 @@ class time
     double scale = 1.;
 
   public:
-    time(double _scale = 0.);
-    ~time();
-
-    void update();
-
-    double get_delta_unscaled()
-    {
-        return delta_unscaled;
-    }
-
-    double get_count_unscaled()
-    {
-        return count_unscaled;
-    }
-
-    double get_delta_scaled()
-    {
-        return delta_scaled;
-    }
-
-    double get_count_scaled()
-    {
-        return count_scaled;
-    }
-
-    double get_scale()
-    {
-        return scale;
-    }
-
-    void set_scale(double _scale)
-    {
-        scale = _scale;
-    }
+    static double delta_unscl();
+    static double time_unscl();
+    static double delta_scl();
+    static double time_scl();
+    static double get_scale();
+    static void set_scale(const double &_scale);
 };
 
 }; // namespace tkl

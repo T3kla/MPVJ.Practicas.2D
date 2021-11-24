@@ -4,8 +4,15 @@
 namespace tkl
 {
 
-glfw_logic::glfw_logic(engine *eng) : m_engine(eng)
+glfw_logic glfw_logic::instance;
+
+glfw_logic::glfw_logic()
 {
+}
+
+glfw_logic &glfw_logic::get()
+{
+    return instance;
 }
 
 void glfw_logic::init()
@@ -15,7 +22,7 @@ void glfw_logic::init()
         std::cout << "Panic!" << std::endl;
 
     auto *window = glfwCreateWindow(800, 640, "", nullptr, nullptr);
-    m_engine->set_window(window);
+    engine::set_window(window);
     glfwMakeContextCurrent(window);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
@@ -29,12 +36,12 @@ void glfw_logic::loop()
     glfwPollEvents();
 
     // Update mouse pos
-    auto *window = m_engine->get_window();
+    auto *window = engine::get_window();
     double old_mouse_pos_x, old_mouse_pos_y, mouse_pos_x, mouse_pos_y;
-    m_engine->get_mouse_pos(old_mouse_pos_x, old_mouse_pos_y);
+    engine::get_mouse_pos(old_mouse_pos_x, old_mouse_pos_y);
     glfwGetCursorPos(window, &mouse_pos_x, &mouse_pos_y);
-    m_engine->set_mouse_pos(mouse_pos_x, mouse_pos_y);
-    m_engine->set_mouse_delta(mouse_pos_x - old_mouse_pos_x, old_mouse_pos_x - mouse_pos_x);
+    engine::set_mouse_pos(mouse_pos_x, mouse_pos_y);
+    engine::set_mouse_delta(mouse_pos_x - old_mouse_pos_x, old_mouse_pos_x - mouse_pos_x);
 
     // Window Title
     char buffer[64];

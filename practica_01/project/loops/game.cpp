@@ -1,12 +1,20 @@
 #include "game.h"
 #include "glfw3.h"
-#include "litegfx.h"
 #include <iostream>
-
-#define LITE_GFX_IMPLEMENTATION
 
 namespace tkl
 {
+
+game game::instance;
+
+game::game()
+{
+}
+
+game &game::get()
+{
+    return instance;
+}
 
 // void onMouseClicked(GLFWwindow *window, int button, int action, int mods)
 //{
@@ -23,21 +31,14 @@ namespace tkl
 //     }
 // }
 
-game::game(engine *eng) : m_engine(eng)
-{
-    m_time = time(1.);
-    m_avg_up = std::vector<double>(TIME_AVG_SAMPLES, 0);
-    m_avg_fx = std::vector<double>(TIME_AVG_SAMPLES, 0);
-}
-
 void game::init()
 {
 }
 
+static auto next = [](auto &it) { it += 1u - TIME_AVG_SAMPLES * (it == TIME_AVG_SAMPLES - 1u); };
+
 void game::loop()
 {
-    auto next = [](auto &it) { it += 1u - TIME_AVG_SAMPLES * (it == TIME_AVG_SAMPLES - 1u); };
-
     m_time.update();
 
     auto delta = m_time.get_delta_unscaled();
@@ -68,7 +69,6 @@ void game::update(double dt)
 
 void game::fixed(double dt)
 {
-
     print_fps();
 }
 
@@ -82,11 +82,15 @@ void game::print_fps()
     for (auto &&i : m_avg_fx)
         m_avg_buffer_fx += i;
 
-    m_avg_buffer_up = (1. / (m_avg_buffer_up / (double)TIME_AVG_SAMPLES)) * 1000.;
-    m_avg_buffer_fx = (1. / (m_avg_buffer_fx / (double)TIME_AVG_SAMPLES)) * 1000.;
+    m_avg_buffer_up /= (double)TIME_AVG_SAMPLES;
+    m_avg_buffer_fx /= (double)TIME_AVG_SAMPLES;
 
-    std::cout << " fixed: " << m_avg_buffer_up << std::endl;
-    std::cout << "update: " << m_avg_buffer_fx << std::endl;
+    m_avg_buffer_up = 1. / (m_avg_buffer_up / 1000.);
+    m_avg_buffer_fx = 1. / (m_avg_buffer_fx / 1000.);
+
+    // Only works disabling VSync
+    std::cout << " fixed: " << m_avg_buffer_fx << std::endl;
+    std::cout << "update: " << m_avg_buffer_up << std::endl;
 }
 
 } // namespace tkl

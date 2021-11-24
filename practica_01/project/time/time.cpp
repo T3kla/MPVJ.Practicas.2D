@@ -5,16 +5,18 @@
 namespace tkl
 {
 
-time::time(double _scale)
+time time::instance;
+
+time::time()
 {
-    scale = _scale;
     update_freq();
     QueryPerformanceCounter(&buffer);
     old = buffer.QuadPart;
 }
 
-time::~time()
+time &time::get()
 {
+    return instance;
 }
 
 void time::update_freq()
@@ -34,6 +36,36 @@ void time::update()
     delta_scaled = delta_unscaled * scale;
     count_scaled += delta_scaled;
     update_freq();
+}
+
+double time::delta_unscl()
+{
+    return get().delta_unscaled;
+}
+
+double time::time_unscl()
+{
+    return get().count_unscaled;
+}
+
+double time::delta_scl()
+{
+    return get().delta_scaled;
+}
+
+double time::time_scl()
+{
+    return get().count_scaled;
+}
+
+double time::get_scale()
+{
+    return get().scale;
+}
+
+void time::set_scale(const double &_scale);
+{
+    get().scale = _scale;
 }
 
 }; // namespace tkl

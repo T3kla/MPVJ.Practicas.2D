@@ -6,18 +6,28 @@
 
 namespace tkl
 {
-void on_window_resize(GLFWwindow *window, int w, int h);
 
-glfw_rend::glfw_rend(engine *eng) : m_engine(eng)
+glfw_rend glfw_rend::instance;
+
+glfw_rend::glfw_rend()
 {
 }
 
+glfw_rend &glfw_rend::get()
+{
+    return instance;
+}
+
+void on_window_resize(GLFWwindow *window, int w, int h);
+
 void glfw_rend::init()
 {
-    glfwSetWindowSizeCallback(m_engine->get_window(), on_window_resize);
+    auto *window = engine::get_window();
+
+    glfwSetWindowSizeCallback(window, on_window_resize);
 
     int w, h;
-    glfwGetWindowSize(m_engine->get_window(), &w, &h);
+    glfwGetWindowSize(window, &w, &h);
     lgfx_setup2d(w, h);
 }
 
@@ -35,7 +45,7 @@ void glfw_rend::loop()
     lgfx_drawrect(300.f, 100.f, 200.f, 100.f);
 
     // Swap buffers
-    glfwSwapBuffers(m_engine->get_window());
+    glfwSwapBuffers(engine::get_window());
 }
 
 void glfw_rend::exit()
