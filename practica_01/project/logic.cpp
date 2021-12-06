@@ -1,48 +1,43 @@
-#include "glfw_logic.h"
-#include "../engine/engine.h"
+#include "logic.h"
+#include "engine.h"
+#include "glfw3.h"
+#include "render.h"
 #include <iostream>
 
-namespace tkl
-{
+Logic Logic::instance;
 
-glfw_logic glfw_logic::instance;
-
-glfw_logic::glfw_logic()
+Logic::Logic()
 {
 }
 
-glfw_logic &glfw_logic::get()
+Logic &Logic::Get()
 {
     return instance;
 }
 
-void glfw_logic::init()
+void Logic::Init()
 {
     auto wat = glfwInit();
     if (wat == 0)
         std::cout << "Panic!" << std::endl;
 
     auto *window = glfwCreateWindow(800, 640, "", nullptr, nullptr);
-    engine::set_window(window);
+    Render::SetWindow(window);
     glfwMakeContextCurrent(window);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-
-    // auto monitor = glfwGetPrimaryMonitor(); // for fullscreen only
-    // glfwSetMouseButtonCallback(window, onMouseClicked);
-    // glfwSetKeyCallback(window, onKeyPressed);
 }
 
-void glfw_logic::loop()
+void Logic::Loop()
 {
     glfwPollEvents();
 
     // Update mouse pos
-    auto *window = engine::get_window();
+    auto *window = Render::GetWindow();
     double old_mouse_pos_x, old_mouse_pos_y, mouse_pos_x, mouse_pos_y;
-    engine::get_mouse_pos(old_mouse_pos_x, old_mouse_pos_y);
+    Engine::GetMousePos(old_mouse_pos_x, old_mouse_pos_y);
     glfwGetCursorPos(window, &mouse_pos_x, &mouse_pos_y);
-    engine::set_mouse_pos(mouse_pos_x, mouse_pos_y);
-    engine::set_mouse_delta(mouse_pos_x - old_mouse_pos_x, old_mouse_pos_x - mouse_pos_x);
+    Engine::SetMousePos(mouse_pos_x, mouse_pos_y);
+    Engine::SetMouseDelta(mouse_pos_x - old_mouse_pos_x, old_mouse_pos_x - mouse_pos_x);
 
     // Window Title
     char buffer[64];
@@ -54,9 +49,7 @@ void glfw_logic::loop()
         glfwSetWindowShouldClose(window, 1);
 }
 
-void glfw_logic::exit()
+void Logic::Exit()
 {
     glfwTerminate();
 }
-
-} // namespace tkl

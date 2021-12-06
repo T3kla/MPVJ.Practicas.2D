@@ -5,92 +5,115 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\color">
+      <UniqueIdentifier>{1f56a028-c4f2-4b35-9f6e-896a0c6cf4e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine">
+      <UniqueIdentifier>{e2c55f6c-b1f6-44ab-88cc-f8979d67c8e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\loops">
+      <UniqueIdentifier>{0aec8a4d-0637-43c9-8085-1b4664222c28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\figures">
+      <UniqueIdentifier>{3ada4f52-315d-4978-b202-e7c77183f8e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\lib">
+      <UniqueIdentifier>{7f1c6c2e-6e64-479f-98db-52b433aa0e80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\math">
+      <UniqueIdentifier>{42ee4db3-6582-4279-b571-79f143940b28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\math\vec">
+      <UniqueIdentifier>{0477412c-e50e-4aa5-bc49-30cf14c07a7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\time">
+      <UniqueIdentifier>{325fa28c-c78e-4c71-8cde-c1744de0bcd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\practicas">
+      <UniqueIdentifier>{0415bc7c-a2a3-43d3-ad92-bbe4b1839a96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\interfaces">
+      <UniqueIdentifier>{4bea3326-042c-47bc-ae90-54c49f8f64d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\figures\rect">
+      <UniqueIdentifier>{f851d665-3c1c-41eb-8691-4dda16f1ace1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\main.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="engine.cpp">
+      <Filter>Source Files\engine</Filter>
     </ClCompile>
-    <ClCompile Include="vec\vec.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="game.cpp">
+      <Filter>Source Files\engine\loops</Filter>
     </ClCompile>
-    <ClCompile Include="time\time.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="logic.cpp">
+      <Filter>Source Files\engine\loops</Filter>
     </ClCompile>
-    <ClCompile Include="loops\glfw_logic.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="render.cpp">
+      <Filter>Source Files\engine\loops</Filter>
     </ClCompile>
-    <ClCompile Include="loops\glfw_rend.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="drawer.cpp">
+      <Filter>Source Files\figures</Filter>
     </ClCompile>
-    <ClCompile Include="loops\game.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="vec.cpp">
+      <Filter>Source Files\math\vec</Filter>
     </ClCompile>
-    <ClCompile Include="engine\engine.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="stasis.cpp">
+      <Filter>Source Files\time</Filter>
     </ClCompile>
-    <ClCompile Include="figures\rect.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="practica_01.cpp">
+      <Filter>Source Files\practicas</Filter>
     </ClCompile>
-    <ClCompile Include="figures\fig_factory.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="rect.cpp">
+      <Filter>Source Files\figures\rect</Filter>
     </ClCompile>
-    <ClCompile Include="draw\color.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="practicas\01\practica_01.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="color.h">
+      <Filter>Source Files\color</Filter>
+    </ClInclude>
+    <ClInclude Include="engine.h">
+      <Filter>Source Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="game.h">
+      <Filter>Source Files\engine\loops</Filter>
+    </ClInclude>
+    <ClInclude Include="logic.h">
+      <Filter>Source Files\engine\loops</Filter>
+    </ClInclude>
+    <ClInclude Include="render.h">
+      <Filter>Source Files\engine\loops</Filter>
+    </ClInclude>
+    <ClInclude Include="drawer.h">
+      <Filter>Source Files\figures</Filter>
+    </ClInclude>
     <ClInclude Include="..\lib\litegfx.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files\lib</Filter>
     </ClInclude>
-    <ClInclude Include="vec\vec.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="vec.h">
+      <Filter>Source Files\math\vec</Filter>
     </ClInclude>
-    <ClInclude Include="time\time.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="stasis.h">
+      <Filter>Source Files\time</Filter>
     </ClInclude>
-    <ClInclude Include="loops\glfw_logic.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="practica_01.h">
+      <Filter>Source Files\practicas</Filter>
     </ClInclude>
-    <ClInclude Include="loops\glfw_rend.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="drawable.h">
+      <Filter>Source Files\interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="loops\game.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="rect.h">
+      <Filter>Source Files\figures\rect</Filter>
     </ClInclude>
-    <ClInclude Include="engine\engine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="draw\drawable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="figures\rect.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="figures\fig_factory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="figures\fig.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="draw\color.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="practicas\01\practica_01.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\gameobject\gameobject.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="gameobject.h">
+      <Filter>Source Files\interfaces</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
