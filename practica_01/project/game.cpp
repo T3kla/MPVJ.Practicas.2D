@@ -44,6 +44,7 @@ const std::vector<GameObject *> *Game::GetGameObjects()
 
 void Game::Init()
 {
+    Start();
 }
 
 auto timeUp = 0.;
@@ -76,6 +77,13 @@ void Game::Loop()
 
 void Game::Exit()
 {
+    End();
+}
+
+void Game::Start()
+{
+    for (auto &&go : *Game::Get().GetGameObjects())
+        go->Start();
 }
 
 void Game::Update(double dt)
@@ -89,6 +97,12 @@ void Game::Fixed(double dt)
     for (auto &&go : *Game::Get().GetGameObjects())
         go->Fixed(dt);
     PrintFps();
+}
+
+void Game::End()
+{
+    for (auto &&go : *Game::Get().GetGameObjects())
+        go->End();
 }
 
 void Game::PrintFps()

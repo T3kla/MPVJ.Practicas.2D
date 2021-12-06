@@ -2,6 +2,8 @@
 
 #include "game.h"
 #include "rect.h"
+#include "render.h"
+#include "vec.h"
 
 P01::P01()
 {
@@ -13,34 +15,21 @@ P01::~P01()
     Game::UnSubscribe(this);
 }
 
-auto r1dir = true;
-auto r2dir = true;
-auto vel = 0.5f;
+void P01::Start()
+{
+}
 
 void P01::Update(const double &dt)
 {
-    auto pos = rect1.GetPos();
-
-    if (pos.x < 100.f)
-        r1dir = true;
-    if (pos.x > 600.f)
-        r1dir = false;
-
-    auto speed = r1dir ? vel : -vel;
-
-    rect1.SetPos(vec2(pos.x + speed * dt, pos.y));
+    int w, h;
+    Render::GetWindowSize(w, h);
+    rect1.SetPos(Vec2((float)w / 2.f, (float)h / 2.f));
 }
 
 void P01::Fixed(const double &dt)
 {
-    auto pos = rect2.GetPos();
+}
 
-    if (pos.x < 100.f)
-        r2dir = true;
-    if (pos.x > 600.f)
-        r2dir = false;
-
-    auto speed = r2dir ? vel : -vel;
-
-    rect2.SetPos(vec2(pos.x + speed * dt, pos.y));
+void P01::End()
+{
 }

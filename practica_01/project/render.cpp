@@ -25,18 +25,30 @@ void Render::SetWindow(GLFWwindow *window)
     Get().window = window;
 }
 
-void on_window_resize(GLFWwindow *window, int w, int h)
+void Render::GetWindowSize(int &width, int &height)
 {
+    width = Get().windowWidth;
+    height = Get().windowHeight;
+}
+
+void Render::SetWindowSize(const int &width, const int &height)
+{
+    Get().windowWidth = width;
+    Get().windowHeight = height;
+}
+
+void OnWindowResize(GLFWwindow *window, int w, int h)
+{
+    Render::SetWindowSize(w, h);
     lgfx_setup2d(w, h);
 }
 
 void Render::Init()
 {
-    glfwSetWindowSizeCallback(window, on_window_resize);
+    glfwSetWindowSizeCallback(window, OnWindowResize);
 
-    int w, h;
-    glfwGetWindowSize(window, &w, &h);
-    lgfx_setup2d(w, h);
+    glfwGetWindowSize(window, &windowWidth, &windowHeight);
+    lgfx_setup2d(windowWidth, windowHeight);
 }
 
 void Render::Loop()

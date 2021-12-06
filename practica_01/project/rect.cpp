@@ -14,19 +14,19 @@ Rect::~Rect()
     Drawer::Get().UnSubscribe(this);
 }
 
-void Rect::Draw() const
+Vec2 Rect::GetPos()
 {
-    lgfx_setcolor(color.r, color.g, color.b, color.a);
-    lgfx_drawrect(x, y, width, heigth);
+    return Vec2(x, y);
 }
 
-vec2 Rect::GetPos()
-{
-    return vec2(x, y);
-}
-
-void Rect::SetPos(const vec2 &pos)
+void Rect::SetPos(const Vec2 &pos)
 {
     x = pos.x;
     y = pos.y;
+}
+
+void Rect::Draw() const
+{
+    lgfx_setcolor(color.r, color.g, color.b, color.a);
+    lgfx_drawrect(x - width / 2.f, y - heigth / 2.f, width, heigth);
 }

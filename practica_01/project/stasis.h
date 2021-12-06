@@ -7,11 +7,11 @@ class Stasis
     friend class Engine;
 
   private:                           // SINGLETONE STUFF
-    Stasis();                        //     Singletone constructor
-    static Stasis instance;          //     Singletone single instance
+    Stasis();                        //
+    static Stasis instance;          //
   public:                            //
-    Stasis(const Stasis &) = delete; //     Singletone copy constructor deletion
-    static Stasis &Get();            //     Singletone getter
+    Stasis(const Stasis &) = delete; //
+    static Stasis &Get();            //
 
   private:
     void Update();

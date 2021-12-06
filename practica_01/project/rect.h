@@ -17,8 +17,8 @@ class Rect : public Drawable
     Rect(float x, float y, float w, float h, Color color);
     ~Rect();
 
-    virtual void Draw() const override;
+    Vec2 GetPos();
+    void SetPos(const Vec2 &pos);
 
-    vec2 GetPos();
-    void SetPos(const vec2 &pos);
+    virtual void Draw() const override;
 };

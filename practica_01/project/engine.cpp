@@ -23,8 +23,8 @@ void Engine::Run()
     auto &time = Stasis::Get();
 
     logic.Init();
-    game.Init();
     rend.Init();
+    game.Init();
 
     while (!glfwWindowShouldClose(Render::GetWindow()))
     {
@@ -39,26 +39,24 @@ void Engine::Run()
     rend.Exit();
 }
 
-void Engine::GetMousePos(double &x, double &y)
+Vec2 Engine::GetMousePos()
 {
-    x = Get().mouseX;
-    y = Get().mouseY;
+    return Vec2((float)Get().mouseX, (float)Get().mouseY);
 }
 
-void Engine::SetMousePos(const double &x, const double &y)
+void Engine::SetMousePos(const Vec2 &pos)
 {
-    Get().mouseX = x;
-    Get().mouseY = y;
+    Get().mouseX = pos.x;
+    Get().mouseY = pos.y;
 }
 
-void Engine::GetMouseDelta(double &x, double &y)
+Vec2 Engine::GetMouseDelta()
 {
-    x = Get().mouseDeltaX;
-    y = Get().mouseDeltaY;
+    return Vec2((float)Get().mouseDeltaX, (float)Get().mouseDeltaY);
 }
 
-void Engine::SetMouseDelta(const double &x, const double &y)
+void Engine::SetMouseDelta(const Vec2 &pos)
 {
-    Get().mouseDeltaX = x;
-    Get().mouseDeltaY = y;
+    Get().mouseDeltaX = pos.x;
+    Get().mouseDeltaY = pos.y;
 }

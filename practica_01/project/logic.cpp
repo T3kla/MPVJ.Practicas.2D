@@ -2,6 +2,7 @@
 #include "engine.h"
 #include "glfw3.h"
 #include "render.h"
+#include "vec.h"
 #include <iostream>
 
 Logic Logic::instance;
@@ -34,10 +35,10 @@ void Logic::Loop()
     // Update mouse pos
     auto *window = Render::GetWindow();
     double old_mouse_pos_x, old_mouse_pos_y, mouse_pos_x, mouse_pos_y;
-    Engine::GetMousePos(old_mouse_pos_x, old_mouse_pos_y);
+    auto oldPos = Engine::GetMousePos();
     glfwGetCursorPos(window, &mouse_pos_x, &mouse_pos_y);
-    Engine::SetMousePos(mouse_pos_x, mouse_pos_y);
-    Engine::SetMouseDelta(mouse_pos_x - old_mouse_pos_x, old_mouse_pos_x - mouse_pos_x);
+    Engine::SetMousePos(Vec2(mouse_pos_x, mouse_pos_y));
+    Engine::SetMouseDelta(Vec2(mouse_pos_x - oldPos.x, oldPos.y - mouse_pos_y));
 
     // Window Title
     char buffer[64];

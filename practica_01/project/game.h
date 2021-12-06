@@ -36,8 +36,10 @@ class Game
     void Loop();
     void Exit();
 
+    void Start();
     void Update(double dt = 0.);
     void Fixed(double dt = 0.);
+    void End();
 
     void PrintFps();
 };

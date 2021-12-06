@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include "vec.h"
 
 class Engine
 {
@@ -20,8 +20,8 @@ class Engine
   public:
     static void Run();
 
-    static void GetMousePos(double &pos_x, double &pos_y);
-    static void SetMousePos(const double &pos_x, const double &pos_y);
-    static void GetMouseDelta(double &delta_x, double &delta_y);
-    static void SetMouseDelta(const double &delta_x, const double &delta_y);
+    static Vec2 GetMousePos();
+    static void SetMousePos(const Vec2 &pos);
+    static Vec2 GetMouseDelta();
+    static void SetMouseDelta(const Vec2 &dt);
 };

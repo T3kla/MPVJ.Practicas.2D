@@ -2,96 +2,96 @@
 
 // ----------------------------------------------------------------------- vec2
 
-vec2::vec2(const float &x, const float &y) : x(x), y(y)
+Vec2::Vec2(const float &x, const float &y) : x(x), y(y)
 {
 }
-vec2::vec2(vec2 &_rhs)
-{
-    x = _rhs.x;
-    y = _rhs.y;
-}
-vec2::vec2(vec2 &&_rhs) noexcept
+Vec2::Vec2(Vec2 &_rhs)
 {
     x = _rhs.x;
     y = _rhs.y;
 }
-float vec2::magnitude() const
+Vec2::Vec2(Vec2 &&_rhs) noexcept
+{
+    x = _rhs.x;
+    y = _rhs.y;
+}
+float Vec2::Magnitude() const
 {
     return sqrt(x * x + y * y);
 }
-vec2 vec2::normalized() const
+Vec2 Vec2::Normalized() const
 {
-    return *this / this->magnitude();
+    return *this / this->Magnitude();
 }
-float vec2::Det(const vec2 &a, const vec2 &b)
+float Vec2::Determinant(const Vec2 &a, const Vec2 &b)
 {
     return a.x * b.y - a.y * b.x;
 }
-float vec2::Dot(const vec2 &a, const vec2 &b)
+float Vec2::Dot(const Vec2 &a, const Vec2 &b)
 {
     return a.x * b.x + a.y * b.y;
 }
-vec2 vec2::Had(const vec2 &a, const vec2 &b)
+Vec2 Vec2::Hadamard(const Vec2 &a, const Vec2 &b)
 {
-    return vec2(a.x * b.x, a.y * b.y);
+    return Vec2(a.x * b.x, a.y * b.y);
 }
-float vec2::Angle(const vec2 &a, const vec2 &b)
+float Vec2::Angle(const Vec2 &a, const Vec2 &b)
 {
-    return std::atan2f(Det(a, b), Dot(a, b));
+    return std::atan2f(Determinant(a, b), Dot(a, b));
 }
-float vec2::Distance(const vec2 &a, const vec2 &b)
+float Vec2::Distance(const Vec2 &a, const Vec2 &b)
 {
-    return (b - a).magnitude();
+    return (b - a).Magnitude();
 }
-vec2 vec2::operator+(const vec2 &_rhs) const
+Vec2 Vec2::operator+(const Vec2 &_rhs) const
 {
-    return vec2(this->x + _rhs.x, this->y + _rhs.y);
+    return Vec2(this->x + _rhs.x, this->y + _rhs.y);
 }
-vec2 vec2::operator-(const vec2 &_rhs) const
+Vec2 Vec2::operator-(const Vec2 &_rhs) const
 {
-    return vec2(this->x - _rhs.x, this->y - _rhs.y);
+    return Vec2(this->x - _rhs.x, this->y - _rhs.y);
 }
-vec2 vec2::operator*(const float &_rhs) const // scale product
+Vec2 Vec2::operator*(const float &_rhs) const // scale product
 {
-    return vec2(this->x * _rhs, this->y * _rhs);
+    return Vec2(this->x * _rhs, this->y * _rhs);
 }
-float vec2::operator*(const vec2 &_rhs) const // hadamard product
+float Vec2::operator*(const Vec2 &_rhs) const // hadamard product
 {
     return Dot(*this, _rhs);
 }
-vec2 vec2::operator/(const float &_rhs) const
+Vec2 Vec2::operator/(const float &_rhs) const
 {
-    return vec2(this->x / _rhs, this->y / _rhs);
+    return Vec2(this->x / _rhs, this->y / _rhs);
 }
-vec2 &vec2::operator+=(const vec2 &_rhs)
+Vec2 &Vec2::operator+=(const Vec2 &_rhs)
 {
     this->x += _rhs.x;
     this->y += _rhs.y;
     return *this;
 }
-vec2 &vec2::operator-=(const vec2 &_rhs)
+Vec2 &Vec2::operator-=(const Vec2 &_rhs)
 {
     this->x -= _rhs.x;
     this->y -= _rhs.y;
     return *this;
 }
-vec2 &vec2::operator*=(const float &_rhs)
+Vec2 &Vec2::operator*=(const float &_rhs)
 {
     this->x *= _rhs;
     this->y *= _rhs;
     return *this;
 }
-vec2 &vec2::operator/=(const float &_rhs)
+Vec2 &Vec2::operator/=(const float &_rhs)
 {
     this->x /= _rhs;
     this->y /= _rhs;
     return *this;
 }
-bool vec2::operator==(const vec2 &_rhs) const
+bool Vec2::operator==(const Vec2 &_rhs) const
 {
     return (this->x == _rhs.x) && (this->y == _rhs.y);
 }
-bool vec2::operator!=(const vec2 &_rhs) const
+bool Vec2::operator!=(const Vec2 &_rhs) const
 {
     return (this->x != _rhs.x) || (this->y != _rhs.y);
 }

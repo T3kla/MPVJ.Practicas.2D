@@ -2,39 +2,39 @@
 
 #include <iostream>
 
-struct vec2
+struct Vec2
 {
     float x = 0.f;
     float y = 0.f;
 
-    vec2(const float &x = 0.f, const float &y = 0.f);
-    vec2(vec2 &_rhs);
-    vec2(vec2 &&_rhs) noexcept;
+    Vec2(const float &x = 0.f, const float &y = 0.f);
+    Vec2(Vec2 &_rhs);
+    Vec2(Vec2 &&_rhs) noexcept;
 
-    float magnitude() const;
-    vec2 normalized() const;
+    float Magnitude() const;
+    Vec2 Normalized() const;
 
-    vec2 operator+(const vec2 &_rhs) const;
-    vec2 operator-(const vec2 &_rhs) const;
-    vec2 operator*(const float &_rhs) const;
-    float operator*(const vec2 &_rhs) const;
-    vec2 operator/(const float &_rhs) const;
+    Vec2 operator+(const Vec2 &_rhs) const;
+    Vec2 operator-(const Vec2 &_rhs) const;
+    Vec2 operator*(const float &_rhs) const;
+    float operator*(const Vec2 &_rhs) const;
+    Vec2 operator/(const float &_rhs) const;
 
-    vec2 &operator+=(const vec2 &_rhs);
-    vec2 &operator-=(const vec2 &_rhs);
-    vec2 &operator*=(const float &_rhs);
-    vec2 &operator/=(const float &_rhs);
+    Vec2 &operator+=(const Vec2 &_rhs);
+    Vec2 &operator-=(const Vec2 &_rhs);
+    Vec2 &operator*=(const float &_rhs);
+    Vec2 &operator/=(const float &_rhs);
 
-    bool operator==(const vec2 &_rhs) const;
-    bool operator!=(const vec2 &_rhs) const;
+    bool operator==(const Vec2 &_rhs) const;
+    bool operator!=(const Vec2 &_rhs) const;
 
-    static float Det(const vec2 &a, const vec2 &b);      // determinant
-    static float Dot(const vec2 &a, const vec2 &b);      // dot product
-    static vec2 Had(const vec2 &a, const vec2 &b);       // hadamard product
-    static float Angle(const vec2 &a, const vec2 &b);    // angle between two vec2
-    static float Distance(const vec2 &a, const vec2 &b); // distance between two vec2
+    static float Determinant(const Vec2 &a, const Vec2 &b);
+    static float Dot(const Vec2 &a, const Vec2 &b);
+    static Vec2 Hadamard(const Vec2 &a, const Vec2 &b);
+    static float Angle(const Vec2 &a, const Vec2 &b);
+    static float Distance(const Vec2 &a, const Vec2 &b);
 
-    friend std::ostream &operator<<(std::ostream &os, const vec2 &a)
+    friend std::ostream &operator<<(std::ostream &os, const Vec2 &a)
     {
         return os << '(' << a.x << ',' << a.y << ')';
     }
