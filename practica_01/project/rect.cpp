@@ -1,5 +1,3 @@
-#define LITE_GFX_IMPLEMENTATION
-
 #include "rect.h"
 #include "drawer.h"
 #include "litegfx.h"

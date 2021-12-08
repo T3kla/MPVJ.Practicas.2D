@@ -1,4 +1,5 @@
 #include "vec.h"
+#include "pi.h"
 
 // ----------------------------------------------------------------------- vec2
 
@@ -6,6 +7,11 @@ Vec2::Vec2(const float &x, const float &y) : x(x), y(y)
 {
 }
 Vec2::Vec2(Vec2 &_rhs)
+{
+    x = _rhs.x;
+    y = _rhs.y;
+}
+Vec2::Vec2(const Vec2 &_rhs)
 {
     x = _rhs.x;
     y = _rhs.y;
@@ -23,6 +29,15 @@ Vec2 Vec2::Normalized() const
 {
     return *this / this->Magnitude();
 }
+float Vec2::AngleDeg() const
+{
+    auto result = ToDeg(Vec2::Angle(*this, Right()));
+    return result += result < 0. ? 360. : 0.;
+}
+float Vec2::AngleRad() const
+{
+    return Vec2::Angle(*this, Right());
+}
 float Vec2::Determinant(const Vec2 &a, const Vec2 &b)
 {
     return a.x * b.y - a.y * b.x;
@@ -37,11 +52,42 @@ Vec2 Vec2::Hadamard(const Vec2 &a, const Vec2 &b)
 }
 float Vec2::Angle(const Vec2 &a, const Vec2 &b)
 {
-    return std::atan2f(Determinant(a, b), Dot(a, b));
+    return std::atan2f(b.y, b.x) - std::atan2f(a.y, a.x);
 }
 float Vec2::Distance(const Vec2 &a, const Vec2 &b)
 {
     return (b - a).Magnitude();
+}
+Vec2 Vec2::RotateAround(const float &angle, const Vec2 &a, const Vec2 &axis)
+{
+    float rad = ToRad(-angle);
+    float x = cos(rad) * (a.x - axis.x) - sin(rad) * (a.y - axis.y) + axis.x;
+    float y = sin(rad) * (a.x - axis.x) + cos(rad) * (a.y - axis.y) + axis.y;
+    return Vec2(x, y);
+}
+const Vec2 &Vec2::Up()
+{
+    return Vec2(0.f, 1.f);
+}
+const Vec2 &Vec2::Down()
+{
+    return Vec2(0.f, -1.f);
+}
+const Vec2 &Vec2::Right()
+{
+    return Vec2(1.f, 0.f);
+}
+const Vec2 &Vec2::Left()
+{
+    return Vec2(-1.f, 0.f);
+}
+const Vec2 &Vec2::Zero()
+{
+    return Vec2(0.f, 0.f);
+}
+const Vec2 &Vec2::One()
+{
+    return Vec2(1.f, 1.f);
 }
 Vec2 Vec2::operator+(const Vec2 &_rhs) const
 {
@@ -51,17 +97,23 @@ Vec2 Vec2::operator-(const Vec2 &_rhs) const
 {
     return Vec2(this->x - _rhs.x, this->y - _rhs.y);
 }
-Vec2 Vec2::operator*(const float &_rhs) const // scale product
+Vec2 Vec2::operator*(const float &_rhs) const
 {
     return Vec2(this->x * _rhs, this->y * _rhs);
 }
-float Vec2::operator*(const Vec2 &_rhs) const // hadamard product
+float Vec2::operator*(const Vec2 &_rhs) const
 {
     return Dot(*this, _rhs);
 }
 Vec2 Vec2::operator/(const float &_rhs) const
 {
     return Vec2(this->x / _rhs, this->y / _rhs);
+}
+Vec2 &Vec2::operator=(const Vec2 &_rhs)
+{
+    this->x = _rhs.x;
+    this->y = _rhs.y;
+    return *this;
 }
 Vec2 &Vec2::operator+=(const Vec2 &_rhs)
 {

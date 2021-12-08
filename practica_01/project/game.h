@@ -3,11 +3,10 @@
 #include "gameobject.h"
 #include <vector>
 
-constexpr auto TIME_FIXED_FREQ = (1. / 60.) * 1000.;
-constexpr auto TIME_AVG_SAMPLES = 16u;
-
 class Game
 {
+    friend class Engine;
+
   private:                       // SINGLETON
     Game();                      //
     static Game instance;        //
@@ -16,30 +15,18 @@ class Game
     static Game &Get();          //
 
   private:
-    double countToFX = 0.;
-
-    std::vector<double> avgUP = std::vector<double>(TIME_AVG_SAMPLES, 0);
-    std::vector<double> avgFX = std::vector<double>(TIME_AVG_SAMPLES, 0);
-    double avgBufferUP = 0.;
-    double avgBufferFX = 0.;
-    unsigned int avgIterUP = 0u;
-    unsigned int avgIterFX = 0u;
-
     std::vector<GameObject *> each = std::vector<GameObject *>();
+
+    void Init();
+    void Exit();
+
+    void Start();  // GameObject calls
+    void Update(); //
+    void Fixed();  //
+    void End();    //
 
   public:
     static void Subscribe(GameObject *gameObject);
     static void UnSubscribe(const GameObject *gameObject);
     static const std::vector<GameObject *> *GetGameObjects();
-
-    void Init();
-    void Loop();
-    void Exit();
-
-    void Start();
-    void Update(double dt = 0.);
-    void Fixed(double dt = 0.);
-    void End();
-
-    void PrintFps();
 };

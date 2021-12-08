@@ -1,22 +1,32 @@
-#include "logic.h"
+#include "input.h"
 #include "engine.h"
 #include "glfw3.h"
 #include "render.h"
 #include "vec.h"
 #include <iostream>
 
-Logic Logic::instance;
+Input Input::instance;
 
-Logic::Logic()
+Input::Input()
 {
 }
 
-Logic &Logic::Get()
+Input &Input::Get()
 {
     return instance;
 }
 
-void Logic::Init()
+void Input::SetTitle(char *text)
+{
+    instance.title = text;
+}
+
+const char *Input::GetTitle()
+{
+    return instance.title;
+}
+
+void Input::Init()
 {
     auto wat = glfwInit();
     if (wat == 0)
@@ -28,29 +38,30 @@ void Logic::Init()
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
-void Logic::Loop()
+void Input::Loop()
 {
     glfwPollEvents();
 
     // Update mouse pos
     auto *window = Render::GetWindow();
-    double old_mouse_pos_x, old_mouse_pos_y, mouse_pos_x, mouse_pos_y;
+    double mouse_pos_x, mouse_pos_y;
     auto oldPos = Engine::GetMousePos();
     glfwGetCursorPos(window, &mouse_pos_x, &mouse_pos_y);
-    Engine::SetMousePos(Vec2(mouse_pos_x, mouse_pos_y));
-    Engine::SetMouseDelta(Vec2(mouse_pos_x - oldPos.x, oldPos.y - mouse_pos_y));
+    Engine::SetMousePos(Vec2((float)mouse_pos_x, (float)mouse_pos_y));
+    Engine::SetMouseDelta(Vec2((float)mouse_pos_x - oldPos.x, oldPos.y - (float)mouse_pos_y));
 
     // Window Title
-    char buffer[64];
-    snprintf(buffer, 64, "%s%.0f %s%.0f", "x:", mouse_pos_x, " y:", mouse_pos_y);
-    glfwSetWindowTitle(window, buffer);
+    if (title != nullptr)
+    {
+        glfwSetWindowTitle(window, title);
+    }
 
     // Exit
     if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_ESCAPE))
         glfwSetWindowShouldClose(window, 1);
 }
 
-void Logic::Exit()
+void Input::Exit()
 {
     glfwTerminate();
 }

@@ -9,16 +9,21 @@ struct Vec2
 
     Vec2(const float &x = 0.f, const float &y = 0.f);
     Vec2(Vec2 &_rhs);
+    Vec2(const Vec2 &_rhs);
     Vec2(Vec2 &&_rhs) noexcept;
 
     float Magnitude() const;
     Vec2 Normalized() const;
+    float AngleDeg() const;
+    float AngleRad() const;
 
     Vec2 operator+(const Vec2 &_rhs) const;
     Vec2 operator-(const Vec2 &_rhs) const;
     Vec2 operator*(const float &_rhs) const;
     float operator*(const Vec2 &_rhs) const;
     Vec2 operator/(const float &_rhs) const;
+
+    Vec2 &operator=(const Vec2 &_rhs);
 
     Vec2 &operator+=(const Vec2 &_rhs);
     Vec2 &operator-=(const Vec2 &_rhs);
@@ -33,6 +38,14 @@ struct Vec2
     static Vec2 Hadamard(const Vec2 &a, const Vec2 &b);
     static float Angle(const Vec2 &a, const Vec2 &b);
     static float Distance(const Vec2 &a, const Vec2 &b);
+    static Vec2 RotateAround(const float &angle, const Vec2 &a, const Vec2 &axis = Vec2::Zero());
+
+    static const Vec2 &Up();
+    static const Vec2 &Down();
+    static const Vec2 &Right();
+    static const Vec2 &Left();
+    static const Vec2 &Zero();
+    static const Vec2 &One();
 
     friend std::ostream &operator<<(std::ostream &os, const Vec2 &a)
     {

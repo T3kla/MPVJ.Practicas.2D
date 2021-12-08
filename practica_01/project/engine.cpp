@@ -1,8 +1,6 @@
 #include "engine.h"
-#include "game.h"
-#include "logic.h"
-#include "render.h"
 #include "stasis.h"
+#include <iostream>
 
 Engine Engine::instance;
 
@@ -15,26 +13,40 @@ Engine &Engine::Get()
     return instance;
 }
 
+static double count = 0.;
+
 void Engine::Run()
 {
-    auto &logic = Logic::Get();
+    auto &input = Input::Get();
     auto &game = Game::Get();
     auto &rend = Render::Get();
     auto &time = Stasis::Get();
 
-    logic.Init();
+    time.RefreshTime();
+
+    input.Init();
     rend.Init();
     game.Init();
 
     while (!glfwWindowShouldClose(Render::GetWindow()))
     {
-        time.Update();
-        logic.Loop();
-        game.Loop();
+        time.RefreshTime();
+
+        input.Loop();
+        game.Update();
+
+        count += time.GetDelta();
+        count = min(count, GAME_FREQ * 2);
+        while (count >= GAME_FREQ)
+        {
+            game.Fixed();
+            count -= GAME_FREQ;
+        }
+
         rend.Loop();
     }
 
-    logic.Exit();
+    input.Exit();
     game.Exit();
     rend.Exit();
 }

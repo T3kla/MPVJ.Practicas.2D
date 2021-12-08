@@ -4,6 +4,8 @@
 
 class Render
 {
+    friend class Engine;
+
   private:                           // SINGLETON
     Render();                        //
     static Render instance;          //
@@ -16,14 +18,14 @@ class Render
     int windowHeight = 0;
     GLFWwindow *window = nullptr;
 
+    void Init();
+    void Loop();
+    void Exit();
+
   public:
     static GLFWwindow *GetWindow();
     static void SetWindow(GLFWwindow *window);
 
     static void GetWindowSize(int &width, int &height);
     static void SetWindowSize(const int &width, const int &height);
-
-    void Init();
-    void Loop();
-    void Exit();
 };

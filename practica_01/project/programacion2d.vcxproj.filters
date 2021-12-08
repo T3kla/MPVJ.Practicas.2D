@@ -42,19 +42,22 @@
     <Filter Include="Source Files\figures\rect">
       <UniqueIdentifier>{f851d665-3c1c-41eb-8691-4dda16f1ace1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\engine\loops\1">
+      <UniqueIdentifier>{fc3016a2-730b-45d8-868c-13848fbbf9a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\loops\2">
+      <UniqueIdentifier>{ed155711-04ec-46ea-a010-514276dd82b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\loops\3">
+      <UniqueIdentifier>{18b7040b-ddb1-4967-9433-50ae632ba5ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\figures\oval">
+      <UniqueIdentifier>{bda180f8-9a84-4bb0-a7b9-1d892ba940aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="engine.cpp">
       <Filter>Source Files\engine</Filter>
-    </ClCompile>
-    <ClCompile Include="game.cpp">
-      <Filter>Source Files\engine\loops</Filter>
-    </ClCompile>
-    <ClCompile Include="logic.cpp">
-      <Filter>Source Files\engine\loops</Filter>
-    </ClCompile>
-    <ClCompile Include="render.cpp">
-      <Filter>Source Files\engine\loops</Filter>
     </ClCompile>
     <ClCompile Include="drawer.cpp">
       <Filter>Source Files\figures</Filter>
@@ -74,6 +77,18 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="input.cpp">
+      <Filter>Source Files\engine\loops\1</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>Source Files\engine\loops\2</Filter>
+    </ClCompile>
+    <ClCompile Include="render.cpp">
+      <Filter>Source Files\engine\loops\3</Filter>
+    </ClCompile>
+    <ClCompile Include="oval.cpp">
+      <Filter>Source Files\figures\oval</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="color.h">
@@ -81,15 +96,6 @@
     </ClInclude>
     <ClInclude Include="engine.h">
       <Filter>Source Files\engine</Filter>
-    </ClInclude>
-    <ClInclude Include="game.h">
-      <Filter>Source Files\engine\loops</Filter>
-    </ClInclude>
-    <ClInclude Include="logic.h">
-      <Filter>Source Files\engine\loops</Filter>
-    </ClInclude>
-    <ClInclude Include="render.h">
-      <Filter>Source Files\engine\loops</Filter>
     </ClInclude>
     <ClInclude Include="drawer.h">
       <Filter>Source Files\figures</Filter>
@@ -114,6 +120,21 @@
     </ClInclude>
     <ClInclude Include="gameobject.h">
       <Filter>Source Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="input.h">
+      <Filter>Source Files\engine\loops\1</Filter>
+    </ClInclude>
+    <ClInclude Include="game.h">
+      <Filter>Source Files\engine\loops\2</Filter>
+    </ClInclude>
+    <ClInclude Include="render.h">
+      <Filter>Source Files\engine\loops\3</Filter>
+    </ClInclude>
+    <ClInclude Include="pi.h">
+      <Filter>Source Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="oval.h">
+      <Filter>Source Files\figures\oval</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -3,8 +3,9 @@
 
 Stasis Stasis::instance;
 
-Stasis::Stasis()
+Stasis::Stasis(const double &scale)
 {
+    this->scale = scale;
     RefreshFreq();
     QueryPerformanceCounter(&buffer);
     old = buffer.QuadPart;
@@ -17,49 +18,53 @@ Stasis &Stasis::Get()
 
 void Stasis::RefreshFreq()
 {
-    if (!QueryPerformanceFrequency(&buffer))
+    if (!QueryPerformanceFrequency(&instance.buffer))
         throw "Counter error";
 
-    freq = double(buffer.QuadPart) / 1000.;
+    instance.freq = double(instance.buffer.QuadPart) / 1000.;
 }
 
-void Stasis::Update()
+void Stasis::RefreshTime()
 {
-    QueryPerformanceCounter(&buffer);
-    deltaUnscaled = double(buffer.QuadPart - old) / freq;
-    old = buffer.QuadPart;
-    timeUnscaled += deltaUnscaled;
-    deltaScaled = deltaUnscaled * scale;
-    timeScaled += deltaScaled;
+    QueryPerformanceCounter(&instance.buffer);
+
+    instance.delta = double(instance.buffer.QuadPart - instance.old) / instance.freq;
+    instance.deltaScaled = instance.delta * instance.scale;
+
+    instance.old = instance.buffer.QuadPart;
+
+    instance.time += instance.delta;
+    instance.timeScaled += instance.delta * instance.scale;
+
     RefreshFreq();
 }
 
-double Stasis::GetDeltaUnscaled()
+const double &Stasis::GetTime()
 {
-    return Get().deltaUnscaled;
+    return instance.time;
 }
 
-double Stasis::GetTimeUnscaled()
+const double &Stasis::GetDelta()
 {
-    return Get().timeUnscaled;
+    return instance.delta;
 }
 
-double Stasis::GetDeltaScaled()
+const double &Stasis::GetTimeScaled()
 {
-    return Get().deltaScaled;
+    return instance.timeScaled;
 }
 
-double Stasis::GetTimeScaled()
+const double &Stasis::GetDeltaScaled()
 {
-    return Get().timeScaled;
+    return instance.deltaScaled;
 }
 
-double Stasis::GetScale()
+void Stasis::SetScale(const double &scale)
 {
-    return Get().scale;
+    instance.scale = scale;
 }
 
-void Stasis::SetScale(const double &_scale)
+const double &Stasis::GetScale()
 {
-    Get().scale = _scale;
+    return instance.scale;
 }

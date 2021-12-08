@@ -19,10 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="oval.cpp" />
     <ClCompile Include="engine.cpp" />
     <ClCompile Include="drawer.cpp" />
     <ClCompile Include="game.cpp" />
-    <ClCompile Include="logic.cpp" />
+    <ClCompile Include="input.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="practica_01.cpp" />
@@ -34,11 +35,13 @@
     <ClInclude Include="..\lib\litegfx.h" />
     <ClInclude Include="color.h" />
     <ClInclude Include="drawable.h" />
+    <ClInclude Include="oval.h" />
     <ClInclude Include="engine.h" />
     <ClInclude Include="drawer.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gameobject.h" />
-    <ClInclude Include="logic.h" />
+    <ClInclude Include="input.h" />
+    <ClInclude Include="pi.h" />
     <ClInclude Include="render.h" />
     <ClInclude Include="practica_01.h" />
     <ClInclude Include="rect.h" />

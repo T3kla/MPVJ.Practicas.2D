@@ -1,15 +1,20 @@
 #pragma once
 
+#include "game.h"
+#include "input.h"
+#include "render.h"
 #include "vec.h"
+
+constexpr auto GAME_FREQ = 1000. / 144.;
 
 class Engine
 {
   private:                           // SINGLETONE STUFF
-    Engine();                        //     Singletone constructor
-    static Engine instance;          //     Singletone single instance
+    Engine();                        //
+    static Engine instance;          //
   public:                            //
-    Engine(const Engine &) = delete; //     Singletone copy constructor deletion
-    static Engine &Get();            //     Singletone getter
+    Engine(const Engine &) = delete; //
+    static Engine &Get();            //
 
   private:
     double mouseX = 0.;
