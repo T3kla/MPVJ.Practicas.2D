@@ -1,6 +1,8 @@
 #include "engine.h"
+#include "game.h"
+#include "input.h"
+#include "render.h"
 #include "stasis.h"
-#include <iostream>
 
 Engine Engine::instance;
 

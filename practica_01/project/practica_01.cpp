@@ -1,6 +1,7 @@
 #include "practica_01.h"
 #include "engine.h"
 #include "game.h"
+#include "input.h"
 #include "render.h"
 #include "stasis.h"
 #include "vec.h"
@@ -9,9 +10,18 @@ P01::P01() { Game::Subscribe(this); }
 P01::~P01() { Game::UnSubscribe(this); }
 
 void P01::Start() {
+  // Set Background Dark Grey
+  Render::SetBgColor({0.1f, 0.1f, 0.1f, 1.f});
+
   // Set Title
   Input::SetTitle(title);
 }
+
+// Update runs each tick, gotta use Stasis::GetDelta()
+// Fixed runs at 144fps, gotta use Engine::STEP
+
+// Both can run simultaneusly, demonstrating that the time
+// system remains deterministic
 
 void P01::Update() {
   // int w, h;

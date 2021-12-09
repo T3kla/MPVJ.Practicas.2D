@@ -7,7 +7,7 @@
 
 class P02 : public GameObject {
 private:
-  float defSize = 300.f;
+  float defSize = 400.f;
   stbi_uc *pixels = nullptr;
   ltex_t *texture = nullptr;
 

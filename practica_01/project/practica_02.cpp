@@ -33,10 +33,10 @@ void P02::Start() {
           {defSize, defSize}, {0.25f, 0.f}, {0.5f, 1.f}, BLEND_SOLID));
     }
 
-  light = new Sprite{texture,     {0.f, 0.f},   {1000.f, 1000.f},
+  light = new Sprite{texture,     {0.f, 0.f},   {5000.f, 5000.f},
                      {0.5f, 0.f}, {0.75f, 1.f}, BLEND_MUL};
 
-  torch = new Sprite{texture,      {0.f, 0.f}, {300.f, 300.f},
+  torch = new Sprite{texture,      {0.f, 0.f}, {400.f, 400.f},
                      {0.75f, 0.f}, {1.f, 1.f}, BLEND_ALPHA};
 
   fence.reserve(16);
@@ -52,8 +52,9 @@ void P02::Update() {}
 
 void P02::Fixed() {
   auto mousePos = Engine::GetMousePos();
-  torch->SetPos(mousePos);
-  light->SetPos(mousePos);
+  Vec2 offset(-60.f, -80.f);
+  torch->SetPos(mousePos + offset);
+  light->SetPos(mousePos + offset);
 }
 
 void P02::End() {
@@ -64,12 +65,14 @@ void P02::End() {
   // Texture Deallocation
   ltex_free(texture);
 
-  // Dealocate repeated ones
+  // Sprite Deallocation
   delete torch;
   delete light;
+
   for (size_t i = 0; i < wall.size(); i++)
     delete wall[i];
   wall.clear();
+
   for (size_t i = 0; i < fence.size(); i++)
     delete fence[i];
   fence.clear();

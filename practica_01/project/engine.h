@@ -1,8 +1,5 @@
 #pragma once
 
-#include "game.h"
-#include "input.h"
-#include "render.h"
 #include "vec.h"
 
 constexpr double STEP = 1000. / 144.;
