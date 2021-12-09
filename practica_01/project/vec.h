@@ -2,55 +2,54 @@
 
 #include <iostream>
 
-struct Vec2
-{
-    float x = 0.f;
-    float y = 0.f;
+struct Vec2 {
+  float x = 0.f;
+  float y = 0.f;
 
-    Vec2(const float &x = 0.f, const float &y = 0.f);
-    Vec2(Vec2 &_rhs);
-    Vec2(const Vec2 &_rhs);
-    Vec2(Vec2 &&_rhs) noexcept;
+  Vec2(const float &x = 0.f, const float &y = 0.f);
+  Vec2(Vec2 &_rhs);
+  Vec2(const Vec2 &_rhs);
+  Vec2(Vec2 &&_rhs) noexcept;
 
-    float Magnitude() const;
-    Vec2 Normalized() const;
-    float AngleDeg() const;
-    float AngleRad() const;
+  float Magnitude() const;
+  Vec2 Normalized() const;
+  float AngleDeg() const;
+  float AngleRad() const;
 
-    Vec2 operator+(const Vec2 &_rhs) const;
-    Vec2 operator-(const Vec2 &_rhs) const;
-    Vec2 operator*(const float &_rhs) const;
-    float operator*(const Vec2 &_rhs) const;
-    Vec2 operator/(const float &_rhs) const;
+  Vec2 operator+(const Vec2 &_rhs) const;
+  Vec2 operator-(const Vec2 &_rhs) const;
+  Vec2 operator*(const float &_rhs) const;
+  float operator*(const Vec2 &_rhs) const;
+  Vec2 operator/(const float &_rhs) const;
 
-    Vec2 &operator=(const Vec2 &_rhs);
+  Vec2 &operator=(const Vec2 &_rhs);
 
-    Vec2 &operator+=(const Vec2 &_rhs);
-    Vec2 &operator-=(const Vec2 &_rhs);
-    Vec2 &operator*=(const float &_rhs);
-    Vec2 &operator/=(const float &_rhs);
+  Vec2 &operator+=(const Vec2 &_rhs);
+  Vec2 &operator-=(const Vec2 &_rhs);
+  Vec2 &operator*=(const float &_rhs);
+  Vec2 &operator/=(const float &_rhs);
 
-    bool operator==(const Vec2 &_rhs) const;
-    bool operator!=(const Vec2 &_rhs) const;
+  bool operator==(const Vec2 &_rhs) const;
+  bool operator!=(const Vec2 &_rhs) const;
 
-    static float Determinant(const Vec2 &a, const Vec2 &b);
-    static float Dot(const Vec2 &a, const Vec2 &b);
-    static Vec2 Hadamard(const Vec2 &a, const Vec2 &b);
-    static float Angle(const Vec2 &a, const Vec2 &b);
-    static float Distance(const Vec2 &a, const Vec2 &b);
-    static Vec2 RotateAround(const float &angle, const Vec2 &a, const Vec2 &axis = Vec2::Zero());
+  static float Determinant(const Vec2 &a, const Vec2 &b);
+  static float Dot(const Vec2 &a, const Vec2 &b);
+  static Vec2 Hadamard(const Vec2 &a, const Vec2 &b);
+  static float Angle(const Vec2 &a, const Vec2 &b);
+  static float Distance(const Vec2 &a, const Vec2 &b);
+  static Vec2 RotateAround(const float &angle, const Vec2 &a,
+                           const Vec2 &axis = Vec2::Zero());
 
-    static const Vec2 &Up();
-    static const Vec2 &Down();
-    static const Vec2 &Right();
-    static const Vec2 &Left();
-    static const Vec2 &Zero();
-    static const Vec2 &One();
+  static const Vec2 &Up();
+  static const Vec2 &Down();
+  static const Vec2 &Right();
+  static const Vec2 &Left();
+  static const Vec2 &Zero();
+  static const Vec2 &One();
 
-    friend std::ostream &operator<<(std::ostream &os, const Vec2 &a)
-    {
-        return os << '(' << a.x << ',' << a.y << ')';
-    }
+  friend std::ostream &operator<<(std::ostream &os, const Vec2 &a) {
+    return os << '(' << a.x << ',' << a.y << ')';
+  }
 };
 
 // struct vec3

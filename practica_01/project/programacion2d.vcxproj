@@ -24,6 +24,8 @@
     <ClCompile Include="drawer.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="input.cpp" />
+    <ClCompile Include="practica_02.cpp" />
+    <ClCompile Include="sprite.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="practica_01.cpp" />
@@ -32,7 +34,6 @@
     <ClCompile Include="vec.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\lib\litegfx.h" />
     <ClInclude Include="color.h" />
     <ClInclude Include="drawable.h" />
     <ClInclude Include="oval.h" />
@@ -42,6 +43,8 @@
     <ClInclude Include="gameobject.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="pi.h" />
+    <ClInclude Include="practica_02.h" />
+    <ClInclude Include="sprite.h" />
     <ClInclude Include="render.h" />
     <ClInclude Include="practica_01.h" />
     <ClInclude Include="rect.h" />
@@ -121,6 +124,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>../lib</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

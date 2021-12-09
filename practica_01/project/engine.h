@@ -5,28 +5,27 @@
 #include "render.h"
 #include "vec.h"
 
-constexpr auto GAME_FREQ = 1000. / 144.;
+constexpr double STEP = 1000. / 144.;
 
-class Engine
-{
-  private:                           // SINGLETONE STUFF
-    Engine();                        //
-    static Engine instance;          //
-  public:                            //
-    Engine(const Engine &) = delete; //
-    static Engine &Get();            //
+class Engine {
+private:                           // SINGLETONE STUFF
+  Engine();                        //
+  static Engine instance;          //
+public:                            //
+  Engine(const Engine &) = delete; //
+  static Engine &Get();            //
 
-  private:
-    double mouseX = 0.;
-    double mouseY = 0.;
-    double mouseDeltaX = 0.;
-    double mouseDeltaY = 0.;
+private:
+  double mouseX = 0.;
+  double mouseY = 0.;
+  double mouseDeltaX = 0.;
+  double mouseDeltaY = 0.;
 
-  public:
-    static void Run();
+public:
+  static void Run();
 
-    static Vec2 GetMousePos();
-    static void SetMousePos(const Vec2 &pos);
-    static Vec2 GetMouseDelta();
-    static void SetMouseDelta(const Vec2 &dt);
+  static Vec2 GetMousePos();
+  static void SetMousePos(const Vec2 &pos);
+  static Vec2 GetMouseDelta();
+  static void SetMouseDelta(const Vec2 &dt);
 };

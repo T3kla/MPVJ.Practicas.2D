@@ -4,21 +4,22 @@
 #include "drawable.h"
 #include "vec.h"
 
-class Oval : public Drawable
-{
-  private:
-    float x = 0.f;
-    float y = 0.f;
-    float width = 0.f;
-    float heigth = 0.f;
-    Color color = Color(1.f, 1.f, 1.f, 1.f);
+class Oval : public Drawable {
+private:
+  Vec2 pos = {0.f, 0.f};
+  Vec2 size = {0.f, 0.f};
+  Color color = {1.f, 1.f, 1.f, 1.f};
 
-  public:
-    Oval(float x, float y, float w, float h, Color color);
-    ~Oval();
+public:
+  Oval(const Vec2 &pos = {0.f, 0.f}, const Vec2 &size = {0.f, 0.f},
+       const Color &color = {1.f, 1.f, 1.f, 1.f});
+  ~Oval();
 
-    Vec2 GetPos();
-    void SetPos(const Vec2 &pos);
+  Vec2 GetPos();
+  void SetPos(const Vec2 &pos);
 
-    virtual void Draw() const override;
+  Vec2 GetSize();
+  void SetSize(const Vec2 &size);
+
+  virtual void Draw() const override;
 };
