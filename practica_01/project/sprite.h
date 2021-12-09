@@ -19,7 +19,7 @@ public:
   Sprite(void *texture = nullptr, const Vec2 &pos = {0.f, 0.f},
          const Vec2 &size = {64.f, 64.f}, const Vec2 &uv0 = {0.f, 0.f},
          const Vec2 &uv1 = {1.f, 1.f}, const lblend_t &blend = BLEND_ADD,
-         const Vec2 &pivot = {0.f, 0.f}, const float &angle = 0.f);
+         const Vec2 &pivot = {0.5f, 0.5f}, const float &angle = 0.f);
   ~Sprite();
 
   Vec2 GetPos();

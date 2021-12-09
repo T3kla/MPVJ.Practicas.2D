@@ -11,9 +11,10 @@ private:
   stbi_uc *pixels = nullptr;
   ltex_t *texture = nullptr;
 
-  Sprite *torch = nullptr;
-  Sprite *light = nullptr;
   std::vector<Sprite *> wall;
+  Sprite *torch = nullptr;
+  Sprite *fire = nullptr;
+  Sprite *light = nullptr;
   std::vector<Sprite *> fence;
 
 public:

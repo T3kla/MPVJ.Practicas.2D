@@ -40,7 +40,6 @@ void Sprite::Draw() const {
   if (!texture)
     return;
   lgfx_setblend(blend);
-  ltex_drawrotsized((ltex_t *)texture, pos.x - size.x / 2.f,
-                    pos.y - size.y / 2.f, angle, pivot.x, pivot.y, size.x,
-                    size.y, uv0.x, uv0.y, uv1.x, uv1.y);
+  ltex_drawrotsized((ltex_t *)texture, pos.x, pos.y, angle, pivot.x, pivot.y,
+                    size.x, size.y, uv0.x, uv0.y, uv1.x, uv1.y);
 }

@@ -9,8 +9,8 @@
 #include "practica_02.h"
 
 int main() {
-  auto practica_01 = P01();
-  // auto practica_02 = P02();
+  // auto practica_01 = P01();
+  auto practica_02 = P02();
 
   Engine::Run();
 
