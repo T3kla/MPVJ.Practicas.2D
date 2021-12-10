@@ -9,8 +9,6 @@ Game::Game() {}
 Game &Game::Get() { return instance; }
 
 void Game::Subscribe(GameObject *gameObject) {
-  auto &instance = Game::Get();
-
   // Duplication guard
   auto it = std::find(instance.each.begin(), instance.each.end(), gameObject);
   if (it != instance.each.end())
@@ -20,8 +18,6 @@ void Game::Subscribe(GameObject *gameObject) {
 }
 
 void Game::UnSubscribe(const GameObject *gameObject) {
-  auto &instance = Game::Get();
-
   // Not found guard
   auto it = std::find(instance.each.begin(), instance.each.end(), gameObject);
   if (it == instance.each.end())
