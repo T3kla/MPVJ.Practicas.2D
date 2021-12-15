@@ -57,10 +57,11 @@ float Vec2::Distance(const Vec2 &a, const Vec2 &b) {
   return (b - a).Magnitude();
 }
 
-Vec2 Vec2::RotateAround(const float &angle, const Vec2 &a, const Vec2 &axis) {
-  float rad = (float)ToRad(-angle);
-  float x = cos(rad) * (a.x - axis.x) - sin(rad) * (a.y - axis.y) + axis.x;
-  float y = sin(rad) * (a.x - axis.x) + cos(rad) * (a.y - axis.y) + axis.y;
+Vec2 Vec2::RotateAround(const float &deg, const Vec2 &p, const Vec2 &axis) {
+  float rad = (float)ToRad(-deg);
+  float c = cos(rad), s = sin(rad);
+  float x = c * (p.x - axis.x) - s * (p.y - axis.y) + axis.x;
+  float y = s * (p.x - axis.x) + c * (p.y - axis.y) + axis.y;
   return Vec2(x, y);
 }
 
