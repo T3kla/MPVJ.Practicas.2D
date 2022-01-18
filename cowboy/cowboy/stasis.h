@@ -1,7 +1,5 @@
 #pragma once
 
-#include <windows.h>
-
 class Stasis {
 private:                            // SINGLETONE STUFF
   Stasis(const double &scale = 1.); //
@@ -11,7 +9,6 @@ public:                             //
   static Stasis &Get();             //
 
 private:
-  LARGE_INTEGER buffer = LARGE_INTEGER();
   long long old = 0ll;
 
   double freq = 0.;

@@ -1,9 +1,13 @@
 #include "engine_input.h"
+
 #include "engine_render.h"
-#include "entity.h"
+
 #include "stasis.h"
-#include "transform.h"
 #include "vec.h"
+
+#include "entity.h"
+#include "transform.h"
+
 #include <iostream>
 
 EngineInput EngineInput::instance;

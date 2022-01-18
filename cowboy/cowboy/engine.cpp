@@ -1,7 +1,9 @@
 #include "engine.h"
+
 #include "engine_game.h"
 #include "engine_input.h"
 #include "engine_render.h"
+
 #include "stasis.h"
 
 static double fxCount = 0.;
@@ -44,7 +46,7 @@ void Engine::Run() {
 
     dt = Stasis::GetDelta();
     fxCount += dt;
-    fxCount = min(fxCount, STP * 2.);
+    fxCount = std::min(fxCount, STP * 2.);
     while (fxCount >= STP) {
       FreqRefresh(nowFx, oldFx, freqFx);
       EngineInput::Fixed();

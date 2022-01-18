@@ -1,5 +1,8 @@
 #include "stasis.h"
-#include <windows.h>
+
+#include <Windows.h>
+
+static LARGE_INTEGER buffer = LARGE_INTEGER();
 
 Stasis Stasis::instance;
 
@@ -13,20 +16,19 @@ Stasis::Stasis(const double &scale) {
 Stasis &Stasis::Get() { return instance; }
 
 void Stasis::RefreshFreq() {
-  if (!QueryPerformanceFrequency(&instance.buffer))
+  if (!QueryPerformanceFrequency(&buffer))
     throw "Counter error";
 
-  instance.freq = double(instance.buffer.QuadPart) / 1000.;
+  instance.freq = double(buffer.QuadPart) / 1000.;
 }
 
 void Stasis::RefreshTime() {
-  QueryPerformanceCounter(&instance.buffer);
+  QueryPerformanceCounter(&buffer);
 
-  instance.delta =
-      double(instance.buffer.QuadPart - instance.old) / instance.freq;
+  instance.delta = double(buffer.QuadPart - instance.old) / instance.freq;
   instance.deltaScaled = instance.delta * instance.scale;
 
-  instance.old = instance.buffer.QuadPart;
+  instance.old = buffer.QuadPart;
 
   instance.time += instance.delta;
   instance.timeScaled += instance.delta * instance.scale;

@@ -1,7 +1,9 @@
 #include "engine_render.h"
+
 #include "camera.h"
 #include "engine.h"
 #include "entity.h"
+#include "font_loader.h"
 #include "gameobject.h"
 #include "litegfx.h"
 #include "oval_renderer.h"
@@ -38,7 +40,10 @@ void EngineRender::Awake() {
   lgfx_setup2d(instance.windowWidth, instance.windowHeight);
 }
 
-void EngineRender::Start() { SpriteLoader::LoadSprites(); }
+void EngineRender::Start() {
+  SpriteLoader::LoadSprites();
+  FontLoader::LoadFonts();
+}
 
 void EngineRender::Update() {
   // Update title
