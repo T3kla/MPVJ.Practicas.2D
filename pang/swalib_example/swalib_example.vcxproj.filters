@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\.lib">
+      <UniqueIdentifier>{2ce1319c-fe67-452c-a058-32590e346acb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine">
+      <UniqueIdentifier>{bc39d910-6912-432d-84b3-428d7608284a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\interfaces">
+      <UniqueIdentifier>{c4bb1df6-0717-491e-8d26-253274cadbb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\.lib\time">
+      <UniqueIdentifier>{c746f6f5-8892-4c8d-b1a5-9328c14971e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\.lib\math">
+      <UniqueIdentifier>{732a7218-be49-426c-949c-6367749133ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\.lib\math\vec">
+      <UniqueIdentifier>{a7a90b53-7c5c-42d6-b1bf-d1b85d92436e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\.lib\math\pi">
+      <UniqueIdentifier>{1211317a-6f52-4335-aeb6-a0b7e0eb66d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\scenes">
+      <UniqueIdentifier>{ce07d6a1-6db5-438d-b28b-c7b716a6708f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rendering">
+      <UniqueIdentifier>{feeb1697-bd0e-4ebc-958a-6406f1d92521}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ecs">
+      <UniqueIdentifier>{4f1fb031-b294-4128-b78d-bdf508f801ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ecs\components">
+      <UniqueIdentifier>{14ff15bd-b737-4cac-8e54-b4b3ff30eb7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ecs\systems">
+      <UniqueIdentifier>{80fa2faa-37fa-4348-a592-0fdbf7f407a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ecs\entity">
+      <UniqueIdentifier>{3f75cbb0-3622-4d42-955b-79273a949237}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="core.cpp">
+      <Filter>Source Files\.lib</Filter>
+    </ClCompile>
+    <ClCompile Include="font.cpp">
+      <Filter>Source Files\.lib</Filter>
+    </ClCompile>
+    <ClCompile Include="lodepng.cpp">
+      <Filter>Source Files\.lib</Filter>
+    </ClCompile>
+    <ClCompile Include="sys_win.cpp">
+      <Filter>Source Files\.lib</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="stasis.cpp">
+      <Filter>Source Files\.lib\time</Filter>
+    </ClCompile>
+    <ClCompile Include="engine.cpp">
+      <Filter>Source Files\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="vec.cpp">
+      <Filter>Source Files\.lib\math\vec</Filter>
+    </ClCompile>
+    <ClCompile Include="scene_01.cpp">
+      <Filter>Source Files\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="pi.cpp">
+      <Filter>Source Files\.lib\math\pi</Filter>
+    </ClCompile>
+    <ClCompile Include="vector2d.cpp">
+      <Filter>Source Files\.lib</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_render.cpp">
+      <Filter>Source Files\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_game.cpp">
+      <Filter>Source Files\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_input.cpp">
+      <Filter>Source Files\engine</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files\.lib</Filter>
+    </ClCompile>
+    <ClCompile Include="entity.cpp">
+      <Filter>Source Files\ecs\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="gameobject.h">
+      <Filter>Source Files\ecs\components</Filter>
+    </ClCompile>
+    <ClCompile Include="sys_physics.cpp">
+      <Filter>Source Files\ecs\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="sys_player.cpp">
+      <Filter>Source Files\ecs\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="sys_balls.cpp">
+      <Filter>Source Files\ecs\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="sys_hook.cpp">
+      <Filter>Source Files\ecs\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="sprite_loader.cpp">
+      <Filter>Source Files\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="sys_explosions.cpp">
+      <Filter>Source Files\ecs\systems</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="core.h">
+      <Filter>Source Files\.lib</Filter>
+    </ClInclude>
+    <ClInclude Include="font.h">
+      <Filter>Source Files\.lib</Filter>
+    </ClInclude>
+    <ClInclude Include="lodepng.h">
+      <Filter>Source Files\.lib</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Source Files\.lib</Filter>
+    </ClInclude>
+    <ClInclude Include="sys.h">
+      <Filter>Source Files\.lib</Filter>
+    </ClInclude>
+    <ClInclude Include="stasis.h">
+      <Filter>Source Files\.lib\time</Filter>
+    </ClInclude>
+    <ClInclude Include="engine.h">
+      <Filter>Source Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="behaviour.h">
+      <Filter>Source Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="vec.h">
+      <Filter>Source Files\.lib\math\vec</Filter>
+    </ClInclude>
+    <ClInclude Include="scene_01.h">
+      <Filter>Source Files\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="pi.h">
+      <Filter>Source Files\.lib\math\pi</Filter>
+    </ClInclude>
+    <ClInclude Include="vector2d.h">
+      <Filter>Source Files\.lib</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_render.h">
+      <Filter>Source Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_game.h">
+      <Filter>Source Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_input.h">
+      <Filter>Source Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="entity.h">
+      <Filter>Source Files\ecs\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="transform.h">
+      <Filter>Source Files\ecs\components</Filter>
+    </ClInclude>
+    <ClInclude Include="sprite_renderer.h">
+      <Filter>Source Files\ecs\components</Filter>
+    </ClInclude>
+    <ClInclude Include="circle_collider.h">
+      <Filter>Source Files\ecs\components</Filter>
+    </ClInclude>
+    <ClInclude Include="rigidbody.h">
+      <Filter>Source Files\ecs\components</Filter>
+    </ClInclude>
+    <ClInclude Include="sys_physics.h">
+      <Filter>Source Files\ecs\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="sys_player.h">
+      <Filter>Source Files\ecs\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="sys_balls.h">
+      <Filter>Source Files\ecs\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="sys_hook.h">
+      <Filter>Source Files\ecs\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="sprite_loader.h">
+      <Filter>Source Files\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="sprite.h">
+      <Filter>Source Files\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="sprite_animation.h">
+      <Filter>Source Files\ecs\components</Filter>
+    </ClInclude>
+    <ClInclude Include="ball.h">
+      <Filter>Source Files\ecs\components</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>Source Files\ecs\components</Filter>
+    </ClInclude>
+    <ClInclude Include="inputs.h">
+      <Filter>Source Files\.lib</Filter>
+    </ClInclude>
+    <ClInclude Include="hook.h">
+      <Filter>Source Files\ecs\components</Filter>
+    </ClInclude>
+    <ClInclude Include="square_collider.h">
+      <Filter>Source Files\ecs\components</Filter>
+    </ClInclude>
+    <ClInclude Include="sys_explosions.h">
+      <Filter>Source Files\ecs\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="explosion.h">
+      <Filter>Source Files\ecs\components</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
