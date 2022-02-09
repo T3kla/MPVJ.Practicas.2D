@@ -4,8 +4,8 @@
 
 #include "ball.h"
 #include "circle_collider.h"
-#include "engine.h"
-#include "engine_game.h"
+#include "game.h"
+#include "logic.h"
 #include "entity.h"
 #include "gameobject.h"
 #include "hook.h"
@@ -25,9 +25,9 @@ Entity *GetHook();
 bool IsColliding(Vec2 circlePos, float circleRad, Vec2 sqrPos, Vec2 sqrSize);
 float Clamp(float value, float min, float max);
 
-SysHook::SysHook() { EngineGame::Subscribe(this); }
+SysHook::SysHook() { Logic::Subscribe(this); }
 
-SysHook::~SysHook() { EngineGame::UnSubscribe(this); }
+SysHook::~SysHook() { Logic::UnSubscribe(this); }
 
 void SysHook::Awake() {}
 

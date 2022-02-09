@@ -75,6 +75,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -85,6 +86,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -98,6 +100,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -112,6 +115,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -123,54 +127,44 @@
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="gameobject.h" />
     <ClCompile Include="scene_01.cpp" />
-    <ClCompile Include="core.cpp" />
-    <ClCompile Include="engine.cpp" />
-    <ClCompile Include="engine_game.cpp" />
-    <ClCompile Include="engine_input.cpp" />
+    <ClCompile Include="game.cpp" />
+    <ClCompile Include="logic.cpp" />
+    <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="font.cpp" />
-    <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="pi.cpp" />
-    <ClCompile Include="engine_render.cpp" />
+    <ClCompile Include="render.cpp" />
     <ClCompile Include="sprite_loader.cpp" />
     <ClCompile Include="stasis.cpp" />
-    <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="sys_balls.cpp" />
     <ClCompile Include="sys_explosions.cpp" />
     <ClCompile Include="sys_hook.cpp" />
     <ClCompile Include="sys_physics.cpp" />
     <ClCompile Include="sys_player.cpp" />
-    <ClCompile Include="sys_win.cpp" />
     <ClCompile Include="vec.cpp" />
-    <ClCompile Include="vector2d.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ball.h" />
+    <ClInclude Include="color.h" />
     <ClInclude Include="explosion.h" />
     <ClInclude Include="hook.h" />
-    <ClInclude Include="inputs.h" />
+    <ClInclude Include="keycode.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="sprite_animation.h" />
     <ClInclude Include="circle_collider.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="scene_01.h" />
-    <ClInclude Include="core.h" />
-    <ClInclude Include="engine.h" />
-    <ClInclude Include="font.h" />
-    <ClInclude Include="engine_game.h" />
+    <ClInclude Include="game.h" />
+    <ClInclude Include="logic.h" />
     <ClInclude Include="behaviour.h" />
-    <ClInclude Include="engine_input.h" />
-    <ClInclude Include="lodepng.h" />
+    <ClInclude Include="input.h" />
     <ClInclude Include="pi.h" />
-    <ClInclude Include="engine_render.h" />
+    <ClInclude Include="render.h" />
     <ClInclude Include="rigidbody.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="sprite_loader.h" />
     <ClInclude Include="sprite_renderer.h" />
     <ClInclude Include="square_collider.h" />
     <ClInclude Include="stasis.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="sys.h" />
     <ClInclude Include="sys_balls.h" />
     <ClInclude Include="sys_explosions.h" />
     <ClInclude Include="sys_hook.h" />
@@ -178,7 +172,6 @@
     <ClInclude Include="sys_player.h" />
     <ClInclude Include="transform.h" />
     <ClInclude Include="vec.h" />
-    <ClInclude Include="vector2d.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

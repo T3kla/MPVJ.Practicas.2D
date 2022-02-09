@@ -4,8 +4,8 @@
 
 #include "ball.h"
 #include "circle_collider.h"
-#include "engine.h"
-#include "engine_game.h"
+#include "game.h"
+#include "logic.h"
 #include "entity.h"
 #include "gameobject.h"
 #include "inputs.h"
@@ -93,10 +93,10 @@ SysPlayer::SysPlayer() {
   Scene_01::GetRegistry().push_back(&player);
 
   // Sub
-  EngineGame::Subscribe(this);
+  Logic::Subscribe(this);
 }
 
-SysPlayer::~SysPlayer() { EngineGame::UnSubscribe(this); }
+SysPlayer::~SysPlayer() { Logic::UnSubscribe(this); }
 
 void SysPlayer::Awake() {}
 

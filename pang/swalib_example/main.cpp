@@ -1,12 +1,16 @@
-#include "engine.h"
+#define LITE_GFX_IMPLEMENTATION
+#define STB_IMAGE_IMPLEMENTATION
+
+#include "litegfx.h"
+#include "stb_image.h"
+
+#include "game.h"
 #include "scene_01.h"
-#include <iostream>
 
-int Main(void) {
+int Main(void)
+{
+    Scene_01::Load();
+    Game::Run();
 
-  Scene_01::Load();
-
-  Engine::Run();
-
-  return 0;
+    return 0;
 }

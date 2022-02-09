@@ -1,44 +1,67 @@
 #include "stasis.h"
 #include <windows.h>
 
-Stasis Stasis::instance;
+Stasis Stasis::Instance;
 
-Stasis::Stasis(const double &scale) {
-  this->scale = scale;
-  RefreshFreq();
-  QueryPerformanceCounter(&buffer);
-  old = buffer.QuadPart;
+Stasis::Stasis(const double &scale)
+{
+    this->scale = scale;
+    RefreshFreq();
+    QueryPerformanceCounter(&buffer);
+    old = buffer.QuadPart;
 }
 
-Stasis &Stasis::Get() { return instance; }
-
-void Stasis::RefreshFreq() {
-  if (!QueryPerformanceFrequency(&instance.buffer))
-    throw "Counter error";
-
-  instance.freq = double(instance.buffer.QuadPart) / 1000.;
+Stasis &Stasis::Get()
+{
+    return Instance;
 }
 
-void Stasis::RefreshTime() {
-  QueryPerformanceCounter(&instance.buffer);
+void Stasis::RefreshFreq()
+{
+    if (!QueryPerformanceFrequency(&Instance.buffer))
+        throw "Counter error";
 
-  instance.delta =
-      double(instance.buffer.QuadPart - instance.old) / instance.freq;
-  instance.deltaScaled = instance.delta * instance.scale;
-
-  instance.old = instance.buffer.QuadPart;
-
-  instance.time += instance.delta;
-  instance.timeScaled += instance.delta * instance.scale;
-
-  RefreshFreq();
+    Instance.freq = double(Instance.buffer.QuadPart) / 1000.;
 }
 
-const double &Stasis::GetTime() { return instance.time; }
-const double &Stasis::GetDelta() { return instance.delta; }
+void Stasis::RefreshTime()
+{
+    QueryPerformanceCounter(&Instance.buffer);
 
-const double &Stasis::GetTimeScaled() { return instance.timeScaled; }
-const double &Stasis::GetDeltaScaled() { return instance.deltaScaled; }
+    Instance.delta = double(Instance.buffer.QuadPart - Instance.old) / Instance.freq;
+    Instance.deltaScaled = Instance.delta * Instance.scale;
 
-void Stasis::SetScale(const double &scale) { instance.scale = scale; }
-const double &Stasis::GetScale() { return instance.scale; }
+    Instance.old = Instance.buffer.QuadPart;
+
+    Instance.time += Instance.delta;
+    Instance.timeScaled += Instance.delta * Instance.scale;
+
+    RefreshFreq();
+}
+
+const double &Stasis::GetTime()
+{
+    return Instance.time;
+}
+const double &Stasis::GetDelta()
+{
+    return Instance.delta;
+}
+
+const double &Stasis::GetTimeScaled()
+{
+    return Instance.timeScaled;
+}
+const double &Stasis::GetDeltaScaled()
+{
+    return Instance.deltaScaled;
+}
+
+void Stasis::SetScale(const double &scale)
+{
+    Instance.scale = scale;
+}
+const double &Stasis::GetScale()
+{
+    return Instance.scale;
+}

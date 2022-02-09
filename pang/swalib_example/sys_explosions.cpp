@@ -2,8 +2,8 @@
 
 #include "sys.h"
 
-#include "engine.h"
-#include "engine_game.h"
+#include "game.h"
+#include "logic.h"
 #include "inputs.h"
 #include "scene_01.h"
 #include "sprite_loader.h"
@@ -26,9 +26,9 @@ Entity *GetExplosion();
 float ReboundPerSize(char size);
 char Smaller(char size);
 
-SysExplosions::SysExplosions() { EngineGame::Subscribe(this); }
+SysExplosions::SysExplosions() { Logic::Subscribe(this); }
 
-SysExplosions::~SysExplosions() { EngineGame::UnSubscribe(this); }
+SysExplosions::~SysExplosions() { Logic::UnSubscribe(this); }
 
 void SysExplosions::Awake() {}
 

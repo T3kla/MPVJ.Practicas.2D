@@ -1,7 +1,7 @@
 #include "sys_physics.h"
 
-#include "engine.h"
-#include "engine_game.h"
+#include "game.h"
+#include "logic.h"
 #include "scene_01.h"
 
 #include "gameobject.h"
@@ -30,6 +30,6 @@ void SysPhysics::Fixed() {
 
 void SysPhysics::Quit() {}
 
-SysPhysics::SysPhysics() { EngineGame::Subscribe(this); }
+SysPhysics::SysPhysics() { Logic::Subscribe(this); }
 
-SysPhysics::~SysPhysics() { EngineGame::UnSubscribe(this); }
+SysPhysics::~SysPhysics() { Logic::UnSubscribe(this); }
