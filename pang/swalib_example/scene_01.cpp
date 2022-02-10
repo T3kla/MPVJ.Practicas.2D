@@ -1,19 +1,16 @@
 #include "scene_01.h"
 
+#include "entity.h"
 #include "logic.h"
 #include "sys_balls.h"
 #include "sys_explosions.h"
 #include "sys_hook.h"
 #include "sys_physics.h"
 #include "sys_player.h"
-
 #include "vec.h"
 
-#include "entity.h"
-
-std::vector<Entity *> Scene_01::reg;
-
 Scene_01 Scene_01::Instance;
+
 Scene_01::Scene_01()
 {
 }

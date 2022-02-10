@@ -1,57 +1,25 @@
 #pragma once
 
-#include <unordered_map>
+#include <entt/entt.hpp>
 
-class Entity {
-private:
-  std::unordered_map<const char *, void *> components;
+class Entity
+{
+  private:
+    entt::entity entityID = {};
+    const entt::registry &entityReg;
 
-  template <class T> const char *GetCmpID() const;
+  public:
+    Entity() = delete;
+    Entity(const entt::entity &id, const entt::registry &reg);
+    ~Entity();
 
-public:
-  Entity();
-  ~Entity();
+    entt::entity GetID();
+    const entt::registry &GetReg();
 
-  template <class T> T *GetComponent() const;
-  template <class T> void AddComponent(const T *component);
-  template <class T> void RemoveComponent();
-
-  void RemoveAllComponents();
+    template <class T> T &&GetComponent();
 };
 
-template <class T> inline const char *Entity::GetCmpID() const {
-  return typeid(T).name();
-};
-
-template <class T> inline T *Entity::GetComponent() const {
-  auto id = GetCmpID<T>();
-  auto it = components.find(id);
-
-  if (it == components.end())
-    return nullptr;
-
-  return (T *)it->second;
-}
-
-template <class T> inline void Entity::AddComponent(const T *component) {
-  auto id = GetCmpID<T>();
-  auto it = components.find(id);
-
-  if (it != components.end())
-    return;
-
-  void *newCmp = new T;
-  memcpy(newCmp, component, sizeof(T));
-  components.insert({id, newCmp});
-}
-
-template <class T> inline void Entity::RemoveComponent() {
-  auto id = GetCmpID<T>();
-  auto it = components.find(id);
-
-  if (it == components.end())
-    return;
-
-  delete it->second;
-  components.erase(it);
+template <class T> inline T &&Entity::GetComponent()
+{
+    return T && (entityReg->get<T>);
 }

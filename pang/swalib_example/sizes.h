@@ -36,6 +36,16 @@ class Size
         return value != a.value;
     }
 
+    bool operator==(Size::Value a) const
+    {
+        return value == a;
+    }
+
+    bool operator!=(Size::Value a) const
+    {
+        return value != a;
+    }
+
     static Size OneSmaller(Size Value)
     {
         switch (Value)

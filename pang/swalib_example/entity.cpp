@@ -1,11 +1,19 @@
 #include "entity.h"
 
-Entity::Entity() {}
+Entity::Entity(const entt::entity &id, const entt::registry &reg) : entityID(id), entityReg(reg)
+{
+}
 
-Entity::~Entity() { RemoveAllComponents(); }
+Entity::~Entity()
+{
+}
 
-void Entity::RemoveAllComponents() {
-  for (auto &cmp : components)
-    delete cmp.second;
-  components.clear();
+entt::entity Entity::GetID()
+{
+    return entityID;
+}
+
+const entt::registry &Entity::GetReg()
+{
+    return entityReg;
 }

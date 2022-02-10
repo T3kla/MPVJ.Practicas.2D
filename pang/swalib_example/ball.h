@@ -7,5 +7,5 @@ struct Ball
     bool enable = true;
 
     float rebound = 100.f;
-    Size::Size size = Size::S;
+    Size size = Size::S;
 };

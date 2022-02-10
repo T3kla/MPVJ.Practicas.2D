@@ -10,6 +10,7 @@
 #include "render.h"
 #include "rigidbody.h"
 #include "scene_01.h"
+#include "sizes.h"
 #include "sprite_animation.h"
 #include "sprite_loader.h"
 #include "sprite_renderer.h"
@@ -17,10 +18,9 @@
 #include "sys_hook.h"
 #include "transform.h"
 
-#include "sizes.h"
+#include <entt/entt.hpp>
 
-Entity *Instantiate(const Vec2 &pos, bool right, char size);
-Entity *GetBall();
+Entity *TryPoolling();
 float ReboundPerSize(char size);
 
 SysBalls::SysBalls()
@@ -96,30 +96,22 @@ void SysBalls::InstantiateSmaller(const Vec2 &pos, bool right, Size size)
     Instantiate(pos, right, next);
 }
 
-Entity *Instantiate(const Vec2 &pos, bool right, Size size)
+void Instantiate(const Vec2 &pos, bool right, Size size)
 {
-    auto *ball = GetBall();
+    auto &reg = Game::GetRegistry();
 
-    auto *tf = ball->GetComponent<Transform>();
-    auto *go = ball->GetComponent<GameObject>();
-    auto *rb = ball->GetComponent<RigidBody>();
-    auto *bl = ball->GetComponent<Ball>();
-    auto *cl = ball->GetComponent<CircleCollider>();
-    auto *sr = ball->GetComponent<SpriteRenderer>();
+    entt::entity id;
 
-    tf->position = pos;
+    if (!TryPoolling(id))
+        id = reg.create();
 
-    go->isActive = true;
-
-    rb->linearDrag = 0.0f;
-    rb->velocity = {175.f * (right ? 1.f : -1.f), 200.f};
-
-    bl->size = size;
-
-    sr->offsetPosition = {0.f, 0.f};
-    sr->offsetRotation = 0.f;
-    sr->pivot = {0.5f, 0.5f};
-    sr->layer = 1;
+    reg.get_or_emplace<GameObject>(id, true);
+    reg.get_or_emplace<Transform>(id, pos, Vec2::One(), 0.f);
+    reg.get_or_emplace<RigidBody>(id, true, Vec2(175.f * (right ? 1.f : -1.f), 200.f), 0.0f);
+    reg.get_or_emplace<Ball>(id, true, Vec2::Zero(), size);
+    reg.get_or_emplace<CircleCollider>(id, true, 100.f);
+    reg.get_or_emplace<SpriteRenderer>(id, true, &SpriteLoader::sprBalls[0], Vec2::Zero(), 0.f, Vec2::One() * 100.f,
+                                       Vec2::One() * 0.5f, 1, BLEND_ALPHA);
 
     if (size == Size::L)
     {
@@ -149,39 +141,20 @@ Entity *Instantiate(const Vec2 &pos, bool right, Size size)
     return ball;
 }
 
-Entity *GetBall()
+bool TryPoolling(entt::entity &id)
 {
-    auto &reg = Scene_01::GetRegistry();
+    auto &reg = Game::GetRegistry();
+    auto balls = reg.view<GameObject, Transform, Ball>();
 
     // Pooling
-    for (auto &i : reg)
-    {
-        auto *gaob = i->GetComponent<GameObject>();
-        auto *ball = i->GetComponent<Ball>();
+    for (auto [entity, go, tf, bl] : balls.each())
+        if (!go.isActive && bl.enable)
+        {
+            id = entity;
+            return true;
+        }
 
-        if (gaob && ball && !gaob->isActive)
-            return i;
-    }
-
-    // Instantiation
-    auto ball = new Entity();
-
-    auto tf = Transform();
-    auto go = GameObject();
-    auto rb = RigidBody();
-    auto bl = Ball();
-    auto sr = SpriteRenderer();
-    auto cl = CircleCollider();
-
-    ball->AddComponent<Transform>(&tf);
-    ball->AddComponent<GameObject>(&go);
-    ball->AddComponent<RigidBody>(&rb);
-    ball->AddComponent<Ball>(&bl);
-    ball->AddComponent<SpriteRenderer>(&sr);
-    ball->AddComponent<CircleCollider>(&cl);
-
-    reg.push_back(ball);
-    return ball;
+    return false;
 }
 
 float ReboundPerSize(char size)

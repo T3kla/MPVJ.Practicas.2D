@@ -3,22 +3,20 @@
 #include "behaviour.h"
 
 struct Vec2;
+class Size;
 
-class SysBalls : public Behaviour {
-  virtual void Awake() override;
-  virtual void Start() override;
-  virtual void Update() override;
-  virtual void Fixed() override;
-  virtual void Quit() override;
+class SysBalls : public Behaviour
+{
+  public:
+    SysBalls();
+    virtual ~SysBalls() override;
 
-public:
-  SysBalls();
-  ~SysBalls();
+    virtual void Awake() override;
+    virtual void Start() override;
+    virtual void Update() override;
+    virtual void Fixed() override;
+    virtual void Quit() override;
 
-  static void SysBalls::InstantiateSmaller(const Vec2 &pos, bool right,
-                                           char size);
-  static void SysBalls::InstantiateL(const Vec2 &pos, bool right);
-  static void SysBalls::InstantiateB(const Vec2 &pos, bool right);
-  static void SysBalls::InstantiateM(const Vec2 &pos, bool right);
-  static void SysBalls::InstantiateS(const Vec2 &pos, bool right);
+    static void SysBalls::Instantiate(const Vec2 &pos, bool right, Size size);
+    static void SysBalls::InstantiateSmaller(const Vec2 &pos, bool right, Size size);
 };
