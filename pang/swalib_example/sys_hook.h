@@ -2,19 +2,19 @@
 
 #include "behaviour.h"
 
-class Entity;
 struct Vec2;
 
-class SysHook : public Behaviour {
-  virtual void Awake() override;
-  virtual void Start() override;
-  virtual void Update() override;
-  virtual void Fixed() override;
-  virtual void Quit() override;
+class SysHook : public Behaviour
+{
+  public:
+    SysHook();
+    virtual ~SysHook() override;
 
-public:
-  SysHook();
-  ~SysHook();
+    virtual void Awake() override;
+    virtual void Start() override;
+    virtual void Update() override;
+    virtual void Fixed() override;
+    virtual void Quit() override;
 
-  static void SysHook::InstantiateHook(const Vec2 &pos);
+    static void SysHook::Instantiate(const Vec2 &pos);
 };
