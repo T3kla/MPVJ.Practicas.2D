@@ -1,9 +1,9 @@
 #pragma once
 
 #include "behaviour.h"
+#include "sizes.h"
 
 struct Vec2;
-class Size;
 
 class SysBalls : public Behaviour
 {

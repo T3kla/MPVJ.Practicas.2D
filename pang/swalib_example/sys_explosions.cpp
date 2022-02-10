@@ -1,25 +1,15 @@
 #include "sys_explosions.h"
 
-#include "ball.h"
-#include "circle_collider.h"
-#include "entity.h"
 #include "explosion.h"
 #include "game.h"
 #include "gameobject.h"
-#include "inputs.h"
-#include "logic.h"
-#include "rigidbody.h"
-#include "scene_01.h"
-#include "sprite_animation.h"
 #include "sprite_loader.h"
 #include "sprite_renderer.h"
-#include "stasis.h"
-#include "sys_hook.h"
 #include "transform.h"
 
-Entity *SetExplosion(const Vec2 &pos, char size);
-Entity *GetExplosion();
-float ReboundPerSize(char size);
+#include <entt/entt.hpp>
+
+bool TryPoolling(entt::entity &id);
 
 SysExplosions::SysExplosions()
 {
@@ -43,20 +33,18 @@ void SysExplosions::Update()
 
 void SysExplosions::Fixed()
 {
-    auto &reg = Scene_01::GetRegistry();
+    auto &reg = Game::GetRegistry();
+    auto explosions = reg.view<GameObject, Transform, Explosion>();
 
-    for (auto &i : reg)
+    for (auto [entity, go, tf, ex] : explosions.each())
     {
-        auto *go = i->GetComponent<GameObject>();
-        auto *ex = i->GetComponent<Explosion>();
-
-        if (!go || !ex || !go->isActive)
+        if (!go.isActive)
             continue;
 
-        if (ex->lifespan > 0.f)
-            ex->lifespan -= (float)STP * 0.001f;
+        if (ex.lifespan > 0.f)
+            ex.lifespan -= (float)STP * 0.001f;
         else
-            go->isActive = false;
+            go.isActive = false;
     }
 }
 
@@ -64,100 +52,68 @@ void SysExplosions::Quit()
 {
 }
 
-void SysExplosions::InstantiateSmaller(const Vec2 &pos, char size)
+void SysExplosions::InstantiateSmaller(const Vec2 &pos, Size size)
 {
-    SetExplosion(pos, size);
+    Size smaller = size.OneSmaller();
+
+    if (smaller == Size::None)
+        return;
+
+    Instantiate(pos, smaller);
 }
 
-Entity *SetExplosion(const Vec2 &pos, char size)
+void SysExplosions::Instantiate(const Vec2 &pos, Size size)
 {
-    auto *expl = GetExplosion();
+    auto &reg = Game::GetRegistry();
 
-    auto *tf = expl->GetComponent<Transform>();
-    auto *go = expl->GetComponent<GameObject>();
-    auto *ex = expl->GetComponent<Explosion>();
-    auto *sr = expl->GetComponent<SpriteRenderer>();
+    entt::entity id;
 
-    tf->position = pos;
+    if (!TryPoolling(id))
+        id = reg.create();
 
-    go->isActive = true;
+    Sprite *sprite;
+    Vec2 spriteSize;
 
-    ex->lifespan = 0.1f;
-    ex->size = size;
-
-    sr->offsetPosition = {0.f, 0.f};
-    sr->offsetRotation = 0.f;
-    sr->pivot = {0.5f, 0.5f};
-    sr->layer = 1;
-
-    if (size == 'L')
+    if (size == Size::L)
     {
-        sr->sprite = &SpriteLoader::sprExpls[0];
-        sr->size = {260.f, 260.f};
+        sprite = &SpriteLoader::sprExpls[0];
+        spriteSize = {260.f, 260.f};
     }
-    else if (size == 'B')
+    else if (size == Size::B)
     {
-        sr->sprite = &SpriteLoader::sprExpls[1];
-        sr->size = {160.f, 160.f};
+        sprite = &SpriteLoader::sprExpls[1];
+        spriteSize = {160.f, 160.f};
     }
-    else if (size == 'M')
+    else if (size == Size::M)
     {
-        sr->sprite = &SpriteLoader::sprExpls[2];
-        sr->size = {140.f, 140.f};
+        sprite = &SpriteLoader::sprExpls[2];
+        spriteSize = {140.f, 140.f};
     }
-    else if (size == 'S')
+    else if (size == Size::S)
     {
-        sr->sprite = &SpriteLoader::sprExpls[3];
-        sr->size = {110.f, 110.f};
+        sprite = &SpriteLoader::sprExpls[3];
+        spriteSize = {110.f, 110.f};
     }
 
-    return expl;
+    reg.get_or_emplace<GameObject>(id, true);
+    reg.get_or_emplace<Transform>(id, pos, Vec2::One(), 0.f);
+    reg.get_or_emplace<Explosion>(id, true, 0.1f, size);
+    reg.get_or_emplace<SpriteRenderer>(id, true, sprite, Vec2::Zero(), 0.f, spriteSize, Vec2::One() * 0.5f, 1,
+                                       BLEND_ALPHA);
 }
 
-Entity *GetExplosion()
+bool TryPoolling(entt::entity &id)
 {
-    auto &reg = Scene_01::GetRegistry();
+    auto &reg = Game::GetRegistry();
+    auto explosions = reg.view<GameObject, Transform, Explosion>();
 
     // Pooling
-    for (auto &i : reg)
-    {
-        auto *gaob = i->GetComponent<GameObject>();
-        auto *ball = i->GetComponent<Explosion>();
+    for (auto [entity, go, tf, ex] : explosions.each())
+        if (!go.isActive && ex.enable)
+        {
+            id = entity;
+            return true;
+        }
 
-        if (gaob && ball && !gaob->isActive)
-            return i;
-    }
-
-    // Instantiation
-    auto expl = new Entity();
-
-    auto tf = Transform();
-    auto go = GameObject();
-    auto bl = Explosion();
-    auto sr = SpriteRenderer();
-
-    expl->AddComponent<Transform>(&tf);
-    expl->AddComponent<GameObject>(&go);
-    expl->AddComponent<Explosion>(&bl);
-    expl->AddComponent<SpriteRenderer>(&sr);
-
-    reg.push_back(expl);
-    return expl;
-}
-
-static float ReboundPerSize(Size size)
-{
-    switch (size)
-    {
-    case Size::L:
-        return 650.f;
-    case Size::B:
-        return 550.f;
-    case Size::M:
-        return 450.f;
-    case Size::S:
-        return 350.f;
-    default:
-        return 100.f;
-    }
+    return false;
 }

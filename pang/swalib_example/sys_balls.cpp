@@ -2,35 +2,26 @@
 
 #include "ball.h"
 #include "circle_collider.h"
-#include "entity.h"
 #include "game.h"
 #include "gameobject.h"
-#include "inputs.h"
-#include "logic.h"
 #include "render.h"
 #include "rigidbody.h"
-#include "scene_01.h"
-#include "sizes.h"
 #include "sprite_animation.h"
 #include "sprite_loader.h"
 #include "sprite_renderer.h"
-#include "stasis.h"
-#include "sys_hook.h"
 #include "transform.h"
 
 #include <entt/entt.hpp>
 
-Entity *TryPoolling();
-float ReboundPerSize(char size);
+bool TryPoolling(entt::entity &id);
+float ReboundPerSize(Size size);
 
 SysBalls::SysBalls()
 {
-    Logic::Subscribe(this);
 }
 
 SysBalls::~SysBalls()
 {
-    Logic::UnSubscribe(this);
 }
 
 void SysBalls::Awake()
@@ -47,39 +38,35 @@ void SysBalls::Update()
 
 void SysBalls::Fixed()
 {
-    auto &reg = Scene_01::GetRegistry();
+    auto &reg = Game::GetRegistry();
 
-    for (auto &i : reg)
+    auto balls = reg.view<GameObject, Transform, RigidBody, Ball, CircleCollider>();
+
+    for (auto [entity, go, tf, rb, bl, cc] : balls.each())
     {
-        auto *tf = i->GetComponent<Transform>();
-        auto *go = i->GetComponent<GameObject>();
-        auto *rb = i->GetComponent<RigidBody>();
-        auto *bl = i->GetComponent<Ball>();
-        auto *cl = i->GetComponent<CircleCollider>();
-
-        if (!tf || !go || !rb || !bl || !cl || !go->isActive)
+        if (!go.isActive)
             continue;
 
         // Gravity
-        rb->velocity += Vec2::Down() * 600.f * (float)STP * 0.001f;
+        rb.velocity += Vec2::Down() * 600.f * (float)STP * 0.001f;
 
         // Rebound
         int width, height;
         Render::GetWindowSize(width, height);
-        if (tf->position.x > width - cl->radius / 2.f)
+        if (tf.position.x > width - cc.radius / 2.f)
         {
-            tf->position.x = width - cl->radius / 2.f - 1.f;
-            rb->velocity.x *= -1.f;
+            tf.position.x = width - cc.radius / 2.f - 1.f;
+            rb.velocity.x *= -1.f;
         }
-        if (tf->position.x < cl->radius / 2.f)
+        if (tf.position.x < cc.radius / 2.f)
         {
-            tf->position.x = cl->radius / 2.f + 1.f;
-            rb->velocity.x *= -1.f;
+            tf.position.x = cc.radius / 2.f + 1.f;
+            rb.velocity.x *= -1.f;
         }
-        if (tf->position.y < cl->radius / 2.f)
+        if (tf.position.y < cc.radius / 2.f)
         {
-            tf->position.y = cl->radius / 2.f + 1.f;
-            rb->velocity.y = ReboundPerSize(bl->size) * 1.2f;
+            tf.position.y = cc.radius / 2.f + 1.f;
+            rb.velocity.y = ReboundPerSize(bl.size) * 1.2f;
         }
     }
 }
@@ -90,13 +77,15 @@ void SysBalls::Quit()
 
 void SysBalls::InstantiateSmaller(const Vec2 &pos, bool right, Size size)
 {
-    auto next = size.OneSmaller();
-    if (next == 'X')
+    Size smaller = size.OneSmaller();
+
+    if (smaller == Size::None)
         return;
-    Instantiate(pos, right, next);
+
+    Instantiate(pos, right, smaller);
 }
 
-void Instantiate(const Vec2 &pos, bool right, Size size)
+void SysBalls::Instantiate(const Vec2 &pos, bool right, Size size)
 {
     auto &reg = Game::GetRegistry();
 
@@ -105,40 +94,42 @@ void Instantiate(const Vec2 &pos, bool right, Size size)
     if (!TryPoolling(id))
         id = reg.create();
 
+    Sprite *sprite;
+    Vec2 spriteSize;
+    float colRadius;
+
+    if (size == Size::L)
+    {
+        sprite = &SpriteLoader::sprBalls[0];
+        spriteSize = {260.f, 260.f};
+        colRadius = 160.f;
+    }
+    else if (size == Size::B)
+    {
+        sprite = &SpriteLoader::sprBalls[1];
+        spriteSize = {160.f, 160.f};
+        colRadius = 115.f;
+    }
+    else if (size == Size::M)
+    {
+        sprite = &SpriteLoader::sprBalls[2];
+        spriteSize = {140.f, 140.f};
+        colRadius = 65.f;
+    }
+    else if (size == Size::S)
+    {
+        sprite = &SpriteLoader::sprBalls[3];
+        spriteSize = {110.f, 110.f};
+        colRadius = 20.f;
+    }
+
     reg.get_or_emplace<GameObject>(id, true);
     reg.get_or_emplace<Transform>(id, pos, Vec2::One(), 0.f);
     reg.get_or_emplace<RigidBody>(id, true, Vec2(175.f * (right ? 1.f : -1.f), 200.f), 0.0f);
     reg.get_or_emplace<Ball>(id, true, Vec2::Zero(), size);
-    reg.get_or_emplace<CircleCollider>(id, true, 100.f);
-    reg.get_or_emplace<SpriteRenderer>(id, true, &SpriteLoader::sprBalls[0], Vec2::Zero(), 0.f, Vec2::One() * 100.f,
-                                       Vec2::One() * 0.5f, 1, BLEND_ALPHA);
-
-    if (size == Size::L)
-    {
-        sr->sprite = &SpriteLoader::sprBalls[0];
-        sr->size = {260.f, 260.f};
-        cl->radius = 160.f;
-    }
-    else if (size == Size::B)
-    {
-        sr->sprite = &SpriteLoader::sprBalls[1];
-        sr->size = {160.f, 160.f};
-        cl->radius = 115.f;
-    }
-    else if (size == Size::M)
-    {
-        sr->sprite = &SpriteLoader::sprBalls[2];
-        sr->size = {140.f, 140.f};
-        cl->radius = 65.f;
-    }
-    else if (size == Size::S)
-    {
-        sr->sprite = &SpriteLoader::sprBalls[3];
-        sr->size = {110.f, 110.f};
-        cl->radius = 20.f;
-    }
-
-    return ball;
+    reg.get_or_emplace<CircleCollider>(id, true, colRadius);
+    reg.get_or_emplace<SpriteRenderer>(id, true, sprite, Vec2::Zero(), 0.f, spriteSize, Vec2::One() * 0.5f, 1,
+                                       BLEND_ALPHA);
 }
 
 bool TryPoolling(entt::entity &id)
@@ -157,17 +148,17 @@ bool TryPoolling(entt::entity &id)
     return false;
 }
 
-float ReboundPerSize(char size)
+float ReboundPerSize(Size size)
 {
     switch (size)
     {
-    case 'L':
+    case Size::L:
         return 650.f;
-    case 'B':
+    case Size::B:
         return 550.f;
-    case 'M':
+    case Size::M:
         return 450.f;
-    case 'S':
+    case Size::S:
         return 350.f;
     default:
         return 100.f;
