@@ -9,7 +9,7 @@ class Logic
     static Logic Instance;
 
   private:
-    Logic(){};
+    Logic() = default;
 
     static void Awake();
     static void Start();
@@ -17,7 +17,7 @@ class Logic
     static void Fixed();
     static void Quit();
 
-    std::vector<Behaviour *> Each = std::vector<Behaviour *>();
+    std::vector<Behaviour *> each = std::vector<Behaviour *>();
 
   public:
     Logic(const Logic &) = delete;

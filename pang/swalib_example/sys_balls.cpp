@@ -1,27 +1,27 @@
 #include "sys_balls.h"
 
-#include "game.h"
-#include "logic.h"
-#include "inputs.h"
-#include "scene_01.h"
-#include "sprite_loader.h"
-#include "stasis.h"
-#include "sys_hook.h"
-
-#include "entity.h"
-
 #include "ball.h"
 #include "circle_collider.h"
+#include "entity.h"
+#include "game.h"
 #include "gameobject.h"
+#include "inputs.h"
+#include "logic.h"
+#include "render.h"
 #include "rigidbody.h"
+#include "scene_01.h"
 #include "sprite_animation.h"
+#include "sprite_loader.h"
 #include "sprite_renderer.h"
+#include "stasis.h"
+#include "sys_hook.h"
 #include "transform.h"
 
-Entity *SetBall(const Vec2 &pos, bool right, char size);
+#include "sizes.h"
+
+Entity *Instantiate(const Vec2 &pos, bool right, char size);
 Entity *GetBall();
 float ReboundPerSize(char size);
-char Smaller(char size);
 
 SysBalls::SysBalls()
 {
@@ -64,9 +64,11 @@ void SysBalls::Fixed()
         rb->velocity += Vec2::Down() * 600.f * (float)STP * 0.001f;
 
         // Rebound
-        if (tf->position.x > SCR_WIDTH - cl->radius / 2.f)
+        int width, height;
+        Render::GetWindowSize(width, height);
+        if (tf->position.x > width - cl->radius / 2.f)
         {
-            tf->position.x = SCR_WIDTH - cl->radius / 2.f - 1.f;
+            tf->position.x = width - cl->radius / 2.f - 1.f;
             rb->velocity.x *= -1.f;
         }
         if (tf->position.x < cl->radius / 2.f)
@@ -86,35 +88,15 @@ void SysBalls::Quit()
 {
 }
 
-void SysBalls::InstantiateSmaller(const Vec2 &pos, bool right, char size)
+void SysBalls::InstantiateSmaller(const Vec2 &pos, bool right, Size size)
 {
-    auto next = Smaller(size);
+    auto next = size.OneSmaller();
     if (next == 'X')
         return;
-    SetBall(pos, right, next);
+    Instantiate(pos, right, next);
 }
 
-void SysBalls::InstantiateL(const Vec2 &pos, bool right)
-{
-    SetBall(pos, right, 'L');
-}
-
-void SysBalls::InstantiateB(const Vec2 &pos, bool right)
-{
-    SetBall(pos, right, 'B');
-}
-
-void SysBalls::InstantiateM(const Vec2 &pos, bool right)
-{
-    SetBall(pos, right, 'M');
-}
-
-void SysBalls::InstantiateS(const Vec2 &pos, bool right)
-{
-    SetBall(pos, right, 'S');
-}
-
-Entity *SetBall(const Vec2 &pos, bool right, char size)
+Entity *Instantiate(const Vec2 &pos, bool right, Size size)
 {
     auto *ball = GetBall();
 
@@ -139,25 +121,25 @@ Entity *SetBall(const Vec2 &pos, bool right, char size)
     sr->pivot = {0.5f, 0.5f};
     sr->layer = 1;
 
-    if (size == 'L')
+    if (size == Size::L)
     {
         sr->sprite = &SpriteLoader::sprBalls[0];
         sr->size = {260.f, 260.f};
         cl->radius = 160.f;
     }
-    else if (size == 'B')
+    else if (size == Size::B)
     {
         sr->sprite = &SpriteLoader::sprBalls[1];
         sr->size = {160.f, 160.f};
         cl->radius = 115.f;
     }
-    else if (size == 'M')
+    else if (size == Size::M)
     {
         sr->sprite = &SpriteLoader::sprBalls[2];
         sr->size = {140.f, 140.f};
         cl->radius = 65.f;
     }
-    else if (size == 'S')
+    else if (size == Size::S)
     {
         sr->sprite = &SpriteLoader::sprBalls[3];
         sr->size = {110.f, 110.f};
@@ -216,20 +198,5 @@ float ReboundPerSize(char size)
         return 350.f;
     default:
         return 100.f;
-    }
-}
-
-char Smaller(char size)
-{
-    switch (size)
-    {
-    case 'L':
-        return 'B';
-    case 'B':
-        return 'M';
-    case 'M':
-        return 'S';
-    default:
-        return 'X';
     }
 }

@@ -1,5 +1,8 @@
 #pragma once
 
-struct Hook {
-  float speed = 100.f;
+struct Hook
+{
+    bool enable = true;
+
+    float speed = 100.f;
 };

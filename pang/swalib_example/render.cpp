@@ -3,6 +3,8 @@
 #include "game.h"
 #include "gameobject.h"
 #include "litegfx.h"
+#include "oval_renderer.h"
+#include "rect_renderer.h"
 #include "scene_01.h"
 #include "sprite.h"
 #include "sprite_animation.h"
@@ -13,6 +15,7 @@
 #include "transform.h"
 
 #include <algorithm>
+#include <entt/entt.hpp>
 #include <vector>
 
 static char buffer[256];
@@ -55,10 +58,6 @@ void Render::Start()
 
 void Render::Update()
 {
-    // Update title
-    if (Instance.titleUpdate)
-        if (Instance.title != nullptr)
-            glfwSetWindowTitle(Instance.window, Instance.title);
 }
 
 void Render::Fixed()
@@ -67,27 +66,6 @@ void Render::Fixed()
     lgfx_clearcolorbuffer(Instance.bgColor.r, Instance.bgColor.g, Instance.bgColor.b);
 
     auto &reg = Game::GetRegistry();
-
-    // Camera settings
-    Vec2 camPos = {-Instance.windowWidth / 2.f, -Instance.windowHeight / 2.f};
-    float camHeight = 1.f;
-    auto cams = reg.view<Transform, GameObject, Camera>();
-    for (auto [entity, tf, go, cm] : cams.each())
-    {
-        if (!go.isActive)
-            continue;
-        if (cm.main)
-        {
-            camPos += tf.position;
-            camHeight = cm.height;
-        }
-    }
-
-    auto CamTreatment = [&](Vec2 &pos, Vec2 &scl) {
-        pos /= camHeight;
-        scl /= camHeight;
-        pos -= camPos;
-    };
 
     // Render Rects
     auto rects = reg.view<Transform, GameObject, RectRenderer>();
@@ -98,7 +76,6 @@ void Render::Fixed()
         lgfx_setcolor(rr.color.r, rr.color.g, rr.color.b, rr.color.a);
         Vec2 fPos = tf.position + rr.offsetPosition;
         Vec2 fScl = tf.scale + rr.offsetScale;
-        CamTreatment(fPos, fScl);
         lgfx_drawrect(fPos.x - fScl.x / 2.f, fPos.y - fScl.y / 2.f, fScl.x, fScl.y);
     }
 
@@ -111,7 +88,6 @@ void Render::Fixed()
         lgfx_setcolor(rr.color.r, rr.color.g, rr.color.b, rr.color.a);
         Vec2 fPos = tf.position + rr.offsetPosition;
         Vec2 fScl = tf.scale + rr.offsetScale;
-        CamTreatment(fPos, fScl);
         lgfx_drawoval(fPos.x - fScl.x / 2.f, fPos.y - fScl.y / 2.f, fScl.x, fScl.y);
     }
 
@@ -133,7 +109,6 @@ void Render::Fixed()
         Vec2 fPos = tf.position + sr.offsetPosition;
         Vec2 fScl = sr.size;
         float fRot = tf.rotation + sr.offsetRotation;
-        CamTreatment(fPos, fScl);
         lgfx_setblend(sr.blend);
         ltex_drawrotsized((ltex_t *)sr.sprite->texture, fPos.x, fPos.y, fRot, sr.pivot.x, sr.pivot.y, fScl.x, fScl.y,
                           sr.sprite->uv0.x, sr.sprite->uv0.y, sr.sprite->uv1.x, sr.sprite->uv1.y);
@@ -145,5 +120,43 @@ void Render::Fixed()
 
 void Render::Quit()
 {
-    FONT_End();
+}
+
+const GLFWwindow *Render::GetWindow()
+{
+    return Instance.window;
+}
+
+void Render::GetWindowSize(int &width, int &height)
+{
+    width = Instance.windowWidth;
+    height = Instance.windowHeight;
+}
+
+void Render::SetWindowSize(const int &width, const int &height)
+{
+    Instance.windowWidth = width;
+    Instance.windowHeight = height;
+}
+
+const Color &Render::GetBgColor()
+{
+    return Instance.bgColor;
+}
+
+void Render::SetBgColor(const Color &color)
+{
+    Instance.bgColor = color;
+}
+
+const char *Render::GetTitle()
+{
+    return Instance.title;
+}
+
+void Render::SetTitle(char *text)
+{
+    Instance.title = text;
+    if (Instance.title != nullptr)
+        glfwSetWindowTitle(Instance.window, Instance.title);
 }

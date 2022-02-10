@@ -9,7 +9,7 @@ class Input
     static Input Instance;
 
   private:
-    Input(){};
+    Input() = default;
 
     Vec2 MouseOldPos = {0.f, 0.f};
     Vec2 MousePos = {0.f, 0.f};

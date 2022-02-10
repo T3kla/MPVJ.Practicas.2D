@@ -1,5 +1,6 @@
 #pragma once
 
-struct GameObject {
-  bool isActive = true;
+struct GameObject
+{
+    bool isActive = true;
 };

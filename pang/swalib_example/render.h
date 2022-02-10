@@ -11,7 +11,7 @@ class Render
     static Render Instance;
 
   private:
-    Render(){};
+    Render() = default;
 
     char *title = nullptr;
 
@@ -29,7 +29,7 @@ class Render
   public:
     Render(const Render &) = delete;
 
-    static GLFWwindow *GetWindow();
+    static const GLFWwindow *GetWindow();
 
     static void GetWindowSize(int &width, int &height);
     static void SetWindowSize(const int &width, const int &height);
@@ -42,6 +42,4 @@ class Render
 
     static const bool GetTitleUpdate();
     static void SetTitleUpdate(bool value);
-
-    static const void GetMainCamera(Transform *&transform, Camera *&camera);
 };

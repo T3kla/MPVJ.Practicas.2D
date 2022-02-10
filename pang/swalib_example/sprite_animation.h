@@ -4,14 +4,17 @@
 
 #include "sprite.h"
 
-struct SpriteAnimation {
-  std::vector<Sprite> *animation = nullptr;
+struct SpriteAnimation
+{
+    bool enable = true;
 
-  int frame = 0;
-  float speed = 0.f;
+    std::vector<Sprite> *animation = nullptr;
 
-  float duration = 0.f;
-  float count = 0.f;
+    int frame = 0;
+    float speed = 0.f;
 
-  bool enable = true;
+    float duration = 0.f;
+    float count = 0.f;
+
+    bool enable = true;
 };

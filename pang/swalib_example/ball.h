@@ -1,6 +1,11 @@
 #pragma once
 
-struct Ball {
-  float rebound = 100.f;
-  char size = 'S';
+#include "sizes.h"
+
+struct Ball
+{
+    bool enable = true;
+
+    float rebound = 100.f;
+    Size::Size size = Size::S;
 };

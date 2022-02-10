@@ -8,26 +8,26 @@ Logic Logic::Instance;
 void Logic::Subscribe(Behaviour *gameObject)
 {
     // Duplication guard
-    auto it = std::find(Instance.Each.begin(), Instance.Each.end(), gameObject);
-    if (it != Instance.Each.end())
+    auto it = std::find(Instance.each.begin(), Instance.each.end(), gameObject);
+    if (it != Instance.each.end())
         return;
 
-    Instance.Each.emplace_back(gameObject);
+    Instance.each.emplace_back(gameObject);
 }
 
 void Logic::UnSubscribe(const Behaviour *gameObject)
 {
     // Not found guard
-    auto it = std::find(Instance.Each.begin(), Instance.Each.end(), gameObject);
-    if (it == Instance.Each.end())
+    auto it = std::find(Instance.each.begin(), Instance.each.end(), gameObject);
+    if (it == Instance.each.end())
         return;
 
-    Instance.Each.erase(it);
+    Instance.each.erase(it);
 }
 
 const std::vector<Behaviour *> *Logic::GetGameObjects()
 {
-    return &Get().Each;
+    return &Instance.each;
 }
 
 void Logic::Awake()

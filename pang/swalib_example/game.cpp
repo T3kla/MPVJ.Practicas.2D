@@ -68,3 +68,8 @@ float Game::GetFixedFPS()
 {
     return (float)(1000. / freqFx);
 }
+
+entt::registry &Game::GetRegistry()
+{
+    return Registry;
+}

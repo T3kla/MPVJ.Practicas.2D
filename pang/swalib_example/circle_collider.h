@@ -1,5 +1,8 @@
 #pragma once
 
-struct CircleCollider {
-  float radius = 0.f;
+struct CircleCollider
+{
+    bool enable = true;
+
+    float radius = 0.f;
 };

@@ -8,11 +8,10 @@ constexpr double STP = 1000. / FPS;
 class Game
 {
     static Game Instance;
+    static entt::registry Registry;
 
   private:
-    Game(){};
-
-    static entt::registry Registry;
+    Game() = default;
 
   public:
     Game(const Game &) = delete;
