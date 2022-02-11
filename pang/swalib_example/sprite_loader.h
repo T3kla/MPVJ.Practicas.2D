@@ -1,24 +1,28 @@
 #pragma once
 
-#include <vector>
-
+#include "litegfx.h"
 #include "sprite.h"
+#include "stb_image.h"
+
+#include <vector>
 
 class SpriteLoader
 {
-
-  private:                                       // SINGLETON
-    SpriteLoader();                              //
-    static SpriteLoader Instance;                //
-  public:                                        //
-    SpriteLoader(const SpriteLoader &) = delete; //
+    static SpriteLoader Instance;
 
   private:
-    static unsigned int txBg;
-    static unsigned int txSheet;
-    static unsigned int txSheetRev;
+    static stbi_uc *pixels;
+    static ltex_t *txBg;
+    static ltex_t *txSheet;
+    static ltex_t *txSheetRev;
 
   public:
+    SpriteLoader() = default;
+    SpriteLoader(const SpriteLoader &) = delete;
+
+    static void LoadTextures();
+    static void UnloadTextures();
+
     // Bg
     static Sprite sprBg;
 
@@ -37,7 +41,4 @@ class SpriteLoader
 
     // Hook
     static std::vector<Sprite> sprHook;
-
-    static void LoadTextures();
-    static void UnloadTextures();
 };

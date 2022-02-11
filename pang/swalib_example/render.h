@@ -21,15 +21,15 @@ class Render
     Color bgColor = {0.f, 0.f, 0.f, 1.f};
 
     static void Awake();
-    static void Start();
-    static void Update();
+    static void Start(){};
+    static void Update(){};
     static void Fixed();
-    static void Quit();
+    static void Quit(){};
 
   public:
     Render(const Render &) = delete;
 
-    static const GLFWwindow *GetWindow();
+    static GLFWwindow *GetWindow();
 
     static void GetWindowSize(int &width, int &height);
     static void SetWindowSize(const int &width, const int &height);

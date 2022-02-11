@@ -9,10 +9,6 @@
 
 Scene_01 Scene_01::Instance;
 
-Scene_01::Scene_01()
-{
-}
-
 void Scene_01::Load()
 {
     Logic::Subscribe(&Instance);

@@ -5,7 +5,8 @@
 #include "entity.h"
 #include "game.h"
 #include "gameobject.h"
-#include "inputs.h"
+#include "input.h"
+#include "keycode.h"
 #include "logic.h"
 #include "player.h"
 #include "render.h"
@@ -36,36 +37,21 @@ float blinkRate = 0.2f;
 
 void UpdateAnimation();
 
-void BlockMove(float time)
-{
-    moveBlockCounter = time;
-}
-
-void BlockShoot(float time)
-{
-    shootBlockCounter = time;
-}
-
-void BlockHurt(float time)
-{
+auto BlockMove = [](float time) { moveBlockCounter = time; };
+auto BlockShoot = [](float time) { shootBlockCounter = time; };
+auto BlockHurt = [](float time) {
     hurtBlockCounter = time;
     blinkCounter = 3.f;
-}
+};
 
-bool CanMove()
-{
-    return moveBlockCounter < 0.f;
-}
+auto CanMove = []() { return moveBlockCounter < 0.f; };
+auto CanShoot = []() { return shootBlockCounter < 0.f; };
+auto IsColliding = [](Vec2 posA, float radA, Vec2 posB, float radB) {
+    auto dir = (posA - posB);
+    return dir.Magnitude() < radA + radB;
+};
 
-bool CanShoot()
-{
-    return shootBlockCounter < 0.f;
-}
-
-bool IsColliding(Vec2 posA, float radA, Vec2 posB, float radB)
-{
-    return (posA - posB).Magnitude() < radA + radB;
-}
+auto GetBallsView = []() { return Game::GetRegistry().view<GameObject, Transform, RigidBody, Ball, CircleCollider>(); };
 
 void SysPlayer::Awake()
 {
@@ -97,37 +83,32 @@ void SysPlayer::Update()
     blinkCounter -= time;
 
     auto &reg = Game::GetRegistry();
+    auto playerID = player.GetID();
 
-    auto &tf = reg.get<Transform>(player.GetID());
-    auto &go = player.GetComponent<GameObject>();
-    auto &rb = player.GetComponent<RigidBody>();
-    auto &pl = player.GetComponent<Player>();
-    auto &sa = player.GetComponent<SpriteAnimation>();
+    auto &tf = reg.get<Transform>(playerID);
+    auto &go = reg.get<GameObject>(playerID);
+    auto &rb = reg.get<RigidBody>(playerID);
+    auto &pl = reg.get<Player>(playerID);
+    auto &cc = reg.get<CircleCollider>(playerID);
+    auto &sa = reg.get<SpriteAnimation>(playerID);
 
-    if (!go || !go->isActive)
+    if (!go.isActive)
         return;
 
     // Collision with balls
-    for (auto &ball : reg)
+    for (auto [entity, ball_go, ball_tf, ball_rb, ball_bl, ball_cc] : GetBallsView().each())
     {
-        auto *btf = ball->GetComponent<Transform>();
-        auto *bgo = ball->GetComponent<GameObject>();
-        auto *brb = ball->GetComponent<RigidBody>();
-        auto *bbl = ball->GetComponent<Ball>();
-        auto *bcl = ball->GetComponent<CircleCollider>();
-
-        if (!btf || !bgo || !brb || !bbl || !bcl || !bgo->isActive)
+        if (!ball_go.isActive || pl.health < 0 || blinkCounter > 0.f)
             continue;
 
-        if (pl->health > 0 && blinkCounter < 0.f && IsColliding(tf->position, fakeCC, btf->position, bcl->radius / 2.f))
+        if (IsColliding(tf.position, cc.radius, ball_tf.position, ball_cc.radius / 2.f))
         {
-
-            pl->health += pl->health > 0 ? -1 : 0;
+            pl.health += pl.health > 0 ? -1 : 0;
             BlockHurt(0.3f);
             BlockShoot(0.3f);
             BlockMove(0.3f);
 
-            if (pl->health <= 0)
+            if (pl.health <= 0)
             {
                 BlockHurt(9999.9f);
                 BlockShoot(9999.9f);
@@ -137,49 +118,52 @@ void SysPlayer::Update()
     }
 
     // Input Move
+    int width, height;
+    Render::GetWindowSize(width, height);
+
     Vec2 add = Vec2::Zero();
 
-    if (CanMove() && SYS_KeyPressed(KEY_A))
-        add -= pl->speed * (float)Stasis::GetDeltaScaled() * 0.001f;
-    if (CanMove() && SYS_KeyPressed(KEY_D))
-        add += pl->speed * (float)Stasis::GetDeltaScaled() * 0.001f;
+    if (CanMove() && Input::GetKey(KeyCode::A))
+        add -= pl.speed * (float)Stasis::GetDeltaScaled() * 0.001f;
+    if (CanMove() && Input::GetKey(KeyCode::D))
+        add += pl.speed * (float)Stasis::GetDeltaScaled() * 0.001f;
 
-    rb->velocity += add;
+    rb.velocity += add;
 
-    auto velMag = rb->velocity.Magnitude();
+    auto velMag = rb.velocity.Magnitude();
 
-    if (velMag > pl->speed)
-        rb->velocity = rb->velocity.Normalized() * pl->speed;
+    if (velMag > pl.speed)
+        rb.velocity = rb.velocity.Normalized() * pl.speed;
 
-    pl->reversed = rb->velocity.x < 0.f ? true : false;
+    pl.reversed = rb.velocity.x < 0.f ? true : false;
 
     // Bounds
-    if (tf->position.x > SCR_WIDTH - fakeCC / 2.f)
+    if (tf.position.x > width - cc.radius / 2.f)
     {
-        tf->position.x = SCR_WIDTH - fakeCC / 2.f - 1.f;
-        rb->velocity.x = 0;
+        tf.position.x = width - cc.radius / 2.f - 1.f;
+        rb.velocity.x = 0;
     }
-    if (tf->position.x < fakeCC / 2.f)
+    if (tf.position.x < cc.radius / 2.f)
     {
-        tf->position.x = fakeCC / 2.f + 1.f;
-        rb->velocity.x = 0;
+        tf.position.x = cc.radius / 2.f + 1.f;
+        rb.velocity.x = 0;
     }
 
     // Input Shoot
-    if (CanShoot() && SYS_KeyPressed(KEY_W))
+    if (CanShoot() && Input::GetKey(KeyCode::W))
     {
         BlockShoot(0.3f);
         BlockMove(0.1f);
-        SysHook::Instantiate(tf->position);
+        SysHook::Instantiate(tf.position);
     }
 
     // State Machine
     if (hurtBlockCounter > 0.f)
-        pl->state = stateHurt;
+        pl.state = stateHurt;
     else if (!CanShoot())
-        pl->state = stateShooting;
+        pl.state = stateShooting;
     else if (CanMove())
-        pl->state = velMag < 200.f ? stateIdle : stateMoving;
+        pl.state = velMag < 200.f ? stateIdle : stateMoving;
 
     UpdateAnimation();
 }
@@ -199,54 +183,53 @@ Entity *SysPlayer::GetPlayer()
 
 int SysPlayer::GetPlayerHealth()
 {
-    auto *pl = player.GetComponent<Player>();
-    return pl ? pl->health : 0;
+    auto health = player.GetReg().get<Player>(player.GetID()).health;
+    return health ? health : 0;
 }
 
 void UpdateAnimation()
 {
-    auto *pl = player.GetComponent<Player>();
-    auto *sr = player.GetComponent<SpriteRenderer>();
-    auto *sa = player.GetComponent<SpriteAnimation>();
+    auto id = player.GetID();
+    auto &pl = player.GetReg().get<Player>(id);
+    auto &sr = player.GetReg().get<SpriteRenderer>(id);
+    auto &sa = player.GetReg().get<SpriteAnimation>(id);
 
-    if (sa)
-        if (pl->state == stateHurt)
-        {
+    if (pl.state == stateHurt)
+    {
+        sa.enable = false;
+        sr.sprite = pl.reversed ? &SpriteLoader::sprPlayerHitL : &SpriteLoader::sprPlayerHitR;
+    }
+    else if (pl.state == stateMoving)
+    {
 
-            sa->enable = false;
-            sr->sprite = pl->reversed ? &SpriteLoader::sprPlayerHitL : &SpriteLoader::sprPlayerHitR;
-        }
-        else if (pl->state == stateMoving)
-        {
+        sa.enable = true;
+        sa.duration = 0.25f;
+        sa.animation = pl.reversed ? &SpriteLoader::sprPlayerMoveL : &SpriteLoader::sprPlayerMoveR;
+    }
+    else if (pl.state == stateShooting)
+    {
 
-            sa->enable = true;
-            sa->duration = 0.25f;
-            sa->animation = pl->reversed ? &SpriteLoader::sprPlayerMoveL : &SpriteLoader::sprPlayerMoveR;
-        }
-        else if (pl->state == stateShooting)
-        {
+        sa.enable = true;
+        sa.duration = 0.4f;
+        sa.animation = pl.reversed ? &SpriteLoader::sprPlayerShootL : &SpriteLoader::sprPlayerShootR;
+    }
+    else if (pl.state == stateIdle)
+    {
 
-            sa->enable = true;
-            sa->duration = 0.4f;
-            sa->animation = pl->reversed ? &SpriteLoader::sprPlayerShootL : &SpriteLoader::sprPlayerShootR;
-        }
-        else if (pl->state == stateIdle)
-        {
-
-            sa->enable = false;
-            sr->sprite = pl->reversed ? &SpriteLoader::sprPlayerShootL[0] : &SpriteLoader::sprPlayerShootR[0];
-        }
+        sa.enable = false;
+        sr.sprite = pl.reversed ? &SpriteLoader::sprPlayerShootL[0] : &SpriteLoader::sprPlayerShootR[0];
+    }
 
     // Blink if invulnerable
     if (blinkCounter > 0.f)
     {
         auto frameFreq = blinkRate / 2.f;
-        auto frame = floorf(blinkCounter / frameFreq) + (pl->health > 0 ? 1 : 0);
+        auto frame = floorf(blinkCounter / frameFreq) + (pl.health > 0 ? 1 : 0);
         auto mod = fmodf(frame, 2.f);
-        sr->enable = mod;
+        sr.enable = mod;
     }
     else
     {
-        sr->enable;
+        sr.enable;
     }
 }

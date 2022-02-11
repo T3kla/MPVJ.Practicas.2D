@@ -1,7 +1,8 @@
 #pragma once
 
-#include "behaviour.h"
 #include <vector>
+
+class Behaviour;
 
 class Logic
 {

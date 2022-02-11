@@ -1,8 +1,7 @@
 #include "sprite_loader.h"
 
-unsigned int SpriteLoader::txBg = 0;
-unsigned int SpriteLoader::txSheet = 0;
-unsigned int SpriteLoader::txSheetRev = 0;
+const char *fileBG = "resources/txBG.png";
+const char *fileSheet = "resources/sprSheet.png";
 
 Sprite SpriteLoader::sprBg;
 
@@ -19,16 +18,43 @@ Sprite SpriteLoader::sprPlayerHitR;
 
 std::vector<Sprite> SpriteLoader::sprHook;
 
+stbi_uc *SpriteLoader::pixels = nullptr;
+ltex_t *SpriteLoader::txBg = nullptr;
+ltex_t *SpriteLoader::txSheet = nullptr;
+
 SpriteLoader SpriteLoader::Instance;
-SpriteLoader::SpriteLoader()
-{
-}
 
 void SpriteLoader::LoadTextures()
 {
-    txBg = CORE_LoadPNG("data/txBG.png", true);
-    txSheet = CORE_LoadPNG("data/sprSheet.png", false);
-    txSheetRev = CORE_LoadPNG("data/sprSheet.png", false, true);
+    int w, h, c;
+
+    // BG
+    pixels = stbi_load(fileBG, &w, &h, &c, 4);
+    if (!pixels)
+        throw "Error loading image";
+    txBg = ltex_alloc(w, h, 0);
+    ltex_setpixels(txBg, pixels);
+    stbi_image_free(pixels);
+
+    // Sheet
+    pixels = stbi_load(fileSheet, &w, &h, &c, 4);
+    if (!pixels)
+        throw "Error loading image";
+    txSheet = ltex_alloc(w, h, 0);
+    ltex_setpixels(txSheet, pixels);
+
+    // Sheet Reverse
+    pixels = stbi_load(fileSheet, &w, &h, &c, 4);
+
+    for (size_t i = 0; i < length; i++)
+    {
+
+    }
+
+    ltex_setpixels(txSheet, pixels);
+    stbi_image_free(pixels);
+
+    //
 
     sprBg = {txBg, Vec2::Zero(), Vec2::One()};
 
@@ -65,7 +91,5 @@ void SpriteLoader::LoadTextures()
 
 void SpriteLoader::UnloadTextures()
 {
-    CORE_UnloadPNG(txBg);
-    CORE_UnloadPNG(txSheet);
-    CORE_UnloadPNG(txSheetRev);
+    ltex_free()
 }

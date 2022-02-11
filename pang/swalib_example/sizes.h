@@ -76,33 +76,41 @@ class Size
         }
     }
 
-    Size OneSmaller()
+    void OneSmaller()
     {
         switch (value)
         {
         case Size::L:
-            return Size::B;
+            value = Size::B;
+            break;
         case Size::B:
-            return Size::M;
+            value = Size::M;
+            break;
         case Size::M:
-            return Size::S;
+            value = Size::S;
+            break;
         default:
-            return Size::None;
+            value = Size::None;
+            break;
         }
     }
 
-    Size OneBigger(Size value)
+    void OneBigger()
     {
         switch (value)
         {
         case Size::S:
-            return Size::M;
+            value = Size::M;
+            break;
         case Size::M:
-            return Size::B;
+            value = Size::B;
+            break;
         case Size::B:
-            return Size::L;
+            value = Size::L;
+            break;
         default:
-            return Size::None;
+            value = Size::None;
+            break;
         }
     }
 

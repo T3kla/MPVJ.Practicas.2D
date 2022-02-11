@@ -50,14 +50,9 @@ void Render::Awake()
 
     // Layers buffer
     layered.reserve(10);
-}
 
-void Render::Start()
-{
-}
-
-void Render::Update()
-{
+    // Set Background
+    SetBgColor({0.5f, 0.44f, 0.37f, 1.f});
 }
 
 void Render::Fixed()
@@ -118,11 +113,7 @@ void Render::Fixed()
     glfwSwapBuffers(Instance.window);
 }
 
-void Render::Quit()
-{
-}
-
-const GLFWwindow *Render::GetWindow()
+GLFWwindow *Render::GetWindow()
 {
     return Instance.window;
 }
