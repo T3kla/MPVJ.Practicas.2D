@@ -1,7 +1,7 @@
 #include "sprite_loader.h"
 
-const char *fileBG = "resources/txBG.png";
-const char *fileSheet = "resources/sprSheet.png";
+const char *fileBG = "../resources/txBG.png";
+const char *fileSheet = "../resources/sprSheet.png";
 
 Sprite SpriteLoader::sprBg;
 
@@ -21,6 +21,7 @@ std::vector<Sprite> SpriteLoader::sprHook;
 stbi_uc *SpriteLoader::pixels = nullptr;
 ltex_t *SpriteLoader::txBg = nullptr;
 ltex_t *SpriteLoader::txSheet = nullptr;
+ltex_t *SpriteLoader::txSheetRev = nullptr;
 
 SpriteLoader SpriteLoader::Instance;
 
@@ -41,17 +42,18 @@ void SpriteLoader::LoadTextures()
     if (!pixels)
         throw "Error loading image";
     txSheet = ltex_alloc(w, h, 0);
+    txSheetRev = ltex_alloc(w, h, 0);
     ltex_setpixels(txSheet, pixels);
 
-    // Sheet Reverse
-    pixels = stbi_load(fileSheet, &w, &h, &c, 4);
+    // Sheet Reverse TODO: reverse texture
+    // pixels = stbi_load(fileSheet, &w, &h, &c, 4);
 
-    for (size_t i = 0; i < length; i++)
-    {
+    // for (size_t i = 0; i < length; i++)
+    //{
 
-    }
+    //}
 
-    ltex_setpixels(txSheet, pixels);
+    // ltex_setpixels(txSheet, pixels);
     stbi_image_free(pixels);
 
     //
@@ -91,5 +93,6 @@ void SpriteLoader::LoadTextures()
 
 void SpriteLoader::UnloadTextures()
 {
-    ltex_free()
+    ltex_free(txBg);
+    ltex_free(txSheet);
 }

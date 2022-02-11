@@ -1,9 +1,8 @@
 #pragma once
 
 #include "color.h"
-#include "glfw3.h"
 
-#include <vector>
+struct GLFWwindow;
 
 class Render
 {
@@ -21,10 +20,7 @@ class Render
     Color bgColor = {0.f, 0.f, 0.f, 1.f};
 
     static void Awake();
-    static void Start(){};
-    static void Update(){};
     static void Fixed();
-    static void Quit(){};
 
   public:
     Render(const Render &) = delete;

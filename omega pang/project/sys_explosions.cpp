@@ -9,8 +9,8 @@
 
 #include <entt/entt.hpp>
 
-auto GetView = []() { return Game::GetRegistry().view<GameObject, Transform, Explosion, SpriteRenderer>(); };
-bool TryPoolling(entt::entity &id);
+static auto GetView = []() { return Game::GetRegistry().view<GameObject, Transform, Explosion, SpriteRenderer>(); };
+static bool TryPoolling(entt::entity &id);
 
 void SysExplosions::Fixed()
 {
@@ -45,8 +45,8 @@ void SysExplosions::Instantiate(const Vec2 &pos, Size size)
     if (!TryPoolling(id))
         id = reg.create();
 
-    Sprite *sprite;
-    Vec2 spriteSize;
+    Sprite *sprite = nullptr;
+    Vec2 spriteSize = {};
 
     if (size == Size::L)
     {
@@ -69,11 +69,28 @@ void SysExplosions::Instantiate(const Vec2 &pos, Size size)
         spriteSize = {110.f, 110.f};
     }
 
-    reg.get_or_emplace<GameObject>(id, true);
-    reg.get_or_emplace<Transform>(id, pos, Vec2::One(), 0.f);
-    reg.get_or_emplace<Explosion>(id, true, 0.1f, size);
-    reg.get_or_emplace<SpriteRenderer>(id, true, sprite, Vec2::Zero(), 0.f, spriteSize, Vec2::One() * 0.5f, 1,
-                                       BLEND_ALPHA);
+    auto &go = reg.get_or_emplace<GameObject>(id);
+    go.isActive = true;
+
+    auto &tf = reg.get_or_emplace<Transform>(id);
+    tf.position = pos;
+    tf.scale = Vec2::One();
+    tf.rotation = 0.f;
+
+    auto &ex = reg.get_or_emplace<Explosion>(id);
+    ex.enable = true;
+    ex.lifespan = 0.1f;
+    ex.size = size;
+
+    auto &sr = reg.get_or_emplace<SpriteRenderer>(id);
+    sr.enable = true;
+    sr.sprite = sprite;
+    sr.offsetPosition = Vec2::Zero();
+    sr.offsetRotation = 0.f;
+    sr.size = spriteSize;
+    sr.pivot = Vec2::One() * 0.5f;
+    sr.layer = 1;
+    sr.blend = BLEND_ALPHA;
 }
 
 bool TryPoolling(entt::entity &id)

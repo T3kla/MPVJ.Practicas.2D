@@ -1,18 +1,12 @@
 #pragma once
 
-#include <windows.h>
-
 class Stasis
 {
-  private:                            // SINGLETONE STUFF
-    Stasis(const double &scale = 1.); //
-    static Stasis Instance;           //
-  public:                             //
-    Stasis(const Stasis &) = delete;  //
-    static Stasis &Get();             //
+    static Stasis Instance;
 
   private:
-    LARGE_INTEGER buffer = LARGE_INTEGER();
+    Stasis(const double &scale = 1.);
+
     long long old = 0ll;
 
     double freq = 0.;
@@ -27,6 +21,8 @@ class Stasis
     static void RefreshFreq();
 
   public:
+    Stasis(const Stasis &) = delete;
+
     static void RefreshTime();
 
     static const double &GetTime();

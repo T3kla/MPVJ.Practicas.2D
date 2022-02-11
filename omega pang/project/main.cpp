@@ -5,11 +5,10 @@
 #include "stb_image.h"
 
 #include "game.h"
-#include "scene_01.h"
+#include "sprite_loader.h"
 
-int Main(void)
+int main(void)
 {
-    Scene_01::Load();
     Game::Run();
 
     return 0;

@@ -1,19 +1,10 @@
 #pragma once
 
-#include "logic.h"
-
 class Behaviour
 {
   public:
-    Behaviour()
-    {
-        Logic::Subscribe(this);
-    }
-
-    virtual ~Behaviour()
-    {
-        Logic::UnSubscribe(this);
-    }
+    Behaviour();
+    virtual ~Behaviour();
 
     virtual void Awake() = 0;
     virtual void Start() = 0;

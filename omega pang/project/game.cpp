@@ -1,13 +1,18 @@
 #include "game.h"
 
+#include "glfw3.h"
 #include "input.h"
 #include "logic.h"
 #include "render.h"
 #include "stasis.h"
 
+#include "scene_01.h"
+
+#include <algorithm>
+
 static double fxCount = 0.;
 
-double dt = 0.;
+static double dt = 0.;
 static double nowFx = 0.;
 static double oldFx = 0.;
 static double freqFx = 0.;
@@ -19,18 +24,17 @@ auto FreqRefresh = [](double &now, double &old, double &freq) {
 };
 
 Game Game::Instance;
+entt::registry Game::Registry;
 
 void Game::Run()
 {
     Stasis::RefreshTime();
 
-    Input::Awake();
-    Logic::Awake();
     Render::Awake();
+    new Scene_01();
 
-    Input::Start();
+    Logic::Awake();
     Logic::Start();
-    Render::Start();
 
     while (!glfwWindowShouldClose(Render::GetWindow()))
     {
@@ -41,22 +45,17 @@ void Game::Run()
 
         dt = Stasis::GetDelta();
         fxCount += dt;
-        fxCount = min(fxCount, STP * 2.);
+        fxCount = fmin(fxCount, STP * 2.);
         while (fxCount >= STP)
         {
             FreqRefresh(nowFx, oldFx, freqFx);
-            Input::Fixed();
             Logic::Fixed();
             Render::Fixed();
             fxCount -= STP;
         }
-
-        Render::Update();
     }
 
-    Input::Quit();
     Logic::Quit();
-    Render::Quit();
 }
 
 float Game::GetUpdateFPS()

@@ -1,17 +1,16 @@
 #include "render.h"
 
+#include "entity.h"
 #include "game.h"
 #include "gameobject.h"
+#include "glfw3.h"
 #include "litegfx.h"
 #include "oval_renderer.h"
 #include "rect_renderer.h"
-#include "scene_01.h"
 #include "sprite.h"
 #include "sprite_animation.h"
 #include "sprite_loader.h"
 #include "sprite_renderer.h"
-#include "stasis.h"
-#include "sys_player.h"
 #include "transform.h"
 
 #include <algorithm>
@@ -63,8 +62,8 @@ void Render::Fixed()
     auto &reg = Game::GetRegistry();
 
     // Render Rects
-    auto rects = reg.view<Transform, GameObject, RectRenderer>();
-    for (auto [entity, tf, go, rr] : rects.each())
+    auto rects = reg.view<GameObject, Transform, RectRenderer>();
+    for (auto [entity, go, tf, rr] : rects.each())
     {
         if (!go.isActive)
             continue;
@@ -75,8 +74,8 @@ void Render::Fixed()
     }
 
     // Render Ovals
-    auto ovals = reg.view<Transform, GameObject, OvalRenderer>();
-    for (auto [entity, tf, go, rr] : ovals.each())
+    auto ovals = reg.view<GameObject, Transform, OvalRenderer>();
+    for (auto [entity, go, tf, rr] : ovals.each())
     {
         if (!go.isActive)
             continue;
@@ -88,24 +87,21 @@ void Render::Fixed()
 
     // Render Sprites
     lgfx_setcolor(1.f, 1.f, 1.f, 1.f);
-
     const auto ByLayer = [](const SpriteRenderer &a, const SpriteRenderer &b) { return a.layer < b.layer; };
-
     reg.sort<SpriteRenderer>(ByLayer);
+    auto sprites = reg.view<GameObject, Transform, SpriteRenderer>().use<SpriteRenderer>();
 
-    auto sprites = reg.view<Transform, GameObject, SpriteRenderer>().use<SpriteRenderer>();
-
-    for (auto [entity, tf, go, sr] : sprites.each())
+    for (auto [entity, go, tf, sr] : sprites.each())
     {
-        if (!go.isActive)
+        if (!go.isActive || !sr.sprite)
             continue;
-        if (!sr.sprite)
-            continue;
+
         Vec2 fPos = tf.position + sr.offsetPosition;
         Vec2 fScl = sr.size;
         float fRot = tf.rotation + sr.offsetRotation;
+
         lgfx_setblend(sr.blend);
-        ltex_drawrotsized((ltex_t *)sr.sprite->texture, fPos.x, fPos.y, fRot, sr.pivot.x, sr.pivot.y, fScl.x, fScl.y,
+        ltex_drawrotsized(sr.sprite->texture, fPos.x, fPos.y, fRot, sr.pivot.x, sr.pivot.y, fScl.x, fScl.y,
                           sr.sprite->uv0.x, sr.sprite->uv0.y, sr.sprite->uv1.x, sr.sprite->uv1.y);
     }
 

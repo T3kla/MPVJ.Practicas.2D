@@ -40,3 +40,6 @@ cowboy/cowboy/Debug
 cowboy/cowboy/.vs
 pang/.vs
 pang/swalib_example/x64
+omega pang/.vs
+omega pang/Debug
+omega pang/project/Debug

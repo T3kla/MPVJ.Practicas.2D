@@ -7,14 +7,7 @@
 #include "sys_player.h"
 #include "vec.h"
 
-Scene_01 Scene_01::Instance;
-
-void Scene_01::Load()
-{
-    Logic::Subscribe(&Instance);
-}
-
-void Scene_01::Start()
+Scene_01::Scene_01()
 {
     SysBalls::Instantiate({300.f, 500.f}, true, Size::L);
     SysBalls::Instantiate({600.f, 500.f}, true, Size::B);
@@ -27,9 +20,4 @@ void Scene_01::Start()
     new SysHook();
     new SysBalls();
     new SysExplosions();
-}
-
-void Scene_01::Quit()
-{
-    Logic::UnSubscribe(this);
 }

@@ -7,11 +7,9 @@
 #include "gameobject.h"
 #include "input.h"
 #include "keycode.h"
-#include "logic.h"
 #include "player.h"
 #include "render.h"
 #include "rigidbody.h"
-#include "scene_01.h"
 #include "sprite_animation.h"
 #include "sprite_loader.h"
 #include "sprite_renderer.h"
@@ -64,14 +62,47 @@ void SysPlayer::Awake()
     int width, height;
     Render::GetWindowSize(width, height);
 
-    reg.get_or_emplace<GameObject>(id, true);
-    reg.get_or_emplace<Transform>(id, Vec2(width / 2.f, 50.f), Vec2::One(), 0.f);
-    reg.get_or_emplace<RigidBody>(id, true, Vec2::Zero(), 0.2f);
-    reg.get_or_emplace<Player>(id, true, 3, 5000.f, stateIdle, false);
-    reg.get_or_emplace<CircleCollider>(id, true, 50.f);
-    reg.get_or_emplace<SpriteRenderer>(id, true, &SpriteLoader::sprPlayerMoveL[0], Vec2::Zero(), 0.f,
-                                       Vec2(100.f, 100.f), Vec2::One() * 0.5f, 10, BLEND_ALPHA);
-    reg.get_or_emplace<SpriteAnimation>(id, true, &SpriteLoader::sprHook, 0, 0.f, 0.2f, 0.f, 1);
+    auto &go = reg.get_or_emplace<GameObject>(id);
+    go.isActive = true;
+
+    auto &tf = reg.get_or_emplace<Transform>(id);
+    tf.position = {width / 2.f, 50.f};
+    tf.scale = Vec2::One();
+    tf.rotation = 0.f;
+
+    auto &rb = reg.get_or_emplace<RigidBody>(id);
+    rb.enable = true;
+    rb.velocity = Vec2::Zero();
+    rb.linearDrag = 0.2f;
+
+    auto &pl = reg.get_or_emplace<Player>(id);
+    pl.enable = true;
+    pl.health = 3;
+    pl.speed = 5000.f;
+    pl.state = stateIdle;
+    pl.reversed = false;
+
+    auto &cc = reg.get_or_emplace<CircleCollider>(id);
+    cc.enable = true;
+    cc.radius = 50.f;
+
+    auto &sr = reg.get_or_emplace<SpriteRenderer>(id);
+    sr.enable = true;
+    sr.sprite = &SpriteLoader::sprPlayerMoveL[0];
+    sr.offsetPosition = Vec2::Zero();
+    sr.offsetRotation = 0.f;
+    sr.size = {100.f, 100.f};
+    sr.pivot = Vec2::One() * 0.5f;
+    sr.layer = 10;
+    sr.blend = BLEND_ALPHA;
+
+    auto &sa = reg.get_or_emplace<SpriteAnimation>(id);
+    sa.enable = true;
+    sa.animation = &SpriteLoader::sprPlayerShootR;
+    sa.frame = 0;
+    sa.speed = 0.f;
+    sa.duration = 1.f;
+    sa.count = 0.f;
 }
 
 void SysPlayer::Update()

@@ -2,7 +2,7 @@
 
 #include "game.h"
 #include "gameobject.h"
-#include "rigidbody.h" S
+#include "rigidbody.h"
 #include "transform.h"
 
 auto GetView = []() { return Game::GetRegistry().view<GameObject, Transform, RigidBody>(); };

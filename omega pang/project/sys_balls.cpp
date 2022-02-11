@@ -10,11 +10,11 @@
 #include "sprite_renderer.h"
 #include "transform.h"
 
-#include <entt/entt.hpp>
-
-auto GetView = []() { return Game::GetRegistry().view<GameObject, Transform, RigidBody, Ball, CircleCollider>(); };
-bool TryPoolling(entt::entity &id);
-float ReboundPerSize(Size size);
+static auto GetView = []() {
+    return Game::GetRegistry().view<GameObject, Transform, RigidBody, Ball, CircleCollider>();
+};
+static bool TryPoolling(entt::entity &id);
+static float ReboundPerSize(Size size);
 
 void SysBalls::Fixed()
 {
@@ -66,9 +66,9 @@ void SysBalls::Instantiate(const Vec2 &pos, bool right, Size size)
     if (!TryPoolling(id))
         id = reg.create();
 
-    Sprite *sprite;
-    Vec2 spriteSize;
-    float colRadius;
+    Sprite *sprite = nullptr;
+    Vec2 spriteSize = {};
+    float colRadius = 0.f;
 
     if (size == Size::L)
     {
@@ -95,18 +95,42 @@ void SysBalls::Instantiate(const Vec2 &pos, bool right, Size size)
         colRadius = 20.f;
     }
 
-    reg.get_or_emplace<GameObject>(id, true);
-    reg.get_or_emplace<Transform>(id, pos, Vec2::One(), 0.f);
-    reg.get_or_emplace<RigidBody>(id, true, Vec2(175.f * (right ? 1.f : -1.f), 200.f), 0.0f);
-    reg.get_or_emplace<Ball>(id, true, Vec2::Zero(), size);
-    reg.get_or_emplace<CircleCollider>(id, true, colRadius);
-    reg.get_or_emplace<SpriteRenderer>(id, true, sprite, Vec2::Zero(), 0.f, spriteSize, Vec2::One() * 0.5f, 1,
-                                       BLEND_ALPHA);
+    auto &go = reg.get_or_emplace<GameObject>(id);
+    go.isActive = true;
+
+    auto &tf = reg.get_or_emplace<Transform>(id);
+    tf.position = pos;
+    tf.scale = Vec2::One();
+    tf.rotation = 0.f;
+
+    auto &rb = reg.get_or_emplace<RigidBody>(id);
+    rb.enable = true;
+    rb.velocity = {175.f * (right ? 1.f : -1.f), 200.f};
+    rb.linearDrag = 0.0f;
+
+    auto &bl = reg.get_or_emplace<Ball>(id);
+    bl.enable = true;
+    bl.rebound = 0.f;
+    bl.size = size;
+
+    auto &cc = reg.get_or_emplace<CircleCollider>(id);
+    cc.enable = true;
+    cc.radius = colRadius;
+
+    auto &sr = reg.get_or_emplace<SpriteRenderer>(id);
+    sr.enable = true;
+    sr.sprite = sprite;
+    sr.offsetPosition = Vec2::Zero();
+    sr.offsetRotation = 0.f;
+    sr.size = spriteSize;
+    sr.pivot = Vec2::One() * 0.5f;
+    sr.layer = 1;
+    sr.blend = BLEND_ADD;
 }
 
 bool TryPoolling(entt::entity &id)
 {
-    for (auto [entity, go, tf, bl] : GetView().each())
+    for (auto [entity, go, tf, rb, bl, cc] : GetView().each())
         if (!go.isActive && bl.enable)
         {
             id = entity;

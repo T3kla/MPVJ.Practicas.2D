@@ -76,22 +76,18 @@ class Size
         }
     }
 
-    void OneSmaller()
+    Size OneSmaller()
     {
         switch (value)
         {
         case Size::L:
-            value = Size::B;
-            break;
+            return Size::B;
         case Size::B:
-            value = Size::M;
-            break;
+            return Size::M;
         case Size::M:
-            value = Size::S;
-            break;
+            return Size::S;
         default:
-            value = Size::None;
-            break;
+            return Size::None;
         }
     }
 

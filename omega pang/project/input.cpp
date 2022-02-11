@@ -1,18 +1,9 @@
 #include "input.h"
 
+#include "glfw3.h"
 #include "render.h"
-#include "stasis.h"
-#include "vec.h"
 
 Input Input::Instance;
-
-void Input::Awake()
-{
-}
-
-void Input::Start()
-{
-}
 
 void Input::Update()
 {
@@ -29,14 +20,6 @@ void Input::Update()
     // Exit
     if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_ESCAPE))
         glfwSetWindowShouldClose(window, 1);
-}
-
-void Input::Fixed()
-{
-}
-
-void Input::Quit()
-{
 }
 
 Vec2 Input::GetMousePos()

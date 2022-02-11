@@ -1,8 +1,6 @@
 #include "logic.h"
 
 #include "behaviour.h"
-#include "stasis.h"
-#include <iostream>
 
 Logic Logic::Instance;
 

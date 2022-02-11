@@ -17,6 +17,8 @@
 
 #include <entt/entt.hpp>
 
+bool TryPoolling(entt::entity &id);
+
 auto GetView = []() {
     return Game::GetRegistry().view<GameObject, Transform, Hook, SquareCollider, SpriteRenderer, SpriteAnimation>();
 };
@@ -67,13 +69,40 @@ void SysHook::Instantiate(const Vec2 &pos)
     if (!TryPoolling(id))
         id = reg.create();
 
-    auto &lol = reg.get_or_emplace<GameObject>(id, true);
-    reg.get_or_emplace<Transform>(id, pos, Vec2::One(), 0.f);
-    reg.get_or_emplace<Hook>(id, true, -1000.f);
-    reg.get_or_emplace<SquareCollider>(id, true, Vec2(0.f, -420.f), Vec2(35.f, 950.f));
-    reg.get_or_emplace<SpriteRenderer>(id, true, &SpriteLoader::sprHook[0], Vec2(0.f, -420.f), 0.f, Vec2(100.f, 1000.f),
-                                       Vec2::One() * 0.5f, 5, BLEND_ALPHA);
-    reg.get_or_emplace<SpriteAnimation>(id, true, &SpriteLoader::sprHook, 0, 0.f, 0.2f, 0.f, 1);
+    auto &go = reg.get_or_emplace<GameObject>(id);
+    go.isActive = true;
+
+    auto &tf = reg.get_or_emplace<Transform>(id);
+    tf.position = pos;
+    tf.scale = Vec2::One();
+    tf.rotation = 0.f;
+
+    auto &hk = reg.get_or_emplace<Hook>(id);
+    hk.enable = true;
+    hk.speed = -1000.f;
+
+    auto &sc = reg.get_or_emplace<SquareCollider>(id);
+    sc.enable = true;
+    sc.center = {0.f, -420.f};
+    sc.size = {35.f, 950.f};
+
+    auto &sr = reg.get_or_emplace<SpriteRenderer>(id);
+    sr.enable = true;
+    sr.sprite = &SpriteLoader::sprHook[0];
+    sr.offsetPosition = {0.f, -420.f};
+    sr.offsetRotation = 0.f;
+    sr.size = {100.f, 1000.f};
+    sr.pivot = Vec2::One() * 0.5f;
+    sr.layer = 5;
+    sr.blend = BLEND_ALPHA;
+
+    auto &sa = reg.get_or_emplace<SpriteAnimation>(id);
+    sa.enable = true;
+    sa.animation = &SpriteLoader::sprHook;
+    sa.frame = 0;
+    sa.speed = 0.f;
+    sa.duration = 0.2f;
+    sa.count = 0.f;
 }
 
 bool TryPoolling(entt::entity &id)
