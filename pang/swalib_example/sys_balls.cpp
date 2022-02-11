@@ -6,43 +6,19 @@
 #include "gameobject.h"
 #include "render.h"
 #include "rigidbody.h"
-#include "sprite_animation.h"
 #include "sprite_loader.h"
 #include "sprite_renderer.h"
 #include "transform.h"
 
 #include <entt/entt.hpp>
 
+auto GetView = []() { return Game::GetRegistry().view<GameObject, Transform, RigidBody, Ball, CircleCollider>(); };
 bool TryPoolling(entt::entity &id);
 float ReboundPerSize(Size size);
 
-SysBalls::SysBalls()
-{
-}
-
-SysBalls::~SysBalls()
-{
-}
-
-void SysBalls::Awake()
-{
-}
-
-void SysBalls::Start()
-{
-}
-
-void SysBalls::Update()
-{
-}
-
 void SysBalls::Fixed()
 {
-    auto &reg = Game::GetRegistry();
-
-    auto balls = reg.view<GameObject, Transform, RigidBody, Ball, CircleCollider>();
-
-    for (auto [entity, go, tf, rb, bl, cc] : balls.each())
+    for (auto [entity, go, tf, rb, bl, cc] : GetView().each())
     {
         if (!go.isActive)
             continue;
@@ -69,10 +45,6 @@ void SysBalls::Fixed()
             rb.velocity.y = ReboundPerSize(bl.size) * 1.2f;
         }
     }
-}
-
-void SysBalls::Quit()
-{
 }
 
 void SysBalls::InstantiateSmaller(const Vec2 &pos, bool right, Size size)
@@ -134,11 +106,7 @@ void SysBalls::Instantiate(const Vec2 &pos, bool right, Size size)
 
 bool TryPoolling(entt::entity &id)
 {
-    auto &reg = Game::GetRegistry();
-    auto balls = reg.view<GameObject, Transform, Ball>();
-
-    // Pooling
-    for (auto [entity, go, tf, bl] : balls.each())
+    for (auto [entity, go, tf, bl] : GetView().each())
         if (!go.isActive && bl.enable)
         {
             id = entity;

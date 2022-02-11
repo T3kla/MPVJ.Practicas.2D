@@ -2,14 +2,15 @@
 
 #include "behaviour.h"
 
-class SysPhysics : public Behaviour {
-  virtual void Awake() override;
-  virtual void Start() override;
-  virtual void Update() override;
-  virtual void Fixed() override;
-  virtual void Quit() override;
+class SysPhysics : public Behaviour
+{
+  public:
+    SysPhysics() = default;
+    virtual ~SysPhysics() override = default;
 
-public:
-  SysPhysics();
-  ~SysPhysics();
+    virtual void Awake() override{};
+    virtual void Start() override{};
+    virtual void Update() override{};
+    virtual void Fixed() override;
+    virtual void Quit() override{};
 };

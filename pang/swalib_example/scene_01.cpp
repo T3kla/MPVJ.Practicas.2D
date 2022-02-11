@@ -1,7 +1,5 @@
 #include "scene_01.h"
 
-#include "entity.h"
-#include "logic.h"
 #include "sys_balls.h"
 #include "sys_explosions.h"
 #include "sys_hook.h"
@@ -20,22 +18,12 @@ void Scene_01::Load()
     Logic::Subscribe(&Instance);
 }
 
-std::vector<Entity *> &Scene_01::GetRegistry()
-{
-    return reg;
-}
-
-void Scene_01::Awake()
-{
-}
-
 void Scene_01::Start()
 {
-
-    SysBalls::InstantiateL({300.f, 500.f}, true);
-    SysBalls::InstantiateB({600.f, 500.f}, true);
-    SysBalls::InstantiateM({800.f, 500.f}, true);
-    SysBalls::InstantiateS({1000.f, 500.f}, true);
+    SysBalls::Instantiate({300.f, 500.f}, true, Size::L);
+    SysBalls::Instantiate({600.f, 500.f}, true, Size::B);
+    SysBalls::Instantiate({800.f, 500.f}, true, Size::M);
+    SysBalls::Instantiate({1000.f, 500.f}, true, Size::S);
 
     // Systems
     new SysPlayer();
@@ -45,20 +33,7 @@ void Scene_01::Start()
     new SysExplosions();
 }
 
-void Scene_01::Update()
-{
-}
-
-void Scene_01::Fixed()
-{
-}
-
 void Scene_01::Quit()
 {
-    for (auto &entity : reg)
-        entity->RemoveAllComponents();
-
-    reg.clear();
-
     Logic::UnSubscribe(this);
 }

@@ -1,35 +1,20 @@
 #include "sys_physics.h"
 
 #include "game.h"
-#include "logic.h"
-#include "scene_01.h"
-
 #include "gameobject.h"
-#include "rigidbody.h"
+#include "rigidbody.h" S
 #include "transform.h"
 
-void SysPhysics::Awake() {}
+auto GetView = []() { return Game::GetRegistry().view<GameObject, Transform, RigidBody>(); };
 
-void SysPhysics::Start() {}
+void SysPhysics::Fixed()
+{
+    for (auto [entity, go, tf, rb] : GetView().each())
+    {
+        if (!go.isActive)
+            continue;
 
-void SysPhysics::Update() {}
-
-void SysPhysics::Fixed() {
-
-  for (auto &entity : Scene_01::GetRegistry()) {
-    auto tf = entity->GetComponent<Transform>();
-    auto go = entity->GetComponent<GameObject>();
-    auto rb = entity->GetComponent<RigidBody>();
-
-    if (!tf || !go || !rb || !go->isActive)
-      continue;
-    tf->position += rb->velocity * (float)STP * 0.001f;
-    rb->velocity = rb->velocity * (1.f - rb->linearDrag);
-  }
+        tf.position += rb.velocity * (float)STP * 0.001f;
+        rb.velocity = rb.velocity * (1.f - rb.linearDrag);
+    }
 }
-
-void SysPhysics::Quit() {}
-
-SysPhysics::SysPhysics() { Logic::Subscribe(this); }
-
-SysPhysics::~SysPhysics() { Logic::UnSubscribe(this); }

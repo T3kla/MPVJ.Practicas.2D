@@ -6,15 +6,15 @@ class Entity
 {
   private:
     entt::entity entityID = {};
-    const entt::registry &entityReg;
+    entt::registry *entityReg = nullptr;
 
   public:
-    Entity() = delete;
-    Entity(const entt::entity &id, const entt::registry &reg);
+    Entity();
+    Entity(const entt::entity &id, entt::registry *reg);
     ~Entity();
 
     entt::entity GetID();
-    const entt::registry &GetReg();
+    entt::registry &GetReg();
 
     template <class T> T &&GetComponent();
 };

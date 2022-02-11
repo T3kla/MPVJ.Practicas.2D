@@ -2,15 +2,11 @@
 
 #include "ball.h"
 #include "circle_collider.h"
-#include "entity.h"
 #include "game.h"
 #include "gameobject.h"
 #include "hook.h"
-#include "inputs.h"
-#include "logic.h"
-#include "player.h"
+#include "render.h"
 #include "rigidbody.h"
-#include "scene_01.h"
 #include "sprite_animation.h"
 #include "sprite_loader.h"
 #include "sprite_renderer.h"
@@ -19,159 +15,72 @@
 #include "sys_explosions.h"
 #include "transform.h"
 
-Entity *GetHook();
+#include <entt/entt.hpp>
+
+auto GetView = []() {
+    return Game::GetRegistry().view<GameObject, Transform, Hook, SquareCollider, SpriteRenderer, SpriteAnimation>();
+};
+auto GetBallsView = []() { return Game::GetRegistry().view<GameObject, Transform, RigidBody, Ball, CircleCollider>(); };
+
 bool IsColliding(Vec2 circlePos, float circleRad, Vec2 sqrPos, Vec2 sqrSize);
 float Clamp(float value, float min, float max);
 
-SysHook::SysHook()
-{
-}
-
-SysHook::~SysHook()
-{
-}
-
-void SysHook::Awake()
-{
-}
-
-void SysHook::Start()
-{
-}
-
-void SysHook::Update()
-{
-}
-
 void SysHook::Fixed()
 {
-    auto &reg = Scene_01::GetRegistry();
-
-    // Travel
-    for (auto &hook : reg)
+    for (auto [entity, _go, _tf, _hk, _sc, _sr, _sa] : GetView().each())
     {
-        auto *tf = hook->GetComponent<Transform>();
-        auto *go = hook->GetComponent<GameObject>();
-        auto *hk = hook->GetComponent<Hook>();
-        auto *sc = hook->GetComponent<SquareCollider>();
-
-        if (!tf || !hk || !go->isActive)
+        if (!_go.isActive)
             continue;
 
-        tf->position += Vec2::Up() * hk->speed * (float)STP * 0.001f;
-        if (tf->position.y > SCR_HEIGHT - 50)
-            go->isActive = false;
+        // Travel Up
+        int width, height;
+        Render::GetWindowSize(width, height);
+        _tf.position += Vec2::Up() * _hk.speed * (float)STP * 0.001f;
+        if (_tf.position.y > height - 50)
+            _go.isActive = false;
 
         // Collisions
-        for (auto &ball : reg)
+        for (auto [entity, go_, tf_, rb_, bl_, cc_] : GetBallsView().each())
         {
-            auto *btf = ball->GetComponent<Transform>();
-            auto *bgo = ball->GetComponent<GameObject>();
-            auto *brb = ball->GetComponent<RigidBody>();
-            auto *bbl = ball->GetComponent<Ball>();
-            auto *bcl = ball->GetComponent<CircleCollider>();
-
-            if (!btf || !bgo || !brb || !bbl || !bcl || !bgo->isActive)
+            if (!go_.isActive)
                 continue;
 
-            if (IsColliding(btf->position, bcl->radius, tf->position + sc->center, sc->size))
+            if (IsColliding(tf_.position, cc_.radius, _tf.position + _sc.center, _sc.size))
             {
-                go->isActive = false;
-                bgo->isActive = false;
-                auto size = bbl->size;
-                SysBalls::InstantiateSmaller(btf->position, true, size);
-                SysBalls::InstantiateSmaller(btf->position, false, size);
-                SysExplosions::InstantiateSmaller(btf->position, size);
+                _go.isActive = false;
+                go_.isActive = false;
+                SysBalls::InstantiateSmaller(_tf.position, true, bl_.size);
+                SysBalls::InstantiateSmaller(_tf.position, false, bl_.size);
+                SysExplosions::InstantiateSmaller(_tf.position, bl_.size);
                 return;
             }
         }
     }
 }
 
-void SysHook::Quit()
-{
-}
-
 void SysHook::Instantiate(const Vec2 &pos)
 {
-    auto *hook = GetHook();
+    auto &reg = Game::GetRegistry();
 
-    if (!hook)
-        return;
+    entt::entity id;
 
-    auto *tf = hook->GetComponent<Transform>();
-    auto *go = hook->GetComponent<GameObject>();
-    auto *hk = hook->GetComponent<Hook>();
-    auto *sc = hook->GetComponent<SquareCollider>();
-    auto *sr = hook->GetComponent<SpriteRenderer>();
-    auto *sa = hook->GetComponent<SpriteAnimation>();
+    if (!TryPoolling(id))
+        id = reg.create();
 
-    tf->position = pos;
-
-    go->isActive = true;
-
-    hk->speed = -1000.f;
-
-    sc->center = {0.f, -420.f};
-    sc->size = {35.f, 950.f};
-
-    sr->sprite = &SpriteLoader::sprHook[0];
-    sr->offsetPosition = {0.f, -420.f};
-    sr->offsetRotation = 0.f;
-    sr->size = {100.f, 1000.f};
-    sr->pivot = {0.5f, 0.5f};
-    sr->layer = 5;
-
-    sa->animation = &SpriteLoader::sprHook;
-    sa->duration = 0.2f;
-    sa->count = 0.f;
-    sa->frame = 0;
-    sa->enable = true;
-}
-
-Entity *GetHook()
-{
-    auto &reg = Scene_01::GetRegistry();
-
-    // Pooling
-    for (auto &i : reg)
-    {
-        auto *gaob = i->GetComponent<GameObject>();
-        auto *hook = i->GetComponent<Hook>();
-
-        if (gaob && hook && !gaob->isActive)
-            return i;
-    }
-
-    // Instantiation
-    auto hook = new Entity();
-
-    auto tf = Transform();
-    auto go = GameObject();
-    auto hk = Hook();
-    auto sc = SquareCollider();
-    auto sr = SpriteRenderer();
-    auto sa = SpriteAnimation();
-
-    hook->AddComponent<Transform>(&tf);
-    hook->AddComponent<GameObject>(&go);
-    hook->AddComponent<Hook>(&hk);
-    hook->AddComponent<SquareCollider>(&sc);
-    hook->AddComponent<SpriteRenderer>(&sr);
-    hook->AddComponent<SpriteAnimation>(&sa);
-
-    reg.push_back(hook);
-    return hook;
+    auto &lol = reg.get_or_emplace<GameObject>(id, true);
+    reg.get_or_emplace<Transform>(id, pos, Vec2::One(), 0.f);
+    reg.get_or_emplace<Hook>(id, true, -1000.f);
+    reg.get_or_emplace<SquareCollider>(id, true, Vec2(0.f, -420.f), Vec2(35.f, 950.f));
+    reg.get_or_emplace<SpriteRenderer>(id, true, &SpriteLoader::sprHook[0], Vec2(0.f, -420.f), 0.f, Vec2(100.f, 1000.f),
+                                       Vec2::One() * 0.5f, 5, BLEND_ALPHA);
+    reg.get_or_emplace<SpriteAnimation>(id, true, &SpriteLoader::sprHook, 0, 0.f, 0.2f, 0.f, 1);
 }
 
 bool TryPoolling(entt::entity &id)
 {
-    auto &reg = Game::GetRegistry();
-    auto explosions = reg.view<GameObject, Transform, Explosion>();
-
     // Pooling
-    for (auto [entity, go, tf, ex] : explosions.each())
-        if (!go.isActive && ex.enable)
+    for (auto [entity, go, tf, hk, sc, sr, sa] : GetView().each())
+        if (!go.isActive && hk.enable)
         {
             id = entity;
             return true;

@@ -1,7 +1,5 @@
 #include "sys_player.h"
 
-#include "sys.h"
-
 #include "ball.h"
 #include "circle_collider.h"
 #include "entity.h"
@@ -10,6 +8,7 @@
 #include "inputs.h"
 #include "logic.h"
 #include "player.h"
+#include "render.h"
 #include "rigidbody.h"
 #include "scene_01.h"
 #include "sprite_animation.h"
@@ -19,10 +18,14 @@
 #include "sys_hook.h"
 #include "transform.h"
 
+#include <entt/entt.hpp>
+
 constexpr char *stateIdle = "idle";
 constexpr char *stateMoving = "moving";
 constexpr char *stateShooting = "shooting";
 constexpr char *stateHurt = "hurt";
+
+Entity player;
 
 float moveBlockCounter = 0.f;
 float shootBlockCounter = 0.f;
@@ -37,10 +40,12 @@ void BlockMove(float time)
 {
     moveBlockCounter = time;
 }
+
 void BlockShoot(float time)
 {
     shootBlockCounter = time;
 }
+
 void BlockHurt(float time)
 {
     hurtBlockCounter = time;
@@ -51,6 +56,7 @@ bool CanMove()
 {
     return moveBlockCounter < 0.f;
 }
+
 bool CanShoot()
 {
     return shootBlockCounter < 0.f;
@@ -61,67 +67,25 @@ bool IsColliding(Vec2 posA, float radA, Vec2 posB, float radB)
     return (posA - posB).Magnitude() < radA + radB;
 }
 
-Entity player = {};
-
-SysPlayer::SysPlayer()
-{
-    // Instantiate Player
-    auto tf = Transform();
-    auto go = GameObject();
-    auto pl = Player();
-    auto rb = RigidBody();
-    auto sr = SpriteRenderer();
-    auto sa = SpriteAnimation();
-
-    tf.position = {1280.f / 2.f, 50.f};
-
-    go.isActive = true;
-
-    pl.health = 3;
-    pl.speed = 5000.f;
-    pl.state = stateIdle;
-    pl.reversed = false;
-
-    rb.velocity = {0.f, 0.f};
-    rb.linearDrag = 0.2f;
-
-    sr.sprite = &SpriteLoader::sprPlayerMoveL[0];
-    sr.offsetPosition = {0.f, 0.f};
-    sr.offsetRotation = 0.f;
-    sr.size = {100.f, 100.f};
-    sr.pivot = {0.5f, 0.5f};
-    sr.layer = 10;
-
-    sa.animation = &SpriteLoader::sprPlayerShootR;
-    sa.duration = 1.f;
-    sa.count = 0.f;
-    sa.frame = 0;
-    sa.enable = true;
-
-    player.AddComponent<Transform>(&tf);
-    player.AddComponent<GameObject>(&go);
-    player.AddComponent<Player>(&pl);
-    player.AddComponent<RigidBody>(&rb);
-    player.AddComponent<SpriteRenderer>(&sr);
-    player.AddComponent<SpriteAnimation>(&sa);
-
-    Scene_01::GetRegistry().push_back(&player);
-
-    // Sub
-    Logic::Subscribe(this);
-}
-
-SysPlayer::~SysPlayer()
-{
-    Logic::UnSubscribe(this);
-}
-
 void SysPlayer::Awake()
 {
-}
+    auto &reg = Game::GetRegistry();
 
-void SysPlayer::Start()
-{
+    entt::entity id = reg.create();
+
+    player = Entity(id, &reg);
+
+    int width, height;
+    Render::GetWindowSize(width, height);
+
+    reg.get_or_emplace<GameObject>(id, true);
+    reg.get_or_emplace<Transform>(id, Vec2(width / 2.f, 50.f), Vec2::One(), 0.f);
+    reg.get_or_emplace<RigidBody>(id, true, Vec2::Zero(), 0.2f);
+    reg.get_or_emplace<Player>(id, true, 3, 5000.f, stateIdle, false);
+    reg.get_or_emplace<CircleCollider>(id, true, 50.f);
+    reg.get_or_emplace<SpriteRenderer>(id, true, &SpriteLoader::sprPlayerMoveL[0], Vec2::Zero(), 0.f,
+                                       Vec2(100.f, 100.f), Vec2::One() * 0.5f, 10, BLEND_ALPHA);
+    reg.get_or_emplace<SpriteAnimation>(id, true, &SpriteLoader::sprHook, 0, 0.f, 0.2f, 0.f, 1);
 }
 
 void SysPlayer::Update()
@@ -132,14 +96,13 @@ void SysPlayer::Update()
     hurtBlockCounter -= time;
     blinkCounter -= time;
 
-    auto &reg = Scene_01::GetRegistry();
+    auto &reg = Game::GetRegistry();
 
-    auto *tf = player.GetComponent<Transform>();
-    auto *go = player.GetComponent<GameObject>();
-    auto *rb = player.GetComponent<RigidBody>();
-    auto *pl = player.GetComponent<Player>();
-    auto *sa = player.GetComponent<SpriteAnimation>();
-    auto fakeCC = 50.f;
+    auto &tf = reg.get<Transform>(player.GetID());
+    auto &go = player.GetComponent<GameObject>();
+    auto &rb = player.GetComponent<RigidBody>();
+    auto &pl = player.GetComponent<Player>();
+    auto &sa = player.GetComponent<SpriteAnimation>();
 
     if (!go || !go->isActive)
         return;

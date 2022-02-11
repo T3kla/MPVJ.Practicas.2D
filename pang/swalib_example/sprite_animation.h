@@ -15,6 +15,4 @@ struct SpriteAnimation
 
     float duration = 0.f;
     float count = 0.f;
-
-    bool enable = true;
 };

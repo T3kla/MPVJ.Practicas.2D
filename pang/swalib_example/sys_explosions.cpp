@@ -9,34 +9,12 @@
 
 #include <entt/entt.hpp>
 
+auto GetView = []() { return Game::GetRegistry().view<GameObject, Transform, Explosion, SpriteRenderer>(); };
 bool TryPoolling(entt::entity &id);
-
-SysExplosions::SysExplosions()
-{
-}
-
-SysExplosions::~SysExplosions()
-{
-}
-
-void SysExplosions::Awake()
-{
-}
-
-void SysExplosions::Start()
-{
-}
-
-void SysExplosions::Update()
-{
-}
 
 void SysExplosions::Fixed()
 {
-    auto &reg = Game::GetRegistry();
-    auto explosions = reg.view<GameObject, Transform, Explosion>();
-
-    for (auto [entity, go, tf, ex] : explosions.each())
+    for (auto [entity, go, tf, ex, sr] : GetView().each())
     {
         if (!go.isActive)
             continue;
@@ -46,10 +24,6 @@ void SysExplosions::Fixed()
         else
             go.isActive = false;
     }
-}
-
-void SysExplosions::Quit()
-{
 }
 
 void SysExplosions::InstantiateSmaller(const Vec2 &pos, Size size)
@@ -104,11 +78,7 @@ void SysExplosions::Instantiate(const Vec2 &pos, Size size)
 
 bool TryPoolling(entt::entity &id)
 {
-    auto &reg = Game::GetRegistry();
-    auto explosions = reg.view<GameObject, Transform, Explosion>();
-
-    // Pooling
-    for (auto [entity, go, tf, ex] : explosions.each())
+    for (auto [entity, go, tf, ex, sr] : GetView().each())
         if (!go.isActive && ex.enable)
         {
             id = entity;

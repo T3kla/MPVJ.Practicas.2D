@@ -1,6 +1,12 @@
 #include "entity.h"
 
-Entity::Entity(const entt::entity &id, const entt::registry &reg) : entityID(id), entityReg(reg)
+#include "game.h"
+
+Entity::Entity()
+{
+}
+
+Entity::Entity(const entt::entity &id, entt::registry *reg) : entityID(id), entityReg(reg)
 {
 }
 
@@ -13,7 +19,7 @@ entt::entity Entity::GetID()
     return entityID;
 }
 
-const entt::registry &Entity::GetReg()
+entt::registry &Entity::GetReg()
 {
-    return entityReg;
+    return *entityReg;
 }
