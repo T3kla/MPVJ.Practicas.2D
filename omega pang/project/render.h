@@ -13,9 +13,7 @@ class Render
     Render() = default;
 
     char *title = nullptr;
-
     GLFWwindow *window = nullptr;
-    int windowWidth = 1280, windowHeight = 720;
 
     Color bgColor = {0.f, 0.f, 0.f, 1.f};
 
@@ -35,7 +33,4 @@ class Render
 
     static const char *GetTitle();
     static void SetTitle(char *text);
-
-    static const bool GetTitleUpdate();
-    static void SetTitleUpdate(bool value);
 };

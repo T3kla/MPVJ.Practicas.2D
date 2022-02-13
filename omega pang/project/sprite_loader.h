@@ -11,7 +11,6 @@ class SpriteLoader
     static SpriteLoader Instance;
 
   private:
-    static stbi_uc *pixels;
     static ltex_t *txBg;
     static ltex_t *txSheet;
     static ltex_t *txSheetRev;

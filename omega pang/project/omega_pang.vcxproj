@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClCompile Include="behaviour.cpp" />
     <ClCompile Include="entity.cpp" />
+    <ClCompile Include="font_loader.cpp" />
     <ClCompile Include="gameobject.h" />
     <ClCompile Include="rect_renderer.h" />
     <ClCompile Include="scene_01.cpp" />
@@ -158,6 +159,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pi.cpp" />
     <ClCompile Include="render.cpp" />
+    <ClCompile Include="scene_mm.cpp" />
+    <ClCompile Include="size.cpp" />
     <ClCompile Include="sprite_loader.cpp" />
     <ClCompile Include="stasis.cpp" />
     <ClCompile Include="sys_balls.cpp" />
@@ -165,17 +168,21 @@
     <ClCompile Include="sys_hook.cpp" />
     <ClCompile Include="sys_physics.cpp" />
     <ClCompile Include="sys_player.cpp" />
+    <ClCompile Include="sys_ui.cpp" />
     <ClCompile Include="vec.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ball.h" />
     <ClInclude Include="color.h" />
     <ClInclude Include="explosion.h" />
+    <ClInclude Include="font.h" />
+    <ClInclude Include="font_loader.h" />
     <ClInclude Include="hook.h" />
     <ClInclude Include="keycode.h" />
     <ClInclude Include="oval_renderer.h" />
     <ClInclude Include="player.h" />
-    <ClInclude Include="sizes.h" />
+    <ClInclude Include="scene_mm.h" />
+    <ClInclude Include="size.h" />
     <ClInclude Include="sprite_animation.h" />
     <ClInclude Include="circle_collider.h" />
     <ClInclude Include="entity.h" />
@@ -197,6 +204,8 @@
     <ClInclude Include="sys_hook.h" />
     <ClInclude Include="sys_physics.h" />
     <ClInclude Include="sys_player.h" />
+    <ClInclude Include="sys_ui.h" />
+    <ClInclude Include="textbox.h" />
     <ClInclude Include="transform.h" />
     <ClInclude Include="vec.h" />
   </ItemGroup>

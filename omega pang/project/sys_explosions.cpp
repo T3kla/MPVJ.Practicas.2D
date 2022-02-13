@@ -26,18 +26,11 @@ void SysExplosions::Fixed()
     }
 }
 
-void SysExplosions::InstantiateSmaller(const Vec2 &pos, Size size)
-{
-    Size smaller = size.OneSmaller();
-
-    if (smaller == Size::None)
-        return;
-
-    Instantiate(pos, smaller);
-}
-
 void SysExplosions::Instantiate(const Vec2 &pos, Size size)
 {
+    if (size == Size::None)
+        return;
+
     auto &reg = Game::GetRegistry();
 
     entt::entity id;
@@ -89,7 +82,7 @@ void SysExplosions::Instantiate(const Vec2 &pos, Size size)
     sr.offsetRotation = 0.f;
     sr.size = spriteSize;
     sr.pivot = Vec2::One() * 0.5f;
-    sr.layer = 1;
+    sr.layer = 2;
     sr.blend = BLEND_ALPHA;
 }
 

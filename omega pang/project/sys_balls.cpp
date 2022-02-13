@@ -24,7 +24,7 @@ void SysBalls::Fixed()
             continue;
 
         // Gravity
-        rb.velocity += Vec2::Down() * 600.f * (float)STP * 0.001f;
+        rb.velocity -= Vec2::Down() * 600.f * (float)STP * 0.001f;
 
         // Rebound
         int width, height;
@@ -39,26 +39,19 @@ void SysBalls::Fixed()
             tf.position.x = cc.radius / 2.f + 1.f;
             rb.velocity.x *= -1.f;
         }
-        if (tf.position.y < cc.radius / 2.f)
+        if (tf.position.y > height - cc.radius / 2.f)
         {
-            tf.position.y = cc.radius / 2.f + 1.f;
-            rb.velocity.y = ReboundPerSize(bl.size) * 1.2f;
+            tf.position.y = height - cc.radius / 2.f - 1.f;
+            rb.velocity.y = -ReboundPerSize(bl.size) * 1.2f;
         }
     }
 }
 
-void SysBalls::InstantiateSmaller(const Vec2 &pos, bool right, Size size)
-{
-    Size smaller = size.OneSmaller();
-
-    if (smaller == Size::None)
-        return;
-
-    Instantiate(pos, right, smaller);
-}
-
 void SysBalls::Instantiate(const Vec2 &pos, bool right, Size size)
 {
+    if (size == Size::None)
+        return;
+
     auto &reg = Game::GetRegistry();
 
     entt::entity id;
@@ -105,7 +98,7 @@ void SysBalls::Instantiate(const Vec2 &pos, bool right, Size size)
 
     auto &rb = reg.get_or_emplace<RigidBody>(id);
     rb.enable = true;
-    rb.velocity = {175.f * (right ? 1.f : -1.f), 200.f};
+    rb.velocity = {175.f * (right ? 1.f : -1.f), -200.f};
     rb.linearDrag = 0.0f;
 
     auto &bl = reg.get_or_emplace<Ball>(id);
@@ -125,7 +118,7 @@ void SysBalls::Instantiate(const Vec2 &pos, bool right, Size size)
     sr.size = spriteSize;
     sr.pivot = Vec2::One() * 0.5f;
     sr.layer = 1;
-    sr.blend = BLEND_ADD;
+    sr.blend = BLEND_ALPHA;
 }
 
 bool TryPoolling(entt::entity &id)

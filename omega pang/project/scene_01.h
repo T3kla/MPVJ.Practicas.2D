@@ -1,8 +1,8 @@
 #pragma once
 
-class Scene_01
+class Scene01
 {
   public:
-    Scene_01();
-    ~Scene_01(){};
+    Scene01();
+    ~Scene01(){};
 };

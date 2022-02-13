@@ -1,7 +1,7 @@
 #pragma once
 
 #include "behaviour.h"
-#include "sizes.h"
+#include "size.h"
 
 struct Vec2;
 
@@ -18,5 +18,4 @@ class SysBalls : public Behaviour
     virtual void Quit() override{};
 
     static void Instantiate(const Vec2 &pos, bool right, Size size);
-    static void InstantiateSmaller(const Vec2 &pos, bool right, Size size);
 };

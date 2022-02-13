@@ -66,7 +66,7 @@ void SysPlayer::Awake()
     go.isActive = true;
 
     auto &tf = reg.get_or_emplace<Transform>(id);
-    tf.position = {width / 2.f, 50.f};
+    tf.position = {width / 2.f, height - 50.f};
     tf.scale = Vec2::One();
     tf.rotation = 0.f;
 

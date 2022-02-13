@@ -7,12 +7,12 @@
 #include "sys_player.h"
 #include "vec.h"
 
-Scene_01::Scene_01()
+Scene01::Scene01()
 {
-    SysBalls::Instantiate({300.f, 500.f}, true, Size::L);
-    SysBalls::Instantiate({600.f, 500.f}, true, Size::B);
-    SysBalls::Instantiate({800.f, 500.f}, true, Size::M);
-    SysBalls::Instantiate({1000.f, 500.f}, true, Size::S);
+    SysBalls::Instantiate({300.f, 200.f}, true, Size::L);
+    SysBalls::Instantiate({600.f, 200.f}, true, Size::B);
+    SysBalls::Instantiate({800.f, 200.f}, true, Size::M);
+    SysBalls::Instantiate({1000.f, 200.f}, true, Size::S);
 
     // Systems
     new SysPlayer();

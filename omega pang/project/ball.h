@@ -1,6 +1,6 @@
 #pragma once
 
-#include "sizes.h"
+#include "size.h"
 
 struct Ball
 {

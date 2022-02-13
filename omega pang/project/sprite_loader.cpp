@@ -1,7 +1,7 @@
 #include "sprite_loader.h"
 
-const char *fileBG = "../resources/txBG.png";
-const char *fileSheet = "../resources/sprSheet.png";
+static constexpr char *fileBG = "../resources/txBG.png";
+static constexpr char *fileSheet = "../resources/sprSheet.png";
 
 Sprite SpriteLoader::sprBg;
 
@@ -18,19 +18,36 @@ Sprite SpriteLoader::sprPlayerHitR;
 
 std::vector<Sprite> SpriteLoader::sprHook;
 
-stbi_uc *SpriteLoader::pixels = nullptr;
 ltex_t *SpriteLoader::txBg = nullptr;
 ltex_t *SpriteLoader::txSheet = nullptr;
 ltex_t *SpriteLoader::txSheetRev = nullptr;
 
 SpriteLoader SpriteLoader::Instance;
 
+void Reverse(void *start, int bytes, int length)
+{
+    unsigned char buffer[128];
+
+    unsigned char *lo = (unsigned char *)start;
+    unsigned char *hi = (unsigned char *)start + (length - 1) * bytes;
+
+    while (lo < hi)
+    {
+        memcpy(buffer, lo, bytes);
+        memcpy(lo, hi, bytes);
+        memcpy(hi, buffer, bytes);
+
+        lo += bytes;
+        hi -= bytes;
+    }
+}
+
 void SpriteLoader::LoadTextures()
 {
     int w, h, c;
 
     // BG
-    pixels = stbi_load(fileBG, &w, &h, &c, 4);
+    auto *pixels = stbi_load(fileBG, &w, &h, &c, 4);
     if (!pixels)
         throw "Error loading image";
     txBg = ltex_alloc(w, h, 0);
@@ -42,22 +59,18 @@ void SpriteLoader::LoadTextures()
     if (!pixels)
         throw "Error loading image";
     txSheet = ltex_alloc(w, h, 0);
-    txSheetRev = ltex_alloc(w, h, 0);
     ltex_setpixels(txSheet, pixels);
 
-    // Sheet Reverse TODO: reverse texture
-    // pixels = stbi_load(fileSheet, &w, &h, &c, 4);
+    // Reverse horizontal
+    for (size_t i = 0; i < h; i++)
+        Reverse(pixels + i * w * c, c, w);
 
-    // for (size_t i = 0; i < length; i++)
-    //{
-
-    //}
-
-    // ltex_setpixels(txSheet, pixels);
+    // SheetRev
+    txSheetRev = ltex_alloc(w, h, 0);
+    ltex_setpixels(txSheetRev, pixels);
     stbi_image_free(pixels);
 
-    //
-
+    // Sprite mapping
     sprBg = {txBg, Vec2::Zero(), Vec2::One()};
 
     sprBalls.push_back({txSheet, {0.2f, 0.6f}, {0.6f, 1.0f}});
@@ -95,4 +108,8 @@ void SpriteLoader::UnloadTextures()
 {
     ltex_free(txBg);
     ltex_free(txSheet);
+    ltex_free(txSheetRev);
+    txBg = nullptr;
+    txSheet = nullptr;
+    txSheetRev = nullptr;
 }

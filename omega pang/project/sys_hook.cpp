@@ -37,8 +37,8 @@ void SysHook::Fixed()
         // Travel Up
         int width, height;
         Render::GetWindowSize(width, height);
-        _tf.position += Vec2::Up() * _hk.speed * (float)STP * 0.001f;
-        if (_tf.position.y > height - 50)
+        _tf.position -= Vec2::Up() * _hk.speed * (float)STP * 0.001f;
+        if (_tf.position.y < 0 + 50.f)
             _go.isActive = false;
 
         // Collisions
@@ -47,15 +47,16 @@ void SysHook::Fixed()
             if (!go_.isActive)
                 continue;
 
-            if (IsColliding(tf_.position, cc_.radius, _tf.position + _sc.center, _sc.size))
-            {
-                _go.isActive = false;
-                go_.isActive = false;
-                SysBalls::InstantiateSmaller(_tf.position, true, bl_.size);
-                SysBalls::InstantiateSmaller(_tf.position, false, bl_.size);
-                SysExplosions::InstantiateSmaller(_tf.position, bl_.size);
-                return;
-            }
+            if (!IsColliding(tf_.position, cc_.radius, _tf.position + _sc.center, _sc.size))
+                continue;
+
+            _go.isActive = false;
+            go_.isActive = false;
+            auto size = bl_.size; // Pooling can modify bl_.size in the first instantiation
+            SysBalls::Instantiate(tf_.position, true, size.OneSmaller());
+            SysBalls::Instantiate(tf_.position, false, size.OneSmaller());
+            SysExplosions::Instantiate(tf_.position, size);
+            return;
         }
     }
 }
@@ -83,13 +84,13 @@ void SysHook::Instantiate(const Vec2 &pos)
 
     auto &sc = reg.get_or_emplace<SquareCollider>(id);
     sc.enable = true;
-    sc.center = {0.f, -420.f};
+    sc.center = {0.f, 420.f};
     sc.size = {35.f, 950.f};
 
     auto &sr = reg.get_or_emplace<SpriteRenderer>(id);
     sr.enable = true;
     sr.sprite = &SpriteLoader::sprHook[0];
-    sr.offsetPosition = {0.f, -420.f};
+    sr.offsetPosition = {0.f, 420.f};
     sr.offsetRotation = 0.f;
     sr.size = {100.f, 1000.f};
     sr.pivot = Vec2::One() * 0.5f;

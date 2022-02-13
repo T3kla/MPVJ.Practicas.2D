@@ -7,6 +7,7 @@
 #include "stasis.h"
 
 #include "scene_01.h"
+#include "scene_mm.h"
 
 #include <algorithm>
 
@@ -31,7 +32,9 @@ void Game::Run()
     Stasis::RefreshTime();
 
     Render::Awake();
-    new Scene_01();
+
+    // new Scene01();
+    new SceneMM();
 
     Logic::Awake();
     Logic::Start();

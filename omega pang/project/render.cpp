@@ -1,6 +1,7 @@
 #include "render.h"
 
 #include "entity.h"
+#include "font_loader.h"
 #include "game.h"
 #include "gameobject.h"
 #include "glfw3.h"
@@ -11,6 +12,7 @@
 #include "sprite_animation.h"
 #include "sprite_loader.h"
 #include "sprite_renderer.h"
+#include "stb_truetype.h"
 #include "transform.h"
 
 #include <algorithm>
@@ -18,8 +20,8 @@
 #include <vector>
 
 static char buffer[256];
-static float w = 0;
-static float h = 0;
+static float w = 1280;
+static float h = 720;
 
 static std::vector<Entity *> layered;
 
@@ -37,15 +39,18 @@ void Render::Awake()
         std::cout << "Panic!" << std::endl;
 
     // Create window
-    Instance.window = glfwCreateWindow(Instance.windowWidth, Instance.windowHeight, "", nullptr, nullptr);
+    Instance.window = glfwCreateWindow(w, h, "", nullptr, nullptr);
     glfwMakeContextCurrent(Instance.window);
 
     glfwSetInputMode(Instance.window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     glfwSetWindowSizeCallback(Instance.window, OnWindowResize);
-    lgfx_setup2d(Instance.windowWidth, Instance.windowHeight);
+    lgfx_setup2d(w, h);
 
     // Load textures
     SpriteLoader::LoadTextures();
+
+    // Load Fonts
+    FontLoader::LoadFonts();
 
     // Layers buffer
     layered.reserve(10);
@@ -56,10 +61,17 @@ void Render::Awake()
 
 void Render::Fixed()
 {
-    // Redraw
+    auto &reg = Game::GetRegistry();
+
+    // Clear screen
     lgfx_clearcolorbuffer(Instance.bgColor.r, Instance.bgColor.g, Instance.bgColor.b);
 
-    auto &reg = Game::GetRegistry();
+    lgfx_setblend(BLEND_SOLID);
+
+    //// Render background
+    // auto &sprBg = SpriteLoader::sprBg;
+    // ltex_drawrotsized(sprBg.texture, w / 2.f, h / 2.f, 0.f, 0.5f, 0.5f, w, h, sprBg.uv0.x, sprBg.uv0.y, sprBg.uv1.x,
+    //                   sprBg.uv1.y);
 
     // Render Rects
     auto rects = reg.view<GameObject, Transform, RectRenderer>();
@@ -93,17 +105,47 @@ void Render::Fixed()
 
     for (auto [entity, go, tf, sr] : sprites.each())
     {
-        if (!go.isActive || !sr.sprite)
+        if (!go.isActive)
             continue;
 
-        Vec2 fPos = tf.position + sr.offsetPosition;
-        Vec2 fScl = sr.size;
-        float fRot = tf.rotation + sr.offsetRotation;
+        // Animations
+        auto sa = reg.try_get<SpriteAnimation>(entity);
+        if (sa && sa->enable && sa->animation)
+        {
+            sa->count += (float)STP * 0.001f;
 
-        lgfx_setblend(sr.blend);
-        ltex_drawrotsized(sr.sprite->texture, fPos.x, fPos.y, fRot, sr.pivot.x, sr.pivot.y, fScl.x, fScl.y,
-                          sr.sprite->uv0.x, sr.sprite->uv0.y, sr.sprite->uv1.x, sr.sprite->uv1.y);
+            if (sa->count >= sa->duration)
+                sa->count = fmodf(sa->count, sa->duration);
+
+            auto frameFreq = sa->duration / sa->animation->size();
+            auto frame = (int)floorf(sa->count / frameFreq);
+
+            sr.sprite = &sa->animation->at(frame);
+        }
+
+        // Sprite drawing
+        if (sr.sprite && sr.enable)
+        {
+            Vec2 fPos = tf.position + sr.offsetPosition;
+            Vec2 fScl = sr.size;
+            float fRot = tf.rotation + sr.offsetRotation;
+            lgfx_setblend(sr.blend);
+            ltex_drawrotsized(sr.sprite->texture, fPos.x, fPos.y, fRot, sr.pivot.x, sr.pivot.y, fScl.x, fScl.y,
+                              sr.sprite->uv0.x, sr.sprite->uv0.y, sr.sprite->uv1.x, sr.sprite->uv1.y);
+        }
     }
+
+    ltex_t *tx;
+    stbtt_bakedchar *bk;
+    FontLoader::GetFontOrg(tx, bk);
+    auto txSize = FontLoader::GetFontTextureSize();
+    stbtt_aligned_quad quad;
+    float a = 0.f, b = 0.f;
+    lgfx_setblend(BLEND_ALPHA);
+    stbtt_GetBakedQuad(bk, txSize, txSize, 65, &a, &b, &quad, true);
+    ltex_drawrotsized(tx, 300.f + a, 300.f + b, 0.f, 0.5f, 0.5f, 100.f, 100.f, quad.s0, quad.t0, quad.s1, quad.t1);
+    stbtt_GetBakedQuad(bk, txSize, txSize, 66, &a, &b, &quad, true);
+    ltex_drawrotsized(tx, 300.f + a, 300.f + b, 0.f, 0.5f, 0.5f, 100.f, 100.f, quad.s0, quad.t0, quad.s1, quad.t1);
 
     // Swap Buffers
     glfwSwapBuffers(Instance.window);
@@ -116,14 +158,14 @@ GLFWwindow *Render::GetWindow()
 
 void Render::GetWindowSize(int &width, int &height)
 {
-    width = Instance.windowWidth;
-    height = Instance.windowHeight;
+    width = w;
+    height = h;
 }
 
 void Render::SetWindowSize(const int &width, const int &height)
 {
-    Instance.windowWidth = width;
-    Instance.windowHeight = height;
+    w = width;
+    h = height;
 }
 
 const Color &Render::GetBgColor()
