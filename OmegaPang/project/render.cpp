@@ -25,6 +25,9 @@ static char buffer[256];
 static int w = 1280;
 static int h = 720;
 
+static Vec2 uv0 = {};
+static Vec2 uv1 = {};
+
 void RenderBG();
 void RenderRects();
 void RenderOvals();
@@ -75,7 +78,7 @@ void Render::Fixed()
 
     lgfx_setblend(BLEND_SOLID);
 
-    RenderBG();
+    // RenderBG();
     RenderRects();
     RenderOvals();
     RenderSprites();
@@ -201,9 +204,22 @@ void RenderSprites()
             Vec2 fPos = tf.position + sr.offsetPosition;
             Vec2 fScl = sr.size;
             float fRot = tf.rotation + sr.offsetRotation;
+
+            // Reverse sprite
+            if (!sr.reverse)
+            {
+                uv0 = {sr.sprite->uv0.x, sr.sprite->uv0.y};
+                uv1 = {sr.sprite->uv1.x, sr.sprite->uv1.y};
+            }
+            else
+            {
+                uv0 = {sr.sprite->uv1.x, sr.sprite->uv0.y};
+                uv1 = {sr.sprite->uv0.x, sr.sprite->uv1.y};
+            }
+
             lgfx_setblend(sr.blend);
-            ltex_drawrotsized(sr.sprite->texture, fPos.x, fPos.y, fRot, sr.pivot.x, sr.pivot.y, fScl.x, fScl.y,
-                              sr.sprite->uv0.x, sr.sprite->uv0.y, sr.sprite->uv1.x, sr.sprite->uv1.y);
+            ltex_drawrotsized(sr.sprite->texture, fPos.x, fPos.y, fRot, sr.pivot.x, sr.pivot.y, fScl.x, fScl.y, uv0.x,
+                              uv0.y, uv1.x, uv1.y);
         }
     }
 }

@@ -2,6 +2,7 @@
 
 static constexpr char *fileBG = "../resources/txBG.png";
 static constexpr char *fileSheet = "../resources/sprSheet.png";
+static constexpr char *fileBee = "../resources/sprBee.png";
 
 Sprite SpriteLoader::sprBg;
 
@@ -18,9 +19,12 @@ Sprite SpriteLoader::sprPlayerHitR;
 
 std::vector<Sprite> SpriteLoader::sprHook;
 
+std::vector<Sprite> SpriteLoader::sprBee;
+
 ltex_t *SpriteLoader::txBg = nullptr;
 ltex_t *SpriteLoader::txSheet = nullptr;
 ltex_t *SpriteLoader::txSheetRev = nullptr;
+ltex_t *SpriteLoader::txBee = nullptr;
 
 SpriteLoader SpriteLoader::Instance;
 
@@ -46,8 +50,10 @@ void SpriteLoader::LoadTextures()
 {
     int w, h, c;
 
+    stbi_uc *pixels;
+
     // BG
-    auto *pixels = stbi_load(fileBG, &w, &h, &c, 4);
+    pixels = stbi_load(fileBG, &w, &h, &c, 4);
     if (!pixels)
         throw "Error loading image";
     txBg = ltex_alloc(w, h, 0);
@@ -68,6 +74,14 @@ void SpriteLoader::LoadTextures()
     // SheetRev
     txSheetRev = ltex_alloc(w, h, 0);
     ltex_setpixels(txSheetRev, pixels);
+    stbi_image_free(pixels);
+
+    // Bee
+    pixels = stbi_load(fileBee, &w, &h, &c, 4);
+    if (!pixels)
+        throw "Error loading image";
+    txBee = ltex_alloc(w, h, 0);
+    ltex_setpixels(txBee, pixels);
     stbi_image_free(pixels);
 
     // Sprite mapping
@@ -102,6 +116,15 @@ void SpriteLoader::LoadTextures()
 
     sprHook.push_back({txSheet, {0.0f, 0.0f}, {0.1f, 1.0f}});
     sprHook.push_back({txSheet, {0.1f, 0.0f}, {0.2f, 1.0f}});
+
+    sprBee.push_back({txBee, {0.f, 0.f}, {0.125f, 1.f}});
+    sprBee.push_back({txBee, {0.125f, 0.f}, {0.25f, 1.f}});
+    sprBee.push_back({txBee, {0.25f, 0.f}, {0.375f, 1.f}});
+    sprBee.push_back({txBee, {0.375f, 0.f}, {0.5f, 1.f}});
+    sprBee.push_back({txBee, {0.5f, 0.f}, {0.625f, 1.f}});
+    sprBee.push_back({txBee, {0.625f, 0.f}, {0.75f, 1.f}});
+    sprBee.push_back({txBee, {0.75f, 0.f}, {0.875f, 1.f}});
+    sprBee.push_back({txBee, {0.875f, 0.f}, {1.f, 1.f}});
 }
 
 void SpriteLoader::UnloadTextures()
@@ -109,7 +132,10 @@ void SpriteLoader::UnloadTextures()
     ltex_free(txBg);
     ltex_free(txSheet);
     ltex_free(txSheetRev);
+    ltex_free(txBee);
+
     txBg = nullptr;
     txSheet = nullptr;
     txSheetRev = nullptr;
+    txBee = nullptr;
 }

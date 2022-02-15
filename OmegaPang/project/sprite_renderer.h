@@ -9,6 +9,8 @@ struct SpriteRenderer
 {
     bool enable = true;
 
+    bool reverse = false;
+
     Sprite *sprite = nullptr;
 
     Vec2 offsetPosition = {0.f, 0.f};

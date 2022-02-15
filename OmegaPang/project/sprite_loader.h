@@ -14,6 +14,7 @@ class SpriteLoader
     static ltex_t *txBg;
     static ltex_t *txSheet;
     static ltex_t *txSheetRev;
+    static ltex_t *txBee;
 
   public:
     SpriteLoader() = default;
@@ -40,4 +41,7 @@ class SpriteLoader
 
     // Hook
     static std::vector<Sprite> sprHook;
+
+    // Bee
+    static std::vector<Sprite> sprBee;
 };
