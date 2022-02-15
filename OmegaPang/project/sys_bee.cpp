@@ -22,16 +22,29 @@ void SysBee::Fixed()
             continue;
 
         auto mousePos = Input::GetMousePos();
-
-        // Follow Mouse
         auto dir = mousePos - tf.position;
-        tf.position += dir.Normalized() * 128.f * STP * 0.001f;
 
-        // Reverse sprite
-        if (mousePos.x < tf.position.x)
+        // Directional behaviour
+        if (dir.Magnitude() < 50.f)
+        {
+            tf.rotation += (0.f - tf.rotation > 0.f ? 1.f : -1.f) * 32.f * STP * 0.001f;
+            return;
+        }
+        else if (mousePos.x < tf.position.x)
+        {
+            // Left
             sr.reverse = true;
+            tf.rotation += (15.f - tf.rotation > 0.f ? 1.f : -1.f) * 32.f * STP * 0.001f;
+        }
         else
+        {
+            // Right
             sr.reverse = false;
+            tf.rotation += (-15.f - tf.rotation > 0.f ? 1.f : -1.f) * 32.f * STP * 0.001f;
+        }
+
+        // Movement
+        tf.position += dir.Normalized() * 128.f * STP * 0.001f;
     }
 }
 
