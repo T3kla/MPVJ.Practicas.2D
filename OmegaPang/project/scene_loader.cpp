@@ -1,5 +1,6 @@
 #include "scene_loader.h"
 
+#include "game.h"
 #include "scene.h"
 #include "scene_01.h"
 #include "scene_mm.h"
@@ -11,6 +12,9 @@ void SceneLoader::LoadScene(const char *name)
     // Unload
     if (Instance.current)
         Instance.current->UnloadScene();
+
+    // Free all entities
+    Game::GetRegistry().clear();
 
     // Search
     if (strcmp(name, "SceneMM") == 0)

@@ -13,7 +13,7 @@ void SysUI::Fixed()
     // do stuff?
 }
 
-void SysUI::Instantiate(const Vec2 &pos, const char *text, Font *font, float weight, const Color &color)
+entt::entity SysUI::Instantiate(const Vec2 &pos, const char *text, Font *font, float weight, const Color &color)
 {
     auto &reg = Game::GetRegistry();
 
@@ -42,6 +42,8 @@ void SysUI::Instantiate(const Vec2 &pos, const char *text, Font *font, float wei
     tb.color = color;
     tb.layer = 0;
     tb.blend = BLEND_ALPHA;
+
+    return id;
 }
 
 bool TryPoolling(entt::entity &id)

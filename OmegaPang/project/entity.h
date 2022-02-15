@@ -15,11 +15,4 @@ class Entity
 
     entt::entity GetID();
     entt::registry &GetReg();
-
-    template <class T> T &&GetComponent();
 };
-
-template <class T> inline T &&Entity::GetComponent()
-{
-    return T && (entityReg->get<T>);
-}

@@ -1,6 +1,9 @@
 #pragma once
 
 #include "system.h"
+
+#include <entt/entt.hpp>
+
 struct Vec2;
 struct Font;
 struct Color;
@@ -17,5 +20,5 @@ class SysUI : public System
     virtual void Fixed() override;
     virtual void Quit() override{};
 
-    static void Instantiate(const Vec2 &pos, const char *text, Font *font, float weight, const Color &color);
+    static entt::entity Instantiate(const Vec2 &pos, const char *text, Font *font, float weight, const Color &color);
 };

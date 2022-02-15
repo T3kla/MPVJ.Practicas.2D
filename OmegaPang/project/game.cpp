@@ -31,8 +31,8 @@ void Game::Run()
 
     Render::Awake();
 
-    // new Scene01();
-    SceneLoader::LoadScene("SceneMM");
+    SceneLoader::LoadScene("Scene01");
+    // SceneLoader::LoadScene("SceneMM");
 
     Logic::Awake();
     Logic::Start();

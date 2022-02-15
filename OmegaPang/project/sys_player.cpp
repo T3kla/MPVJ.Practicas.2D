@@ -3,6 +3,7 @@
 #include "ball.h"
 #include "circle_collider.h"
 #include "entity.h"
+#include "font_loader.h"
 #include "game.h"
 #include "gameobject.h"
 #include "input.h"
@@ -15,6 +16,8 @@
 #include "sprite_renderer.h"
 #include "stasis.h"
 #include "sys_hook.h"
+#include "sys_ui.h"
+#include "textbox.h"
 #include "transform.h"
 
 #include <entt/entt.hpp>
@@ -25,6 +28,8 @@ constexpr char *stateShooting = "shooting";
 constexpr char *stateHurt = "hurt";
 
 Entity player;
+Entity textPlain;
+Entity textShadw;
 
 float moveBlockCounter = 0.f;
 float shootBlockCounter = 0.f;
@@ -51,7 +56,7 @@ auto IsColliding = [](Vec2 posA, float radA, Vec2 posB, float radB) {
 
 auto GetBallsView = []() { return Game::GetRegistry().view<GameObject, Transform, RigidBody, Ball, CircleCollider>(); };
 
-void SysPlayer::Awake()
+void InstantiatePlayer()
 {
     auto &reg = Game::GetRegistry();
 
@@ -105,6 +110,24 @@ void SysPlayer::Awake()
     sa.count = 0.f;
 }
 
+void InstantiatePlayerText()
+{
+    auto &reg = Game::GetRegistry();
+    auto *font = FontLoader::GetFontOrange();
+
+    auto plain = SysUI::Instantiate({80.f, 100.f}, "Health: 3", font, 11.f, {1.f, 1.f, 1.f, 1.f});
+    auto shadw = SysUI::Instantiate({82.f, 102.f}, "Health: 3", font, 11.f, {0.f, 0.f, 0.f, 1.f});
+
+    textPlain = Entity(plain, &reg);
+    textShadw = Entity(shadw, &reg);
+}
+
+void SysPlayer::Awake()
+{
+    InstantiatePlayer();
+    InstantiatePlayerText();
+}
+
 void SysPlayer::Update()
 {
     auto time = (float)Stasis::GetDeltaScaled() * 0.001f;
@@ -129,7 +152,7 @@ void SysPlayer::Update()
     // Collision with balls
     for (auto [entity, ball_go, ball_tf, ball_rb, ball_bl, ball_cc] : GetBallsView().each())
     {
-        if (!ball_go.isActive || pl.health < 0 || blinkCounter > 0.f)
+        if (!ball_go.isActive || pl.health <= 0 || blinkCounter > 0.f)
             continue;
 
         if (IsColliding(tf.position, cc.radius, ball_tf.position, ball_cc.radius / 2.f))
@@ -145,6 +168,16 @@ void SysPlayer::Update()
                 BlockShoot(9999.9f);
                 BlockMove(9999.9f);
             }
+
+            // Update health text
+            char buffer[10];
+            sprintf_s(buffer, "Health: %d", pl.health);
+            reg.get<TextBox>(textPlain.GetID()).text = buffer;
+            reg.get<TextBox>(textShadw.GetID()).text = buffer;
+
+            // Change health text color
+            if (pl.health == 1)
+                reg.get<TextBox>(textPlain.GetID()).color = {1.f, 0.3f, 0.3f, 1.f};
         }
     }
 
@@ -232,21 +265,18 @@ void UpdateAnimation()
     }
     else if (pl.state == stateMoving)
     {
-
         sa.enable = true;
         sa.duration = 0.25f;
         sa.animation = pl.reversed ? &SpriteLoader::sprPlayerMoveL : &SpriteLoader::sprPlayerMoveR;
     }
     else if (pl.state == stateShooting)
     {
-
         sa.enable = true;
         sa.duration = 0.4f;
         sa.animation = pl.reversed ? &SpriteLoader::sprPlayerShootL : &SpriteLoader::sprPlayerShootR;
     }
     else if (pl.state == stateIdle)
     {
-
         sa.enable = false;
         sr.sprite = pl.reversed ? &SpriteLoader::sprPlayerShootL[0] : &SpriteLoader::sprPlayerShootR[0];
     }

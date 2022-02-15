@@ -12,7 +12,7 @@ static constexpr char *fileSlp = "../resources/fontSlap.ttf";
 static FILE *stream;
 static std::vector<unsigned char> fontDataBuffer;
 
-static constexpr int txSize = 1024;
+static constexpr int txSize = 512;
 static constexpr int charNum = 256;
 
 static constexpr int alphaBufferLen = txSize * txSize;

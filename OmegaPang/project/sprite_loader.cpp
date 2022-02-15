@@ -62,7 +62,7 @@ void SpriteLoader::LoadTextures()
     ltex_setpixels(txSheet, pixels);
 
     // Reverse horizontal
-    for (size_t i = 0; i < h; i++)
+    for (int i = 0; i < h; i++)
         Reverse(pixels + i * w * c, c, w);
 
     // SheetRev

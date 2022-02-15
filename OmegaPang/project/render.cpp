@@ -19,9 +19,11 @@
 #include <algorithm>
 #include <entt/entt.hpp>
 
+constexpr float WEIGHT_NORMLIZE = 11.f;
+
 static char buffer[256];
-static float w = 1280;
-static float h = 720;
+static int w = 1280;
+static int h = 720;
 
 void RenderBG();
 void RenderRects();
@@ -73,7 +75,7 @@ void Render::Fixed()
 
     lgfx_setblend(BLEND_SOLID);
 
-    // RenderBG();
+    RenderBG();
     RenderRects();
     RenderOvals();
     RenderSprites();
@@ -126,8 +128,8 @@ void RenderBG()
 {
     auto &sprBg = SpriteLoader::sprBg;
     lgfx_setcolor(1.f, 1.f, 1.f, 1.f);
-    ltex_drawrotsized(sprBg.texture, w / 2.f, h / 2.f, 0.f, 0.5f, 0.5f, w, h, sprBg.uv0.x, sprBg.uv0.y, sprBg.uv1.x,
-                      sprBg.uv1.y);
+    ltex_drawrotsized(sprBg.texture, (float)w / 2.f, (float)h / 2.f, 0.f, 0.5f, 0.5f, (float)w, (float)h, sprBg.uv0.x,
+                      sprBg.uv0.y, sprBg.uv1.x, sprBg.uv1.y);
 }
 
 void RenderRects()
@@ -239,21 +241,24 @@ void RenderUI()
         float y = tf.position.y - tf.size.y / 2.f;
 
         // Starting position
-        DrawDebugDot({x, y}, 10.f, {1.f, 1.f, 1.f, 1.f}, tb.color);
+        // DrawDebugDot({x, y}, 10.f, {1.f, 1.f, 1.f, 1.f}, tb.color);
 
         for (size_t i = 0; i < tb.text.size(); i++)
         {
             stbtt_GetBakedQuad(tb.font->bake, txSize, txSize, tb.text.at(i), &x, &y, &q, true);
 
-            auto h = q.y1 - q.y0;
-            auto w = q.x1 - q.x0;
+            auto h = (q.y1 - q.y0) / WEIGHT_NORMLIZE * tb.weight;
+            auto w = (q.x1 - q.x0) / WEIGHT_NORMLIZE * tb.weight;
+
+            // y = y + h - (q.y1 - q.y0);
+            x = x + w - (q.x1 - q.x0);
 
             ltex_drawrotsized(tb.font->texture, x, y, 0.f, 1.f, 1.f, w, h, q.s0, q.t0, q.s1, q.t1);
 
             // Next letter position
-            DrawDebugDot({x, y}, 3.f, {1.f, 1.f, 1.f, 1.f}, tb.color);
+            // DrawDebugDot({x, y}, 3.f, {1.f, 1.f, 1.f, 1.f}, tb.color);
             // Box around letters
-            DrawDebugSquare({x - w, y - h}, {x, y}, {1.f, 1.f, 1.f, 0.3f}, tb.color);
+            // DrawDebugSquare({x - w, y - h}, {x, y}, {1.f, 1.f, 1.f, 0.3f}, tb.color);
         }
     }
 }
