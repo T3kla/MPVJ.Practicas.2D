@@ -1,10 +1,10 @@
 #include "logic.h"
 
-#include "behaviour.h"
+#include "system.h"
 
 Logic Logic::Instance;
 
-void Logic::Subscribe(Behaviour *gameObject)
+void Logic::Subscribe(System *gameObject)
 {
     // Duplication guard
     auto it = std::find(Instance.each.begin(), Instance.each.end(), gameObject);
@@ -14,7 +14,7 @@ void Logic::Subscribe(Behaviour *gameObject)
     Instance.each.emplace_back(gameObject);
 }
 
-void Logic::UnSubscribe(const Behaviour *gameObject)
+void Logic::UnSubscribe(const System *gameObject)
 {
     // Not found guard
     auto it = std::find(Instance.each.begin(), Instance.each.end(), gameObject);
@@ -24,37 +24,37 @@ void Logic::UnSubscribe(const Behaviour *gameObject)
     Instance.each.erase(it);
 }
 
-const std::vector<Behaviour *> *Logic::GetGameObjects()
+const std::vector<System *> *Logic::GetSystems()
 {
     return &Instance.each;
 }
 
 void Logic::Awake()
 {
-    for (auto &&go : *Instance.GetGameObjects())
+    for (auto &&go : *Instance.GetSystems())
         go->Awake();
 }
 
 void Logic::Start()
 {
-    for (auto &&go : *Instance.GetGameObjects())
+    for (auto &&go : *Instance.GetSystems())
         go->Start();
 }
 
 void Logic::Update()
 {
-    for (auto &&go : *Instance.GetGameObjects())
+    for (auto &&go : *Instance.GetSystems())
         go->Update();
 }
 
 void Logic::Fixed()
 {
-    for (auto &&go : *Instance.GetGameObjects())
+    for (auto &&go : *Instance.GetSystems())
         go->Fixed();
 }
 
 void Logic::Quit()
 {
-    for (auto &&go : *Instance.GetGameObjects())
+    for (auto &&go : *Instance.GetSystems())
         go->Quit();
 }

@@ -59,9 +59,6 @@
     <Filter Include="Source Files\ECS\Components\Physics">
       <UniqueIdentifier>{dc8b9edd-bb33-4f32-818b-c4dc5d8b098b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Engine\Behaviour">
-      <UniqueIdentifier>{c4bb1df6-0717-491e-8d26-253274cadbb9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Loaders">
       <UniqueIdentifier>{feeb1697-bd0e-4ebc-958a-6406f1d92521}</UniqueIdentifier>
     </Filter>
@@ -119,9 +116,6 @@
     <ClCompile Include="gameobject.h">
       <Filter>Source Files\ECS\Components\Basic</Filter>
     </ClCompile>
-    <ClCompile Include="behaviour.cpp">
-      <Filter>Source Files\Engine\Behaviour</Filter>
-    </ClCompile>
     <ClCompile Include="size.cpp">
       <Filter>Source Files\Enums</Filter>
     </ClCompile>
@@ -134,13 +128,16 @@
     <ClCompile Include="sys_ui.cpp">
       <Filter>Source Files\ECS\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="system.cpp">
+      <Filter>Source Files\ECS\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="scene_loader.cpp">
+      <Filter>Source Files\Loaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stasis.h">
       <Filter>Source Files\Engine\Time</Filter>
-    </ClInclude>
-    <ClInclude Include="behaviour.h">
-      <Filter>Source Files\Engine\Behaviour</Filter>
     </ClInclude>
     <ClInclude Include="vec.h">
       <Filter>Source Files\Math\Vectors</Filter>
@@ -243,6 +240,15 @@
     </ClInclude>
     <ClInclude Include="textbox.h">
       <Filter>Source Files\ECS\Components\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="system.h">
+      <Filter>Source Files\ECS\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="scene_loader.h">
+      <Filter>Source Files\Loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="scene.h">
+      <Filter>Source Files\Loaders</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "behaviour.h"
+#include "system.h"
 
 struct Vec2;
 
-class SysHook : public Behaviour
+class SysHook : public System
 {
   public:
     SysHook() = default;

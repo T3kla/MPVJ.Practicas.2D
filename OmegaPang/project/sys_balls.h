@@ -1,11 +1,11 @@
 #pragma once
 
-#include "behaviour.h"
 #include "size.h"
+#include "system.h"
 
 struct Vec2;
 
-class SysBalls : public Behaviour
+class SysBalls : public System
 {
   public:
     SysBalls() = default;

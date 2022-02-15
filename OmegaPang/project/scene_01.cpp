@@ -7,7 +7,7 @@
 #include "sys_player.h"
 #include "vec.h"
 
-Scene01::Scene01()
+void Scene01::LoadScene()
 {
     SysBalls::Instantiate({300.f, 200.f}, true, Size::L);
     SysBalls::Instantiate({600.f, 200.f}, true, Size::B);
@@ -15,9 +15,18 @@ Scene01::Scene01()
     SysBalls::Instantiate({1000.f, 200.f}, true, Size::S);
 
     // Systems
-    new SysPlayer();
-    new SysPhysics();
-    new SysHook();
-    new SysBalls();
-    new SysExplosions();
+    sysPlayer = new SysPlayer();
+    sysPhysics = new SysPhysics();
+    sysHook = new SysHook();
+    sysBalls = new SysBalls();
+    sysExplosions = new SysExplosions();
+}
+
+void Scene01::UnloadScene()
+{
+    delete sysPlayer;
+    delete sysPhysics;
+    delete sysHook;
+    delete sysBalls;
+    delete sysExplosions;
 }

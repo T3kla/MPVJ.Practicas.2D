@@ -1,11 +1,11 @@
 #pragma once
 
-#include "behaviour.h"
 #include "size.h"
+#include "system.h"
 
 struct Vec2;
 
-class SysExplosions : public Behaviour
+class SysExplosions : public System
 {
   public:
     SysExplosions() = default;

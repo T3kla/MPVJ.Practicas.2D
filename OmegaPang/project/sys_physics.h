@@ -1,8 +1,8 @@
 #pragma once
 
-#include "behaviour.h"
+#include "system.h"
 
-class SysPhysics : public Behaviour
+class SysPhysics : public System
 {
   public:
     SysPhysics() = default;

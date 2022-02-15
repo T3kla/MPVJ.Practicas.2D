@@ -2,7 +2,7 @@
 
 #include <vector>
 
-class Behaviour;
+class System;
 
 class Logic
 {
@@ -18,12 +18,12 @@ class Logic
     static void Fixed();
     static void Quit();
 
-    std::vector<Behaviour *> each = std::vector<Behaviour *>();
+    std::vector<System *> each = std::vector<System *>();
 
   public:
     Logic(const Logic &) = delete;
 
-    static void Subscribe(Behaviour *gameObject);
-    static void UnSubscribe(const Behaviour *gameObject);
-    static const std::vector<Behaviour *> *GetGameObjects();
+    static void Subscribe(System *gameObject);
+    static void UnSubscribe(const System *gameObject);
+    static const std::vector<System *> *GetSystems();
 };

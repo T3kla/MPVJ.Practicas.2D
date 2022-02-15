@@ -1,10 +1,10 @@
 #pragma once
 
-class Behaviour
+class System
 {
   public:
-    Behaviour();
-    virtual ~Behaviour();
+    System();
+    virtual ~System();
 
     virtual void Awake() = 0;
     virtual void Start() = 0;

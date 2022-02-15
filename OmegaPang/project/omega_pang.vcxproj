@@ -147,7 +147,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="behaviour.cpp" />
+    <ClCompile Include="scene_loader.cpp" />
+    <ClCompile Include="system.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="font_loader.cpp" />
     <ClCompile Include="gameobject.h" />
@@ -181,6 +182,8 @@
     <ClInclude Include="keycode.h" />
     <ClInclude Include="oval_renderer.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="scene.h" />
+    <ClInclude Include="scene_loader.h" />
     <ClInclude Include="scene_mm.h" />
     <ClInclude Include="size.h" />
     <ClInclude Include="sprite_animation.h" />
@@ -189,7 +192,7 @@
     <ClInclude Include="scene_01.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="logic.h" />
-    <ClInclude Include="behaviour.h" />
+    <ClInclude Include="system.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="pi.h" />
     <ClInclude Include="render.h" />

@@ -1,13 +1,13 @@
-#include "behaviour.h"
+#include "system.h"
 
 #include "logic.h"
 
-Behaviour::Behaviour()
+System::System()
 {
     Logic::Subscribe(this);
 }
 
-Behaviour::~Behaviour()
+System::~System()
 {
     Logic::UnSubscribe(this);
 }

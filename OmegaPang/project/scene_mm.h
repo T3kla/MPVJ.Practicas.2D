@@ -1,8 +1,12 @@
 #pragma once
 
-class SceneMM
+#include "scene.h"
+
+class SceneMM : public Scene
 {
   public:
-    SceneMM();
-    ~SceneMM(){};
+    using Scene::Scene;
+
+    virtual void LoadScene() override;
+    virtual void UnloadScene() override;
 };

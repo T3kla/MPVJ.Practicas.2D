@@ -4,10 +4,8 @@
 #include "input.h"
 #include "logic.h"
 #include "render.h"
+#include "scene_loader.h"
 #include "stasis.h"
-
-#include "scene_01.h"
-#include "scene_mm.h"
 
 #include <algorithm>
 
@@ -34,7 +32,7 @@ void Game::Run()
     Render::Awake();
 
     // new Scene01();
-    new SceneMM();
+    SceneLoader::LoadScene("SceneMM");
 
     Logic::Awake();
     Logic::Start();

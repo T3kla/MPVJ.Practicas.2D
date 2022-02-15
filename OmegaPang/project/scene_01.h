@@ -1,8 +1,25 @@
 #pragma once
 
-class Scene01
+#include "scene.h"
+
+class SysPlayer;
+class SysPhysics;
+class SysHook;
+class SysBalls;
+class SysExplosions;
+
+class Scene01 : public Scene
 {
   public:
-    Scene01();
-    ~Scene01(){};
+    using Scene::Scene;
+
+    virtual void LoadScene() override;
+    virtual void UnloadScene() override;
+
+  private:
+    SysPlayer *sysPlayer = nullptr;
+    SysPhysics *sysPhysics = nullptr;
+    SysHook *sysHook = nullptr;
+    SysBalls *sysBalls = nullptr;
+    SysExplosions *sysExplosions = nullptr;
 };

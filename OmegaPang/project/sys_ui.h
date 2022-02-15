@@ -1,11 +1,11 @@
 #pragma once
 
-#include "behaviour.h"
+#include "system.h"
 struct Vec2;
 struct Font;
 struct Color;
 
-class SysUI : public Behaviour
+class SysUI : public System
 {
   public:
     SysUI() = default;

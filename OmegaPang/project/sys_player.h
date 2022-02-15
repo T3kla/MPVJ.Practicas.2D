@@ -1,10 +1,10 @@
 #pragma once
 
-#include "behaviour.h"
+#include "system.h"
 
 class Entity;
 
-class SysPlayer : public Behaviour
+class SysPlayer : public System
 {
   public:
     SysPlayer() = default;
