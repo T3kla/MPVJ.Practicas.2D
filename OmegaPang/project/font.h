@@ -5,8 +5,10 @@
 
 struct Font
 {
+    const char *name = nullptr;
     ltex_t *texture = nullptr;
     stbtt_bakedchar *bake = nullptr;
 
-    Font(ltex_t *texture = nullptr, stbtt_bakedchar *bake = nullptr) : texture(texture), bake(bake){};
+    Font(const char *name = nullptr, ltex_t *texture = nullptr, stbtt_bakedchar *bake = nullptr)
+        : name(name), texture(texture), bake(bake){};
 };

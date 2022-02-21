@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="asset_loader.cpp" />
     <ClCompile Include="scene_bee.cpp" />
     <ClCompile Include="scene_loader.cpp" />
     <ClCompile Include="system.cpp" />
@@ -179,6 +180,7 @@
     <ClInclude Include="bee.h" />
     <ClInclude Include="color.h" />
     <ClInclude Include="explosion.h" />
+    <ClInclude Include="asset_loader.h" />
     <ClInclude Include="font.h" />
     <ClInclude Include="font_loader.h" />
     <ClInclude Include="hook.h" />

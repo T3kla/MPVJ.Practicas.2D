@@ -21,10 +21,9 @@ static constexpr int colorBufferLen = txSize * txSize * 4;
 static unsigned char *alphaBuffer = nullptr;
 static unsigned char *colorBuffer = nullptr;
 
-Font FontLoader::Orange;
-Font FontLoader::Slap;
+FontLoader FontLoader::Instance;
 
-void LoadFont(const char *file, ltex_t *&texture, stbtt_bakedchar *&bakedChars)
+void Load(const char *file, ltex_t *&texture, stbtt_bakedchar *&bakedChars)
 {
     errno_t err;
 
@@ -71,44 +70,46 @@ void LoadFont(const char *file, ltex_t *&texture, stbtt_bakedchar *&bakedChars)
     ltex_setpixels(texture, colorBuffer);
 }
 
-void FontLoader::LoadFonts()
+void FontLoader::InitBuffers()
 {
-    // Generate buffers
     alphaBuffer = new unsigned char[alphaBufferLen];
     colorBuffer = new unsigned char[colorBufferLen];
+}
 
-    // Load fonts
-    LoadFont(fileOrg, Orange.texture, Orange.bake);
-    LoadFont(fileSlp, Slap.texture, Slap.bake);
-
-    // Free Buffers
+void FontLoader::ClearBuffers()
+{
     delete[] alphaBuffer;
     delete[] colorBuffer;
     fontDataBuffer.clear();
     fontDataBuffer.resize(0);
 }
 
+void FontLoader::LoadFont(const char *name, const char *file)
+{
+    ltex_t *tx = nullptr;
+    stbtt_bakedchar *bk = nullptr;
+    Load(file, tx, bk);
+    Instance.Fonts.push_back({name, tx, bk});
+}
+
+Font *FontLoader::GetFont(const char *name)
+{
+    for (auto &font : Fonts)
+        if (strcmp(font.name, name) == 0)
+            return &font;
+
+    return nullptr;
+}
+
 void FontLoader::UnloadFonts()
 {
-    ltex_free(Orange.texture);
-    ltex_free(Slap.texture);
-    Orange.texture = nullptr;
-    Slap.texture = nullptr;
+    for (auto &font : Fonts)
+    {
+        ltex_free(font.texture);
+        delete font.bake;
+    }
 
-    delete Orange.bake;
-    delete Slap.bake;
-    Orange.bake = nullptr;
-    Slap.bake = nullptr;
-}
-
-Font *FontLoader::GetFontOrange()
-{
-    return &Orange;
-}
-
-Font *FontLoader::GetFontSlap()
-{
-    return &Slap;
+    Fonts.clear();
 }
 
 int FontLoader::GetFontTextureSize()

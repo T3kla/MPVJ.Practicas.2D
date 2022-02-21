@@ -1,10 +1,13 @@
 #include "game.h"
 
+#include "asset_loader.h"
+#include "font_loader.h"
 #include "glfw3.h"
 #include "input.h"
 #include "logic.h"
 #include "render.h"
 #include "scene_loader.h"
+#include "sprite_loader.h"
 #include "stasis.h"
 
 #include <algorithm>
@@ -30,6 +33,11 @@ void Game::Run()
     Stasis::RefreshTime();
 
     Render::Awake();
+
+    AssetLoader::LoadAssets();
+
+    // SpriteLoader::LoadTextures();
+    // FontLoader::LoadFonts();
 
     // SceneLoader::LoadScene("SceneMM");
     // SceneLoader::LoadScene("Scene01");

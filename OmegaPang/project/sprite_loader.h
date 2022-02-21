@@ -6,22 +6,28 @@
 
 #include <vector>
 
+class FileLoader;
+
 class SpriteLoader
 {
+    friend FileLoader;
     static SpriteLoader Instance;
+    static std::vector<ltex_t *> Textures;
+
+    static void InitBuffers();
+    static void ClearBuffers();
 
   private:
-    static ltex_t *txBg;
-    static ltex_t *txSheet;
-    static ltex_t *txSheetRev;
-    static ltex_t *txBee;
-
-  public:
     SpriteLoader() = default;
     SpriteLoader(const SpriteLoader &) = delete;
 
-    static void LoadTextures();
+  public:
+    static void LoadTexture(const char *name, const char *file);
+    static ltex_t *GetTexture(const char *name);
+
     static void UnloadTextures();
+
+    static void SetSprites();
 
     // Bg
     static Sprite sprBg;

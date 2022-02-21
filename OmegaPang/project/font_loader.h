@@ -1,27 +1,31 @@
 #pragma once
 
+#include "font.h"
 #include "litegfx.h"
 #include "stb_truetype.h"
 
-struct Font;
+#include <vector>
+
+class AssetLoader;
 
 class FontLoader
 {
+    friend AssetLoader;
     static FontLoader Instance;
+    static std::vector<Font> Fonts;
+
+    static void InitBuffers();
+    static void ClearBuffers();
 
   private:
-    static Font Orange;
-    static Font Slap;
-
-  public:
     FontLoader() = default;
     FontLoader(const FontLoader &) = delete;
 
-    static void LoadFonts();
-    static void UnloadFonts();
+  public:
+    static void LoadFont(const char *name, const char *file);
+    static Font *GetFont(const char *name);
 
-    static Font *GetFontOrange();
-    static Font *GetFontSlap();
+    static void UnloadFonts();
 
     static int GetFontTextureSize();
 };

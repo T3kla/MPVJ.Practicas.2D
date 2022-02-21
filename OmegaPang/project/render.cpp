@@ -59,12 +59,6 @@ void Render::Awake()
     glfwSetWindowSizeCallback(Instance.window, OnWindowResize);
     lgfx_setup2d(w, h);
 
-    // Load textures
-    SpriteLoader::LoadTextures();
-
-    // Load Fonts
-    FontLoader::LoadFonts();
-
     // Set Background
     SetBgColor({0.5f, 0.44f, 0.37f, 1.f});
 }

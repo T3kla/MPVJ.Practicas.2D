@@ -140,6 +140,9 @@
     <ClCompile Include="sys_bee.cpp">
       <Filter>Source Files\ECS\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="asset_loader.cpp">
+      <Filter>Source Files\Loaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stasis.h">
@@ -264,6 +267,9 @@
     </ClInclude>
     <ClInclude Include="bee.h">
       <Filter>Source Files\ECS\Components\Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="asset_loader.h">
+      <Filter>Source Files\Loaders</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

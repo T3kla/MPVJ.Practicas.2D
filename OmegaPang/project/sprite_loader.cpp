@@ -1,30 +1,17 @@
 #include "sprite_loader.h"
 
-static constexpr char *fileBG = "../resources/txBG.png";
-static constexpr char *fileSheet = "../resources/sprSheet.png";
-static constexpr char *fileBee = "../resources/sprBee.png";
-
 Sprite SpriteLoader::sprBg;
-
+Sprite SpriteLoader::sprPlayerIdle;
+Sprite SpriteLoader::sprPlayerHitL;
+Sprite SpriteLoader::sprPlayerHitR;
 std::vector<Sprite> SpriteLoader::sprBalls;
 std::vector<Sprite> SpriteLoader::sprExpls;
-
-Sprite SpriteLoader::sprPlayerIdle;
 std::vector<Sprite> SpriteLoader::sprPlayerMoveL;
 std::vector<Sprite> SpriteLoader::sprPlayerMoveR;
 std::vector<Sprite> SpriteLoader::sprPlayerShootL;
 std::vector<Sprite> SpriteLoader::sprPlayerShootR;
-Sprite SpriteLoader::sprPlayerHitL;
-Sprite SpriteLoader::sprPlayerHitR;
-
 std::vector<Sprite> SpriteLoader::sprHook;
-
 std::vector<Sprite> SpriteLoader::sprBee;
-
-ltex_t *SpriteLoader::txBg = nullptr;
-ltex_t *SpriteLoader::txSheet = nullptr;
-ltex_t *SpriteLoader::txSheetRev = nullptr;
-ltex_t *SpriteLoader::txBee = nullptr;
 
 SpriteLoader SpriteLoader::Instance;
 
@@ -46,8 +33,13 @@ void Reverse(void *start, int bytes, int length)
     }
 }
 
-void SpriteLoader::LoadTextures()
+void Load(const char *file)
 {
+}
+
+void SpriteLoader::LoadTexture(const char *name, const char *file)
+{
+
     int w, h, c;
 
     stbi_uc *pixels;
