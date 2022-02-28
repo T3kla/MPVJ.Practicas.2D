@@ -1,33 +1,30 @@
 #pragma once
 
-#include "litegfx.h"
 #include "sprite.h"
-#include "stb_image.h"
+#include "texture.h"
 
 #include <vector>
 
-class FileLoader;
-
 class SpriteLoader
 {
-    friend FileLoader;
-    static SpriteLoader Instance;
-    static std::vector<ltex_t *> Textures;
+    friend class AssetLoader;
 
-    static void InitBuffers();
-    static void ClearBuffers();
+    static SpriteLoader Instance;
+    static std::vector<Texture> Textures;
 
   private:
     SpriteLoader() = default;
     SpriteLoader(const SpriteLoader &) = delete;
 
-  public:
     static void LoadTexture(const char *name, const char *file);
-    static ltex_t *GetTexture(const char *name);
-
     static void UnloadTextures();
 
     static void SetSprites();
+
+  public:
+    static Texture *GetTexture(const char *name);
+
+    // ***** Sprite accessors *****
 
     // Bg
     static Sprite sprBg;

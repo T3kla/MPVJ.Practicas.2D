@@ -113,7 +113,7 @@ void InstantiatePlayer()
 void InstantiatePlayerText()
 {
     auto &reg = Game::GetRegistry();
-    auto *font = FontLoader::GetFontOrange();
+    auto *font = FontLoader::GetFont("fontOrange.ttf");
 
     auto plain = SysUI::Instantiate({80.f, 100.f}, "Health: 3", font, 11.f, {1.f, 1.f, 1.f, 1.f});
     auto shadw = SysUI::Instantiate({82.f, 102.f}, "Health: 3", font, 11.f, {0.f, 0.f, 0.f, 1.f});

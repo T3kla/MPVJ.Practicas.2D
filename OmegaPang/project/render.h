@@ -11,6 +11,7 @@ class Render
 
   private:
     Render() = default;
+    Render(const Render &) = delete;
 
     char *title = nullptr;
     GLFWwindow *window = nullptr;
@@ -21,8 +22,6 @@ class Render
     static void Fixed();
 
   public:
-    Render(const Render &) = delete;
-
     static GLFWwindow *GetWindow();
 
     static void GetWindowSize(int &width, int &height);

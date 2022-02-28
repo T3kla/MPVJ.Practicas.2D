@@ -170,6 +170,7 @@
     <ClCompile Include="sys_bee.cpp" />
     <ClCompile Include="sys_explosions.cpp" />
     <ClCompile Include="sys_hook.cpp" />
+    <ClCompile Include="sys_image.cpp" />
     <ClCompile Include="sys_physics.cpp" />
     <ClCompile Include="sys_player.cpp" />
     <ClCompile Include="sys_ui.cpp" />
@@ -212,10 +213,12 @@
     <ClInclude Include="sys_bee.h" />
     <ClInclude Include="sys_explosions.h" />
     <ClInclude Include="sys_hook.h" />
+    <ClInclude Include="sys_image.h" />
     <ClInclude Include="sys_physics.h" />
     <ClInclude Include="sys_player.h" />
     <ClInclude Include="sys_ui.h" />
     <ClInclude Include="textbox.h" />
+    <ClInclude Include="texture.h" />
     <ClInclude Include="transform.h" />
     <ClInclude Include="vec.h" />
   </ItemGroup>

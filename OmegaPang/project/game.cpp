@@ -40,8 +40,8 @@ void Game::Run()
     // FontLoader::LoadFonts();
 
     // SceneLoader::LoadScene("SceneMM");
-    // SceneLoader::LoadScene("Scene01");
-    SceneLoader::LoadScene("SceneBee");
+    SceneLoader::LoadScene("Scene01");
+    // SceneLoader::LoadScene("SceneBee");
 
     Logic::Awake();
     Logic::Start();

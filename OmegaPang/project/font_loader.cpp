@@ -6,9 +6,6 @@
 #include <iostream>
 #include <vector>
 
-static constexpr char *fileOrg = "../resources/fontOrange.ttf";
-static constexpr char *fileSlp = "../resources/fontSlap.ttf";
-
 static FILE *stream;
 static std::vector<unsigned char> fontDataBuffer;
 
@@ -22,6 +19,7 @@ static unsigned char *alphaBuffer = nullptr;
 static unsigned char *colorBuffer = nullptr;
 
 FontLoader FontLoader::Instance;
+std::vector<Font> FontLoader::Fonts;
 
 void Load(const char *file, ltex_t *&texture, stbtt_bakedchar *&bakedChars)
 {
@@ -88,8 +86,10 @@ void FontLoader::LoadFont(const char *name, const char *file)
 {
     ltex_t *tx = nullptr;
     stbtt_bakedchar *bk = nullptr;
+
     Load(file, tx, bk);
-    Instance.Fonts.push_back({name, tx, bk});
+
+    Fonts.push_back({name, tx, bk});
 }
 
 Font *FontLoader::GetFont(const char *name)
@@ -105,6 +105,7 @@ void FontLoader::UnloadFonts()
 {
     for (auto &font : Fonts)
     {
+        delete font.name;
         ltex_free(font.texture);
         delete font.bake;
     }

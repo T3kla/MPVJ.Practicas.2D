@@ -11,6 +11,7 @@ class Logic
 
   private:
     Logic() = default;
+    Logic(const Logic &) = delete;
 
     static void Awake();
     static void Start();
@@ -21,8 +22,6 @@ class Logic
     std::vector<System *> each = std::vector<System *>();
 
   public:
-    Logic(const Logic &) = delete;
-
     static void Subscribe(System *gameObject);
     static void UnSubscribe(const System *gameObject);
     static const std::vector<System *> *GetSystems();

@@ -6,6 +6,7 @@ class Stasis
 
   private:
     Stasis(const double &scale = 1.);
+    Stasis(const Stasis &) = delete;
 
     long long old = 0ll;
 
@@ -21,8 +22,6 @@ class Stasis
     static void RefreshFreq();
 
   public:
-    Stasis(const Stasis &) = delete;
-
     static void RefreshTime();
 
     static const double &GetTime();

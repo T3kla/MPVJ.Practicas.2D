@@ -143,6 +143,9 @@
     <ClCompile Include="asset_loader.cpp">
       <Filter>Source Files\Loaders</Filter>
     </ClCompile>
+    <ClCompile Include="sys_image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stasis.h">
@@ -271,5 +274,9 @@
     <ClInclude Include="asset_loader.h">
       <Filter>Source Files\Loaders</Filter>
     </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>Source Files\Loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="sys_image.h" />
   </ItemGroup>
 </Project>

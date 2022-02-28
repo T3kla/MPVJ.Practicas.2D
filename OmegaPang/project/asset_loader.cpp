@@ -7,25 +7,46 @@
 #include <fstream>
 #include <iostream>
 
+AssetLoader AssetLoader::Instance;
+
 void AssetLoader::LoadAssets()
 {
     // Find files
     std::string path = "../resources/";
-    std::string ext = "";
+    std::string ext = "    ";
 
     // Load fonts
     ext = ".ttf";
     FontLoader::InitBuffers();
     for (auto &p : std::filesystem::recursive_directory_iterator(path))
         if (p.path().extension() == ext)
-            FontLoader::LoadFont(p.path().stem().filename().string().c_str(), p.path().stem().string().c_str());
+        {
+            auto filename = p.path().filename().string();
+            auto path = p.path().string();
+
+            auto size = filename.capacity();
+            char *namePtr = new char[size];
+            strcpy_s(namePtr, size, filename.c_str());
+
+            FontLoader::LoadFont(namePtr, path.c_str());
+        }
     FontLoader::ClearBuffers();
 
     // Load textures
     ext = ".png";
     for (auto &p : std::filesystem::recursive_directory_iterator(path))
         if (p.path().extension() == ext)
-            SpriteLoader::LoadTexture(p.path().stem().filename().string().c_str(), p.path().stem().string().c_str());
+        {
+            auto filename = p.path().filename().string();
+            auto path = p.path().string();
+
+            auto size = filename.capacity();
+            char *namePtr = new char[size];
+            strcpy_s(namePtr, size, filename.c_str());
+
+            SpriteLoader::LoadTexture(namePtr, path.c_str());
+        }
+    SpriteLoader::SetSprites();
 }
 
 void AssetLoader::UnloadAssets()

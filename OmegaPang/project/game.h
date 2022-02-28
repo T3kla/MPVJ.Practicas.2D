@@ -12,10 +12,9 @@ class Game
 
   private:
     Game() = default;
-
-  public:
     Game(const Game &) = delete;
 
+  public:
     static void Run();
 
     static float GetUpdateFPS();
