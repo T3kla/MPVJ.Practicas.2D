@@ -155,14 +155,14 @@
     <ClCompile Include="font_loader.cpp" />
     <ClCompile Include="gameobject.h" />
     <ClCompile Include="rect_renderer.h" />
-    <ClCompile Include="scene_01.cpp" />
+    <ClCompile Include="scene_pang.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="logic.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pi.cpp" />
     <ClCompile Include="render.cpp" />
-    <ClCompile Include="scene_mm.cpp" />
+    <ClCompile Include="scene_fonts.cpp" />
     <ClCompile Include="size.cpp" />
     <ClCompile Include="sprite_loader.cpp" />
     <ClCompile Include="stasis.cpp" />
@@ -170,7 +170,6 @@
     <ClCompile Include="sys_bee.cpp" />
     <ClCompile Include="sys_explosions.cpp" />
     <ClCompile Include="sys_hook.cpp" />
-    <ClCompile Include="sys_image.cpp" />
     <ClCompile Include="sys_physics.cpp" />
     <ClCompile Include="sys_player.cpp" />
     <ClCompile Include="sys_ui.cpp" />
@@ -191,12 +190,12 @@
     <ClInclude Include="scene.h" />
     <ClInclude Include="scene_bee.h" />
     <ClInclude Include="scene_loader.h" />
-    <ClInclude Include="scene_mm.h" />
+    <ClInclude Include="scene_fonts.h" />
     <ClInclude Include="size.h" />
     <ClInclude Include="sprite_animation.h" />
     <ClInclude Include="circle_collider.h" />
     <ClInclude Include="entity.h" />
-    <ClInclude Include="scene_01.h" />
+    <ClInclude Include="scene_pang.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="logic.h" />
     <ClInclude Include="system.h" />
@@ -213,7 +212,6 @@
     <ClInclude Include="sys_bee.h" />
     <ClInclude Include="sys_explosions.h" />
     <ClInclude Include="sys_hook.h" />
-    <ClInclude Include="sys_image.h" />
     <ClInclude Include="sys_physics.h" />
     <ClInclude Include="sys_player.h" />
     <ClInclude Include="sys_ui.h" />

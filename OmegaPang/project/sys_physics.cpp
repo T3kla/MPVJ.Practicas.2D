@@ -5,11 +5,11 @@
 #include "rigidbody.h"
 #include "transform.h"
 
-auto GetView = []() { return Game::GetRegistry().view<GameObject, Transform, RigidBody>(); };
+auto GetRBs = []() { return Game::GetRegistry().view<GameObject, Transform, RigidBody>(); };
 
 void SysPhysics::Fixed()
 {
-    for (auto [entity, go, tf, rb] : GetView().each())
+    for (auto [entity, go, tf, rb] : GetRBs().each())
     {
         if (!go.isActive)
             continue;

@@ -1,11 +1,11 @@
-#include "scene_mm.h"
+#include "scene_fonts.h"
 
 #include "color.h"
 #include "font_loader.h"
 #include "sys_ui.h"
 #include "vec.h"
 
-void SceneMM::LoadScene()
+void SceneFonts::LoadScene()
 {
     auto *slap = FontLoader::GetFont("fontSlap.ttf");
     auto *org = FontLoader::GetFont("fontOrange.ttf");
@@ -19,6 +19,6 @@ void SceneMM::LoadScene()
     SysUI::Instantiate({800.f, 500.f}, "and... turned blue!", org, 11.f, {0.f, 0.f, 0.7f, 1.f});
 }
 
-void SceneMM::UnloadScene()
+void SceneFonts::UnloadScene()
 {
 }

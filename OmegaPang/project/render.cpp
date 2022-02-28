@@ -28,7 +28,6 @@ static int h = 720;
 static Vec2 uv0 = {};
 static Vec2 uv1 = {};
 
-void RenderBG();
 void RenderRects();
 void RenderOvals();
 void RenderSprites();
@@ -39,6 +38,9 @@ void DrawDebugSquare(Vec2 a, Vec2 b, Color color, Color revert);
 void DrawDebugDot(Vec2 pos, float size, Color color, Color revert);
 
 Render Render::Instance;
+char *Render::Title = nullptr;
+GLFWwindow *Render::Window = nullptr;
+Color Render::BGColor = {0.5f, 0.44f, 0.37f, 1.f};
 
 void OnWindowResize(GLFWwindow *window, int w, int h)
 {
@@ -52,15 +54,15 @@ void Render::Awake()
         std::cout << "Panic!" << std::endl;
 
     // Create window
-    Instance.window = glfwCreateWindow(w, h, "", nullptr, nullptr);
-    glfwMakeContextCurrent(Instance.window);
+    Window = glfwCreateWindow(w, h, "", nullptr, nullptr);
+    glfwMakeContextCurrent(Window);
 
-    glfwSetInputMode(Instance.window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-    glfwSetWindowSizeCallback(Instance.window, OnWindowResize);
+    glfwSetInputMode(Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    glfwSetWindowSizeCallback(Window, OnWindowResize);
     lgfx_setup2d(w, h);
 
     // Set Background
-    SetBgColor({0.5f, 0.44f, 0.37f, 1.f});
+    SetBgColor(BGColor);
 }
 
 void Render::Fixed()
@@ -68,23 +70,22 @@ void Render::Fixed()
     auto &reg = Game::GetRegistry();
 
     // Clear screen
-    lgfx_clearcolorbuffer(Instance.bgColor.r, Instance.bgColor.g, Instance.bgColor.b);
+    lgfx_clearcolorbuffer(BGColor.r, BGColor.g, BGColor.b);
 
     lgfx_setblend(BLEND_SOLID);
 
-    // RenderBG();
     RenderRects();
     RenderOvals();
     RenderSprites();
     RenderUI();
 
     // Swap Buffers
-    glfwSwapBuffers(Instance.window);
+    glfwSwapBuffers(Window);
 }
 
 GLFWwindow *Render::GetWindow()
 {
-    return Instance.window;
+    return Window;
 }
 
 void Render::GetWindowSize(int &width, int &height)
@@ -101,32 +102,24 @@ void Render::SetWindowSize(const int &width, const int &height)
 
 const Color &Render::GetBgColor()
 {
-    return Instance.bgColor;
+    return Instance.BGColor;
 }
 
 void Render::SetBgColor(const Color &color)
 {
-    Instance.bgColor = color;
+    Instance.BGColor = color;
 }
 
 const char *Render::GetTitle()
 {
-    return Instance.title;
+    return Instance.Title;
 }
 
 void Render::SetTitle(char *text)
 {
-    Instance.title = text;
-    if (Instance.title != nullptr)
-        glfwSetWindowTitle(Instance.window, Instance.title);
-}
-
-void RenderBG()
-{
-    auto &sprBg = SpriteLoader::sprBg;
-    lgfx_setcolor(1.f, 1.f, 1.f, 1.f);
-    ltex_drawrotsized(sprBg.texture, (float)w / 2.f, (float)h / 2.f, 0.f, 0.5f, 0.5f, (float)w, (float)h, sprBg.uv0.x,
-                      sprBg.uv0.y, sprBg.uv1.x, sprBg.uv1.y);
+    Instance.Title = text;
+    if (Instance.Title != nullptr)
+        glfwSetWindowTitle(Window, Instance.Title);
 }
 
 void RenderRects()

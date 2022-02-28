@@ -13,10 +13,10 @@ class Render
     Render() = default;
     Render(const Render &) = delete;
 
-    char *title = nullptr;
-    GLFWwindow *window = nullptr;
+    static char *Title;
+    static GLFWwindow *Window;
 
-    Color bgColor = {0.f, 0.f, 0.f, 1.f};
+    static Color BGColor;
 
     static void Awake();
     static void Fixed();

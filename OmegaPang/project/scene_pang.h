@@ -8,7 +8,7 @@ class SysHook;
 class SysBalls;
 class SysExplosions;
 
-class Scene01 : public Scene
+class ScenePang : public Scene
 {
   public:
     using Scene::Scene;

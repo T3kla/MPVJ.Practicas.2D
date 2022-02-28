@@ -71,7 +71,7 @@
     <ClCompile Include="vec.cpp">
       <Filter>Source Files\Math\Vectors</Filter>
     </ClCompile>
-    <ClCompile Include="scene_01.cpp">
+    <ClCompile Include="scene_pang.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="pi.cpp">
@@ -122,7 +122,7 @@
     <ClCompile Include="font_loader.cpp">
       <Filter>Source Files\Loaders</Filter>
     </ClCompile>
-    <ClCompile Include="scene_mm.cpp">
+    <ClCompile Include="scene_fonts.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="sys_ui.cpp">
@@ -143,9 +143,6 @@
     <ClCompile Include="asset_loader.cpp">
       <Filter>Source Files\Loaders</Filter>
     </ClCompile>
-    <ClCompile Include="sys_image.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stasis.h">
@@ -154,7 +151,7 @@
     <ClInclude Include="vec.h">
       <Filter>Source Files\Math\Vectors</Filter>
     </ClInclude>
-    <ClInclude Include="scene_01.h">
+    <ClInclude Include="scene_pang.h">
       <Filter>Source Files\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="pi.h">
@@ -241,7 +238,7 @@
     <ClInclude Include="font_loader.h">
       <Filter>Source Files\Loaders</Filter>
     </ClInclude>
-    <ClInclude Include="scene_mm.h">
+    <ClInclude Include="scene_fonts.h">
       <Filter>Source Files\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="sys_ui.h">
@@ -277,6 +274,5 @@
     <ClInclude Include="texture.h">
       <Filter>Source Files\Loaders</Filter>
     </ClInclude>
-    <ClInclude Include="sys_image.h" />
   </ItemGroup>
 </Project>

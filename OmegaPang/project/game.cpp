@@ -39,9 +39,9 @@ void Game::Run()
     // SpriteLoader::LoadTextures();
     // FontLoader::LoadFonts();
 
-    // SceneLoader::LoadScene("SceneMM");
-    SceneLoader::LoadScene("Scene01");
-    // SceneLoader::LoadScene("SceneBee");
+    SceneLoader::LoadScene("SceneFonts");
+    // SceneLoader::LoadScene("ScenePang");
+    //  SceneLoader::LoadScene("SceneBee");
 
     Logic::Awake();
     Logic::Start();

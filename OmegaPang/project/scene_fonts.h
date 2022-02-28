@@ -2,7 +2,7 @@
 
 #include "scene.h"
 
-class SceneMM : public Scene
+class SceneFonts : public Scene
 {
   public:
     using Scene::Scene;
