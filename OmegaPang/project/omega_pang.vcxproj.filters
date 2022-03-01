@@ -143,6 +143,9 @@
     <ClCompile Include="asset_loader.cpp">
       <Filter>Source Files\Loaders</Filter>
     </ClCompile>
+    <ClCompile Include="scene_collisions.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stasis.h">
@@ -270,6 +273,9 @@
     </ClInclude>
     <ClInclude Include="texture.h">
       <Filter>Source Files\Loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="scene_collisions.h">
+      <Filter>Source Files\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

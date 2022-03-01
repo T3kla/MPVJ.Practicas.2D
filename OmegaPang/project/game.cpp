@@ -12,6 +12,11 @@
 #include "render.h"
 #include "stasis.h"
 
+#include "scene_bee.h"
+#include "scene_collisions.h"
+#include "scene_fonts.h"
+#include "scene_pang.h"
+
 #include <algorithm>
 
 static double fxCount = 0.;
@@ -33,11 +38,13 @@ entt::registry Game::Registry;
 void Travel()
 {
     if (Input::GetKey(GLFW_KEY_1))
-        SceneLoader::LoadScene("SceneFonts");
+        SceneLoader::LoadScene<SceneFonts>();
     else if (Input::GetKey(GLFW_KEY_2))
-        SceneLoader::LoadScene("ScenePang");
+        SceneLoader::LoadScene<ScenePang>();
     else if (Input::GetKey(GLFW_KEY_3))
-        SceneLoader::LoadScene("SceneBee");
+        SceneLoader::LoadScene<SceneBee>();
+    else if (Input::GetKey(GLFW_KEY_4))
+        SceneLoader::LoadScene<SceneCollisions>();
 }
 
 void Game::Run()
