@@ -5,7 +5,7 @@
 class SysPhysics : public System
 {
   public:
-    SysPhysics() = default;
+    SysPhysics();
     virtual ~SysPhysics() override = default;
 
     virtual void Update() override{};

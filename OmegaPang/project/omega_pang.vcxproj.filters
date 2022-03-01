@@ -47,9 +47,6 @@
     <Filter Include="Source Files\ECS\Components\Renderers">
       <UniqueIdentifier>{ccbbbdd6-e9f2-4592-9dde-34a9a0f8239c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\ECS\Components\Colliders">
-      <UniqueIdentifier>{e6905b97-5db0-45ca-a077-a55f0d0bc689}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\ECS\Components\Basic">
       <UniqueIdentifier>{d0abfed1-01cd-4635-833f-c5b12bb17cbe}</UniqueIdentifier>
     </Filter>
@@ -61,6 +58,12 @@
     </Filter>
     <Filter Include="Source Files\Loaders">
       <UniqueIdentifier>{feeb1697-bd0e-4ebc-958a-6406f1d92521}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ECS\Components\Physics\Colliders">
+      <UniqueIdentifier>{e6905b97-5db0-45ca-a077-a55f0d0bc689}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Physics">
+      <UniqueIdentifier>{6f5f165c-94eb-46e7-b1cc-df0e7a095b70}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -146,6 +149,9 @@
     <ClCompile Include="scene_collisions.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="pixel_collider.h">
+      <Filter>Source Files\ECS\Components\Physics\Colliders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stasis.h">
@@ -200,10 +206,10 @@
       <Filter>Source Files\ECS\Components\Renderers</Filter>
     </ClInclude>
     <ClInclude Include="circle_collider.h">
-      <Filter>Source Files\ECS\Components\Colliders</Filter>
+      <Filter>Source Files\ECS\Components\Physics\Colliders</Filter>
     </ClInclude>
     <ClInclude Include="square_collider.h">
-      <Filter>Source Files\ECS\Components\Colliders</Filter>
+      <Filter>Source Files\ECS\Components\Physics\Colliders</Filter>
     </ClInclude>
     <ClInclude Include="color.h">
       <Filter>Source Files\Math</Filter>
@@ -276,6 +282,12 @@
     </ClInclude>
     <ClInclude Include="scene_collisions.h">
       <Filter>Source Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="collision.h">
+      <Filter>Source Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="collider.h">
+      <Filter>Source Files\ECS\Components\Physics\Colliders</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
