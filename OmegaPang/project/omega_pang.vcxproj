@@ -184,7 +184,6 @@
     <ClInclude Include="font.h" />
     <ClInclude Include="font_loader.h" />
     <ClInclude Include="hook.h" />
-    <ClInclude Include="keycode.h" />
     <ClInclude Include="oval_renderer.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="scene.h" />

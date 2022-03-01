@@ -1,6 +1,5 @@
 #pragma once
 
-#include "keycode.h"
 #include "vec.h"
 
 class Input
@@ -22,5 +21,5 @@ class Input
     static Vec2 GetMousePos();
     static Vec2 GetMouseDelta();
 
-    static unsigned char GetKey(KeyCode key);
+    static unsigned char GetKey(int key);
 };

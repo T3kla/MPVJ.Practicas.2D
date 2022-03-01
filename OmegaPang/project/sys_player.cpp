@@ -6,8 +6,8 @@
 #include "font_loader.h"
 #include "game.h"
 #include "gameobject.h"
+#include "glfw3.h"
 #include "input.h"
-#include "keycode.h"
 #include "player.h"
 #include "render.h"
 #include "rigidbody.h"
@@ -64,14 +64,13 @@ void InstantiatePlayer()
 
     player = Entity(id, &reg);
 
-    int width, height;
-    Render::GetWindowSize(width, height);
+    auto wSize = Render::GetWindowSize();
 
     auto &go = reg.get_or_emplace<GameObject>(id);
     go.isActive = true;
 
     auto &tf = reg.get_or_emplace<Transform>(id);
-    tf.position = {width / 2.f, height - 50.f};
+    tf.position = {wSize.x / 2.f, wSize.y - 50.f};
     tf.scale = Vec2::One();
     tf.rotation = 0.f;
 
@@ -122,7 +121,7 @@ void InstantiatePlayerText()
     textShadw = Entity(shadw, &reg);
 }
 
-void SysPlayer::Awake()
+SysPlayer::SysPlayer()
 {
     InstantiatePlayer();
     InstantiatePlayerText();
@@ -182,14 +181,13 @@ void SysPlayer::Update()
     }
 
     // Input Move
-    int width, height;
-    Render::GetWindowSize(width, height);
+    auto wSize = Render::GetWindowSize();
 
     Vec2 add = Vec2::Zero();
 
-    if (CanMove() && Input::GetKey(KeyCode::A))
+    if (CanMove() && Input::GetKey(GLFW_KEY_A))
         add -= pl.speed * (float)Stasis::GetDeltaScaled() * 0.001f;
-    if (CanMove() && Input::GetKey(KeyCode::D))
+    if (CanMove() && Input::GetKey(GLFW_KEY_D))
         add += pl.speed * (float)Stasis::GetDeltaScaled() * 0.001f;
 
     rb.velocity += add;
@@ -202,9 +200,9 @@ void SysPlayer::Update()
     pl.reversed = rb.velocity.x < 0.f ? true : false;
 
     // Bounds
-    if (tf.position.x > width - cc.radius / 2.f)
+    if (tf.position.x > wSize.x - cc.radius / 2.f)
     {
-        tf.position.x = width - cc.radius / 2.f - 1.f;
+        tf.position.x = wSize.x - cc.radius / 2.f - 1.f;
         rb.velocity.x = 0;
     }
     if (tf.position.x < cc.radius / 2.f)
@@ -214,7 +212,7 @@ void SysPlayer::Update()
     }
 
     // Input Shoot
-    if (CanShoot() && Input::GetKey(KeyCode::W))
+    if (CanShoot() && Input::GetKey(GLFW_KEY_W))
     {
         BlockShoot(0.3f);
         BlockMove(0.1f);

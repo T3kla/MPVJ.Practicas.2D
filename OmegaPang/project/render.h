@@ -24,7 +24,7 @@ class Render
   public:
     static GLFWwindow *GetWindow();
 
-    static void GetWindowSize(int &width, int &height);
+    static struct Vec2i GetWindowSize();
     static void SetWindowSize(const int &width, const int &height);
 
     static const Color &GetBgColor();

@@ -13,8 +13,6 @@ class Logic
     Logic() = default;
     Logic(const Logic &) = delete;
 
-    static void Awake();
-    static void Start();
     static void Update();
     static void Fixed();
     static void Quit();

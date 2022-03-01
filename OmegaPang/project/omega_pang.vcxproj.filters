@@ -193,9 +193,6 @@
     <ClInclude Include="render.h">
       <Filter>Source Files\Engine\Loops</Filter>
     </ClInclude>
-    <ClInclude Include="keycode.h">
-      <Filter>Source Files\Enums</Filter>
-    </ClInclude>
     <ClInclude Include="sprite_renderer.h">
       <Filter>Source Files\ECS\Components\Renderers</Filter>
     </ClInclude>

@@ -31,31 +31,19 @@ Vec2 Input::GetMouseDelta()
     return Instance.MouseDelta;
 }
 
-unsigned char Input::GetKey(KeyCode key)
+unsigned char Input::GetKey(int key)
 {
     auto *window = Render::GetWindow();
 
     switch (key)
     {
-    case KeyCode::W:
-        return glfwGetKey(window, GLFW_KEY_W);
-    case KeyCode::A:
-        return glfwGetKey(window, GLFW_KEY_A);
-    case KeyCode::S:
-        return glfwGetKey(window, GLFW_KEY_S);
-    case KeyCode::D:
-        return glfwGetKey(window, GLFW_KEY_D);
-    case KeyCode::Q:
-        return glfwGetKey(window, GLFW_KEY_Q);
-    case KeyCode::E:
-        return glfwGetKey(window, GLFW_KEY_E);
-    case KeyCode::Left:
-        return glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
-    case KeyCode::Right:
-        return glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT);
-    case KeyCode::Middle:
-        return glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE);
+    case GLFW_MOUSE_BUTTON_LEFT:
+        return glfwGetMouseButton(window, key);
+    case GLFW_MOUSE_BUTTON_RIGHT:
+        return glfwGetMouseButton(window, key);
+    case GLFW_MOUSE_BUTTON_MIDDLE:
+        return glfwGetMouseButton(window, key);
     default:
-        return 0;
+        return glfwGetKey(window, key);
     }
 }

@@ -27,11 +27,10 @@ void SysBalls::Fixed()
         rb.velocity -= Vec2::Down() * 600.f * (float)STP * 0.001f;
 
         // Rebound
-        int width, height;
-        Render::GetWindowSize(width, height);
-        if (tf.position.x > width - cc.radius / 2.f)
+        auto wSize = Render::GetWindowSize();
+        if (tf.position.x > wSize.x - cc.radius / 2.f)
         {
-            tf.position.x = width - cc.radius / 2.f - 1.f;
+            tf.position.x = wSize.x - cc.radius / 2.f - 1.f;
             rb.velocity.x *= -1.f;
         }
         if (tf.position.x < cc.radius / 2.f)
@@ -39,9 +38,9 @@ void SysBalls::Fixed()
             tf.position.x = cc.radius / 2.f + 1.f;
             rb.velocity.x *= -1.f;
         }
-        if (tf.position.y > height - cc.radius / 2.f)
+        if (tf.position.y > wSize.y - cc.radius / 2.f)
         {
-            tf.position.y = height - cc.radius / 2.f - 1.f;
+            tf.position.y = wSize.y - cc.radius / 2.f - 1.f;
             rb.velocity.y = -ReboundPerSize(bl.size) * 1.2f;
         }
     }

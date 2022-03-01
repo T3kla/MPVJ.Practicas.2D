@@ -88,10 +88,9 @@ GLFWwindow *Render::GetWindow()
     return Window;
 }
 
-void Render::GetWindowSize(int &width, int &height)
+Vec2i Render::GetWindowSize()
 {
-    width = w;
-    height = h;
+    return {w, h};
 }
 
 void Render::SetWindowSize(const int &width, const int &height)

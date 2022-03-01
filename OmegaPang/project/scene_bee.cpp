@@ -6,7 +6,7 @@
 
 void SceneBee::LoadScene()
 {
-    Render::SetBgColor({0.f, 0.f, 0.f, 0.f});
+    Render::SetBgColor({0.5f, 0.44f, 0.37f, 0.5f});
     SysBee::Instantiate({200.f, 200.f});
 
     // Systems

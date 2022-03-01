@@ -35,8 +35,6 @@ void SysHook::Fixed()
             continue;
 
         // Travel Up
-        int width, height;
-        Render::GetWindowSize(width, height);
         _tf.position -= Vec2::Up() * _hk.speed * (float)STP * 0.001f;
         if (_tf.position.y < 0 + 50.f)
             _go.isActive = false;

@@ -29,18 +29,6 @@ const std::vector<System *> *Logic::GetSystems()
     return &Instance.each;
 }
 
-void Logic::Awake()
-{
-    for (auto &&go : *Instance.GetSystems())
-        go->Awake();
-}
-
-void Logic::Start()
-{
-    for (auto &&go : *Instance.GetSystems())
-        go->Start();
-}
-
 void Logic::Update()
 {
     for (auto &&go : *Instance.GetSystems())

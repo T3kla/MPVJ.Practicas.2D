@@ -1,13 +1,15 @@
 #include "game.h"
 
+#include "glfw3.h"
+
 #include "asset_loader.h"
 #include "font_loader.h"
-#include "glfw3.h"
+#include "scene_loader.h"
+#include "sprite_loader.h"
+
 #include "input.h"
 #include "logic.h"
 #include "render.h"
-#include "scene_loader.h"
-#include "sprite_loader.h"
 #include "stasis.h"
 
 #include <algorithm>
@@ -28,6 +30,16 @@ auto FreqRefresh = [](double &now, double &old, double &freq) {
 Game Game::Instance;
 entt::registry Game::Registry;
 
+void Travel()
+{
+    if (Input::GetKey(GLFW_KEY_1))
+        SceneLoader::LoadScene("SceneFonts");
+    else if (Input::GetKey(GLFW_KEY_2))
+        SceneLoader::LoadScene("ScenePang");
+    else if (Input::GetKey(GLFW_KEY_3))
+        SceneLoader::LoadScene("SceneBee");
+}
+
 void Game::Run()
 {
     Stasis::RefreshTime();
@@ -36,19 +48,11 @@ void Game::Run()
 
     AssetLoader::LoadAssets();
 
-    // SpriteLoader::LoadTextures();
-    // FontLoader::LoadFonts();
-
-    SceneLoader::LoadScene("SceneFonts");
-    // SceneLoader::LoadScene("ScenePang");
-    //  SceneLoader::LoadScene("SceneBee");
-
-    Logic::Awake();
-    Logic::Start();
-
     while (!glfwWindowShouldClose(Render::GetWindow()))
     {
         Stasis::RefreshTime();
+
+        Travel();
 
         Input::Update();
         Logic::Update();

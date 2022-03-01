@@ -2,11 +2,14 @@
 
 #include "color.h"
 #include "font_loader.h"
+#include "render.h"
 #include "sys_ui.h"
 #include "vec.h"
 
 void SceneFonts::LoadScene()
 {
+    Render::SetBgColor({0.5f, 0.44f, 0.37f, 1.f});
+
     auto *slap = FontLoader::GetFont("fontSlap.ttf");
     auto *org = FontLoader::GetFont("fontOrange.ttf");
 
