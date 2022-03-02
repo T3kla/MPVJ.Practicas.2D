@@ -156,7 +156,6 @@ void RenderOvals()
 void RenderSprites()
 {
     auto &reg = Game::GetRegistry();
-    lgfx_setcolor(1.f, 1.f, 1.f, 1.f);
 
     // Sort by layer
     const auto ByLayer = [](const SpriteRenderer &a, const SpriteRenderer &b) { return a.layer < b.layer; };
@@ -203,6 +202,7 @@ void RenderSprites()
                 uv1 = {sr.sprite->uv0.x, sr.sprite->uv1.y};
             }
 
+            lgfx_setcolor(sr.color.r, sr.color.g, sr.color.b, sr.color.a);
             lgfx_setblend(sr.blend);
             ltex_drawrotsized(sr.sprite->texture, fPos.x, fPos.y, fRot, sr.pivot.x, sr.pivot.y, fScl.x, fScl.y, uv0.x,
                               uv0.y, uv1.x, uv1.y);

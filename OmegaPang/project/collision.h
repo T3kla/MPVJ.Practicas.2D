@@ -5,8 +5,6 @@
 
 struct Collision
 {
-    Vec2 hitPosition;
-    Vec2 hitNormal;
-
-    entt::entity id;
+    entt::entity colliderSelf;
+    entt::entity colliderOther;
 };

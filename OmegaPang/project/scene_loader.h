@@ -1,13 +1,11 @@
 #pragma once
 
-class Scene;
-
 class SceneLoader
 {
     static SceneLoader Instance;
 
   private:
-    Scene *current;
+    class Scene *current;
 
   public:
     SceneLoader() = default;

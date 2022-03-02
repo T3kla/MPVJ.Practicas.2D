@@ -24,8 +24,8 @@ auto GetView = []() {
 };
 auto GetBallsView = []() { return Game::GetRegistry().view<GameObject, Transform, RigidBody, Ball, CircleCollider>(); };
 
+constexpr auto Clamp = [](float v, float max, float min) { return v >= max ? max : (v <= min ? min : v); };
 bool IsColliding(Vec2 circlePos, float circleRad, Vec2 sqrPos, Vec2 sqrSize);
-float Clamp(float value, float min, float max);
 
 void SysHook::Fixed()
 {
@@ -127,15 +127,10 @@ bool IsColliding(Vec2 circlePos, float circleRad, Vec2 sqrPos, Vec2 sqrSize)
     auto maxY = sqrPos.y + sqrSize.y / 2.f;
     auto minY = sqrPos.y - sqrSize.y / 2.f;
 
-    point.x = Clamp(circlePos.x - sqrPos.x + sqrPos.x, minX, maxX);
-    point.y = Clamp(circlePos.y - sqrPos.y + sqrPos.y, minY, maxY);
+    point.x = Clamp(circlePos.x - sqrPos.x + sqrPos.x, maxX, minX);
+    point.y = Clamp(circlePos.y - sqrPos.y + sqrPos.y, maxY, minY);
 
     auto distance = (point - circlePos).Magnitude();
 
     return distance < circleRad / 2.f;
-}
-
-float Clamp(float value, float min, float max)
-{
-    return std::max(min, std::min(max, value));
 }

@@ -26,17 +26,16 @@ constexpr char *stateIdle = "idle";
 constexpr char *stateMoving = "moving";
 constexpr char *stateShooting = "shooting";
 constexpr char *stateHurt = "hurt";
+constexpr float blinkRate = 0.2f;
 
 Entity player;
 Entity textPlain;
 Entity textShadw;
 
-float moveBlockCounter = 0.f;
-float shootBlockCounter = 0.f;
-float hurtBlockCounter = 0.f;
-float blinkCounter = 0.f;
-
-float blinkRate = 0.2f;
+static float moveBlockCounter = 0.f;
+static float shootBlockCounter = 0.f;
+static float hurtBlockCounter = 0.f;
+static float blinkCounter = 0.f;
 
 void UpdateAnimation();
 
@@ -60,6 +59,13 @@ void InstantiatePlayer()
 {
     auto &reg = Game::GetRegistry();
 
+    // Reset statics
+    moveBlockCounter = 0.f;
+    shootBlockCounter = 0.f;
+    hurtBlockCounter = 0.f;
+    blinkCounter = 0.f;
+
+    // Instantiation
     entt::entity id = reg.create();
 
     player = Entity(id, &reg);
@@ -228,14 +234,6 @@ void SysPlayer::Update()
         pl.state = velMag < 200.f ? stateIdle : stateMoving;
 
     UpdateAnimation();
-}
-
-void SysPlayer::Fixed()
-{
-}
-
-void SysPlayer::Quit()
-{
 }
 
 Entity *SysPlayer::GetPlayer()

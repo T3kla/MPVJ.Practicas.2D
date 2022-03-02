@@ -2,8 +2,6 @@
 
 #include "scene.h"
 
-class SysBee;
-
 class SceneBee : public Scene
 {
   public:
@@ -11,5 +9,5 @@ class SceneBee : public Scene
     virtual void UnloadScene() override;
 
   private:
-    SysBee *sysBee = nullptr;
+    class SysBee *sysBee = nullptr;
 };

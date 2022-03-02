@@ -7,6 +7,7 @@ Sprite SpriteLoader::sprBg;
 Sprite SpriteLoader::sprPlayerIdle;
 Sprite SpriteLoader::sprPlayerHitL;
 Sprite SpriteLoader::sprPlayerHitR;
+Sprite SpriteLoader::sprBox;
 std::vector<Sprite> SpriteLoader::sprBalls;
 std::vector<Sprite> SpriteLoader::sprExpls;
 std::vector<Sprite> SpriteLoader::sprPlayerMoveL;
@@ -69,15 +70,18 @@ void SpriteLoader::SetSprites()
     auto *txBg = GetTexture("txBG.png")->texture;
     auto *txSheet = GetTexture("sprSheet.png")->texture;
     auto *txBee = GetTexture("sprBee.png")->texture;
+    auto *txBox = GetTexture("box.png")->texture;
 
     // Sprite mapping
     sprBg = {txBg, Vec2::Zero(), Vec2::One()};
 
+    sprBalls.reserve(4);
     sprBalls.push_back({txSheet, {0.2f, 0.6f}, {0.6f, 1.0f}});
     sprBalls.push_back({txSheet, {0.2f, 0.4f}, {0.4f, 0.6f}});
     sprBalls.push_back({txSheet, {0.6f, 0.4f}, {0.8f, 0.6f}});
     sprBalls.push_back({txSheet, {0.6f, 0.2f}, {0.8f, 0.4f}});
 
+    sprExpls.reserve(4);
     sprExpls.push_back({txSheet, {0.6f, 0.6f}, {1.0f, 1.0f}});
     sprExpls.push_back({txSheet, {0.4f, 0.4f}, {0.6f, 0.6f}});
     sprExpls.push_back({txSheet, {0.8f, 0.4f}, {1.0f, 0.6f}});
@@ -85,30 +89,36 @@ void SpriteLoader::SetSprites()
 
     sprPlayerIdle = {txSheet, {0.2f, 0.0f}, {0.4f, 0.2f}};
 
-    sprPlayerMoveL.push_back({txSheet, {0.6f, 0.0f}, {0.8f, 0.2f}});
-    sprPlayerMoveL.push_back({txSheet, {0.8f, 0.0f}, {1.0f, 0.2f}});
+    sprPlayerMoveR.reserve(2);
+    sprPlayerMoveR.push_back({txSheet, {0.6f, 0.0f}, {0.8f, 0.2f}});
+    sprPlayerMoveR.push_back({txSheet, {0.8f, 0.0f}, {1.0f, 0.2f}});
+    sprPlayerMoveL.reserve(2);
+    sprPlayerMoveL.push_back({txSheet, {0.8f, 0.0f}, {0.6f, 0.2f}});
+    sprPlayerMoveL.push_back({txSheet, {1.0f, 0.0f}, {0.8f, 0.2f}});
 
-    sprPlayerShootL.push_back({txSheet, {0.4f, 0.0f}, {0.2f, 0.2f}});
-    sprPlayerShootL.push_back({txSheet, {0.6f, 0.0f}, {0.4f, 0.2f}});
-
-    sprPlayerMoveR.push_back({txSheet, {0.8f, 0.0f}, {0.6f, 0.2f}});
-    sprPlayerMoveR.push_back({txSheet, {1.0f, 0.0f}, {0.8f, 0.2f}});
-
+    sprPlayerShootR.reserve(2);
     sprPlayerShootR.push_back({txSheet, {0.2f, 0.0f}, {0.4f, 0.2f}});
     sprPlayerShootR.push_back({txSheet, {0.4f, 0.0f}, {0.6f, 0.2f}});
+    sprPlayerShootL.reserve(2);
+    sprPlayerShootL.push_back({txSheet, {0.4f, 0.0f}, {0.2f, 0.2f}});
+    sprPlayerShootL.push_back({txSheet, {0.6f, 0.0f}, {0.4f, 0.2f}});
 
     sprPlayerHitL = {txSheet, {0.2f, 0.2f}, {0.4f, 0.4f}};
     sprPlayerHitR = {txSheet, {0.4f, 0.2f}, {0.6f, 0.4f}};
 
+    sprHook.reserve(2);
     sprHook.push_back({txSheet, {0.0f, 0.0f}, {0.1f, 1.0f}});
     sprHook.push_back({txSheet, {0.1f, 0.0f}, {0.2f, 1.0f}});
 
-    sprBee.push_back({txBee, {0.f, 0.f}, {0.125f, 1.f}});
-    sprBee.push_back({txBee, {0.125f, 0.f}, {0.25f, 1.f}});
-    sprBee.push_back({txBee, {0.25f, 0.f}, {0.375f, 1.f}});
-    sprBee.push_back({txBee, {0.375f, 0.f}, {0.5f, 1.f}});
-    sprBee.push_back({txBee, {0.5f, 0.f}, {0.625f, 1.f}});
-    sprBee.push_back({txBee, {0.625f, 0.f}, {0.75f, 1.f}});
-    sprBee.push_back({txBee, {0.75f, 0.f}, {0.875f, 1.f}});
-    sprBee.push_back({txBee, {0.875f, 0.f}, {1.f, 1.f}});
+    sprBee.reserve(8);
+    sprBee.push_back({txBee, {0.000f, 0.0f}, {0.125f, 1.0f}});
+    sprBee.push_back({txBee, {0.125f, 0.0f}, {0.250f, 1.0f}});
+    sprBee.push_back({txBee, {0.250f, 0.0f}, {0.375f, 1.0f}});
+    sprBee.push_back({txBee, {0.375f, 0.0f}, {0.500f, 1.0f}});
+    sprBee.push_back({txBee, {0.500f, 0.0f}, {0.625f, 1.0f}});
+    sprBee.push_back({txBee, {0.625f, 0.0f}, {0.750f, 1.0f}});
+    sprBee.push_back({txBee, {0.750f, 0.0f}, {0.875f, 1.0f}});
+    sprBee.push_back({txBee, {0.875f, 0.0f}, {1.000f, 1.0f}});
+
+    sprBox = {txBox, {0.0f, 0.0f}, {1.0f, 1.0f}};
 }

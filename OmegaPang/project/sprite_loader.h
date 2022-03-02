@@ -25,15 +25,9 @@ class SpriteLoader
     static Texture *GetTexture(const char *name);
 
     // ***** Sprite accessors *****
-
-    // Bg
     static Sprite sprBg;
-
-    // Balls
     static std::vector<Sprite> sprBalls;
     static std::vector<Sprite> sprExpls;
-
-    // Player
     static Sprite sprPlayerIdle;
     static std::vector<Sprite> sprPlayerMoveL;
     static std::vector<Sprite> sprPlayerMoveR;
@@ -41,10 +35,7 @@ class SpriteLoader
     static std::vector<Sprite> sprPlayerShootR;
     static Sprite sprPlayerHitL;
     static Sprite sprPlayerHitR;
-
-    // Hook
     static std::vector<Sprite> sprHook;
-
-    // Bee
     static std::vector<Sprite> sprBee;
+    static Sprite sprBox;
 };

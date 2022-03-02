@@ -2,12 +2,6 @@
 
 #include "scene.h"
 
-class SysPlayer;
-class SysPhysics;
-class SysHook;
-class SysBalls;
-class SysExplosions;
-
 class ScenePang : public Scene
 {
   public:
@@ -17,9 +11,9 @@ class ScenePang : public Scene
     virtual void UnloadScene() override;
 
   private:
-    SysPlayer *sysPlayer = nullptr;
-    SysPhysics *sysPhysics = nullptr;
-    SysHook *sysHook = nullptr;
-    SysBalls *sysBalls = nullptr;
-    SysExplosions *sysExplosions = nullptr;
+    class SysPlayer *sysPlayer = nullptr;
+    class SysPhysics *sysPhysics = nullptr;
+    class SysHook *sysHook = nullptr;
+    class SysBalls *sysBalls = nullptr;
+    class SysExplosions *sysExplosions = nullptr;
 };

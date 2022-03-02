@@ -15,4 +15,5 @@ class SceneCollisions : public Scene, public System
 
   private:
     // Systems
+    class SysPhysics *sysPhysics;
 };

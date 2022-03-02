@@ -1,5 +1,6 @@
 #pragma once
 
+#include "color.h"
 #include "litegfx.h"
 #include "vec.h"
 
@@ -12,6 +13,7 @@ struct SpriteRenderer
     bool reverse = false;
 
     Sprite *sprite = nullptr;
+    Color color = {1.f, 1.f, 1.f, 1.f};
 
     Vec2 offsetPosition = {0.f, 0.f};
     float offsetRotation = 0.f;
@@ -20,5 +22,5 @@ struct SpriteRenderer
     Vec2 pivot = {0.5f, 0.5f};
     int layer = 0;
 
-    lblend_t blend = BLEND_ADD;
+    lblend_t blend = BLEND_ALPHA;
 };
