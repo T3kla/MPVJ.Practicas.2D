@@ -11,14 +11,14 @@
 #include "square_collider.h"
 #include "transform.h"
 
-#include "collision.h"
-
 #include "sys_physics.h"
 
 #include "sprite_loader.h"
 
-entt::entity CreateSqr(entt::registry &reg);
-void Lol(Collision *a);
+entt::entity CreateSqr(entt::registry &);
+void OnTriggerEnter(Collision *);
+void OnTriggerStay(Collision *);
+void OnTriggerExit(Collision *);
 
 static entt::entity staticSquare;
 static entt::entity mouseSquare;
@@ -59,7 +59,9 @@ entt::entity CreateSqr(entt::registry &reg)
     auto &sc = reg.emplace<SquareCollider>(id);
     sc.center = {0.f, 0.f};
     sc.size = {100.f, 100.f};
-    sc.OnCollision = Lol;
+    sc.OnTriggerEnter = &OnTriggerEnter;
+    sc.OnTriggerStay = &OnTriggerStay;
+    sc.OnTriggerExit = &OnTriggerExit;
     auto &sr = reg.emplace<SpriteRenderer>(id);
     sr.sprite = &SpriteLoader::sprBox;
     sr.size = {100.f, 100.f};
@@ -68,10 +70,26 @@ entt::entity CreateSqr(entt::registry &reg)
     return id;
 }
 
-void Lol(Collision *a)
+void OnTriggerEnter(Collision *col)
 {
     auto &reg = Game::GetRegistry();
-    auto *sr = reg.try_get<SpriteRenderer>(a->colliderSelf);
+    auto *sr = reg.try_get<SpriteRenderer>(col->a.id);
     if (sr)
         sr->color = {1.f, 0.f, 0.f, 1.f};
+}
+
+void OnTriggerStay(Collision *col)
+{
+    auto &reg = Game::GetRegistry();
+    auto *sr = reg.try_get<SpriteRenderer>(col->a.id);
+    if (sr)
+        sr->color = {0.f, 1.f, 0.f, 1.f};
+}
+
+void OnTriggerExit(Collision *col)
+{
+    auto &reg = Game::GetRegistry();
+    auto *sr = reg.try_get<SpriteRenderer>(col->a.id);
+    if (sr)
+        sr->color = {0.f, 0.f, 1.f, 1.f};
 }

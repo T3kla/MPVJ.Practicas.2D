@@ -181,7 +181,6 @@
     <ClInclude Include="ball.h" />
     <ClInclude Include="bee.h" />
     <ClInclude Include="collider.h" />
-    <ClInclude Include="collision.h" />
     <ClInclude Include="color.h" />
     <ClInclude Include="explosion.h" />
     <ClInclude Include="asset_loader.h" />

@@ -24,7 +24,7 @@ auto GetView = []() {
 };
 auto GetBallsView = []() { return Game::GetRegistry().view<GameObject, Transform, RigidBody, Ball, CircleCollider>(); };
 
-constexpr auto Clamp = [](float v, float max, float min) { return v >= max ? max : (v <= min ? min : v); };
+static constexpr auto Clamp = [](float v, float max, float min) { return v >= max ? max : (v <= min ? min : v); };
 bool IsColliding(Vec2 circlePos, float circleRad, Vec2 sqrPos, Vec2 sqrSize);
 
 void SysHook::Fixed()

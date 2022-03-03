@@ -1,6 +1,33 @@
 #pragma once
 
 #include "system.h"
+#include "vec.h"
+
+#include <entt/entt.hpp>
+
+struct Box
+{
+    entt::entity id;
+    Vec2 pos;
+    Vec2 size;
+    const char *type;
+
+    bool operator==(const Box &rhs) const
+    {
+        return id == rhs.id && type == rhs.type;
+    }
+};
+
+struct Collision
+{
+    Box a;
+    Box b;
+
+    bool operator==(const Collision &rhs) const
+    {
+        return a == rhs.a && b == rhs.b;
+    }
+};
 
 class SysPhysics : public System
 {

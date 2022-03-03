@@ -283,9 +283,6 @@
     <ClInclude Include="scene_collisions.h">
       <Filter>Source Files\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="collision.h">
-      <Filter>Source Files\Physics</Filter>
-    </ClInclude>
     <ClInclude Include="collider.h">
       <Filter>Source Files\ECS\Components\Physics\Colliders</Filter>
     </ClInclude>

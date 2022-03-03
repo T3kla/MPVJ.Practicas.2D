@@ -2,8 +2,6 @@
 
 #include "game.h"
 
-#include "collision.h"
-
 #include "circle_collider.h"
 #include "gameobject.h"
 #include "pixel_collider.h"
@@ -13,43 +11,70 @@
 #include "transform.h"
 
 #include <algorithm>
+#include <unordered_map>
 #include <vector>
 
-struct AABB
+struct Possible
 {
-    entt::entity id;
-    Vec2 pos;
-    Vec2 size;
-    const char *colType;
+    Box *a;
+    Box *b;
 };
 
-struct PreCol
-{
-    AABB *a;
-    AABB *b;
-};
+static std::vector<Box> eachBox;       // Every Box box
+static std::vector<Possible> posBox;   // Every Box pair that intersects
+static std::vector<Collision> colBoxA; // Collision buffer
+static std::vector<Collision> colBoxB; // Collision buffer
 
-static std::vector<AABB> setup;
-static std::vector<PreCol> preCol;
-static Vec2 aMax, aMin, bMax, bMin;
+static std::vector<Collision> *colBox = &colBoxA;    // Confirmed collisions this frame
+static std::vector<Collision> *colBoxOld = &colBoxB; // Confirmed collisions last frame
 
 static const auto *const ptrSqrName = typeid(SquareCollider).name();
 static const auto *const ptrCrlName = typeid(CircleCollider).name();
 static const auto *const ptrPxlName = typeid(PixelCollider).name();
 
+void SqrVsSqr(const Box &, const Box &);
+void SqrVsCrl(const Box &, const Box &);
+void CrlVsCrl(const Box &, const Box &);
+void SqrVsPxl(const Box &, const Box &);
+void CrlVsPxl(const Box &, const Box &);
+void PxlVsPxl(const Box &, const Box &);
+
+static constexpr auto Clamp = [](float v, float max, float min) { return v >= max ? max : (v <= min ? min : v); };
+
+static const bool IsInColBox(const Collision &col)
+{
+    return std::find(colBox->begin(), colBox->end(), col) != colBox->end();
+};
+
+static const bool IsInColBoxOld(const Collision &col)
+{
+    return std::find(colBoxOld->begin(), colBoxOld->end(), col) != colBoxOld->end();
+};
+
+void SwapColBox()
+{
+    auto *temp = colBoxOld;
+    colBoxOld = colBox;
+    colBox = temp;
+    colBox->clear();
+}
+
 SysPhysics::SysPhysics()
 {
-    setup.reserve(64);
-    preCol.reserve(64);
+    eachBox.reserve(64);
+    posBox.reserve(64);
+    colBoxA.reserve(64);
+    colBoxB.reserve(64);
 }
 
 void SysPhysics::Fixed()
 {
     auto &reg = Game::GetRegistry();
 
-    // Reset buffer
-    setup.clear();
-    preCol.clear();
+    // Reset buffers
+    eachBox.clear();
+    posBox.clear();
+    SwapColBox();
 
     // Apply velocity
     auto rbView = reg.view<GameObject, Transform, RigidBody>();
@@ -70,23 +95,24 @@ void SysPhysics::Fixed()
     // Get colliding entities
     for (auto [entity, go, tf, sc] : sqrView.each())
         if (go.isActive && sc.enable)
-            setup.push_back({entity, tf.position + sc.center, sc.size, ptrSqrName});
+            eachBox.push_back({entity, tf.position + sc.center, sc.size, ptrSqrName});
 
     for (auto [entity, go, tf, cc] : crlView.each())
         if (go.isActive && cc.enable)
-            setup.push_back({entity, tf.position + cc.center, {cc.radius, cc.radius}, ptrCrlName});
+            eachBox.push_back({entity, tf.position + cc.center, {cc.radius, cc.radius}, ptrCrlName});
 
     for (auto [entity, go, tf, pc, sr] : pxlView.each())
         if (go.isActive && pc.enable && sr.enable && sr.sprite)
-            setup.push_back({entity, tf.position, sr.size, ptrPxlName});
+            eachBox.push_back({entity, tf.position, sr.size, ptrPxlName});
 
     // Set posible collisions
-    for (auto &&a : setup)
+    Vec2 aMax, aMin, bMax, bMin;
+    for (auto &&a : eachBox)
     {
         aMax = a.pos + a.size / 2.f;
         aMin = a.pos - a.size / 2.f;
 
-        for (auto &&b : setup)
+        for (auto &&b : eachBox)
         {
             if (a.id == b.id)
                 continue;
@@ -98,23 +124,137 @@ void SysPhysics::Fixed()
                 (bMax.y > aMax.y && bMin.y > aMax.y) || (bMax.y < aMin.y && bMin.y < aMin.y))
                 continue;
 
-            preCol.push_back({&a, &b});
+            posBox.push_back({&a, &b});
         }
     }
 
     // Collide
-    //      Check if entity == entity because it may have multiple colliders
-
-    // Send collision events
-    for (auto &&collision : preCol)
+    for (auto &&col : posBox)
     {
-        Collision col = {collision.a->id, collision.b->id};
-
-        if (collision.a->colType == ptrSqrName)
-            reg.get<SquareCollider>(collision.a->id).OnCollision(&col);
-        else if (collision.a->colType == ptrCrlName)
-            reg.get<CircleCollider>(collision.a->id).OnCollision(&col);
-        else if (collision.a->colType == ptrPxlName)
-            reg.get<PixelCollider>(collision.a->id).OnCollision(&col);
+        if (col.a->type == ptrSqrName)
+        {
+            if (col.b->type == ptrSqrName)
+                SqrVsSqr(*col.a, *col.b);
+            else if (col.b->type == ptrCrlName)
+                SqrVsCrl(*col.a, *col.b);
+            else if (col.b->type == ptrPxlName)
+                SqrVsPxl(*col.a, *col.b);
+        }
+        else if (col.a->type == ptrCrlName)
+        {
+            if (col.b->type == ptrSqrName)
+                SqrVsCrl(*col.b, *col.a);
+            else if (col.b->type == ptrCrlName)
+                CrlVsCrl(*col.a, *col.b);
+            else if (col.b->type == ptrPxlName)
+                CrlVsPxl(*col.a, *col.b);
+        }
+        else if (col.a->type == ptrPxlName)
+        {
+            if (col.b->type == ptrSqrName)
+                SqrVsPxl(*col.b, *col.a);
+            else if (col.b->type == ptrCrlName)
+                CrlVsPxl(*col.b, *col.a);
+            else if (col.b->type == ptrPxlName)
+                PxlVsPxl(*col.b, *col.a);
+        }
     }
+
+    // Exit callbacks
+    for (auto &&col : *colBoxOld)
+        if (IsInColBox(col))
+        {
+            if (col.a.type == ptrSqrName)
+                reg.get<SquareCollider>(col.a.id).OnTriggerStay(&col);
+            else if (col.a.type == ptrCrlName)
+                reg.get<CircleCollider>(col.a.id).OnTriggerStay(&col);
+            else if (col.a.type == ptrPxlName)
+                reg.get<PixelCollider>(col.a.id).OnTriggerStay(&col);
+        }
+        else
+        {
+            if (col.a.type == ptrSqrName)
+                reg.get<SquareCollider>(col.a.id).OnTriggerExit(&col);
+            else if (col.a.type == ptrCrlName)
+                reg.get<CircleCollider>(col.a.id).OnTriggerExit(&col);
+            else if (col.a.type == ptrPxlName)
+                reg.get<PixelCollider>(col.a.id).OnTriggerExit(&col);
+        }
+}
+
+void SqrVsSqr(const Box &a, const Box &b)
+{
+    auto &reg = Game::GetRegistry();
+
+    Collision col = {a, b};
+    colBox->push_back(col);
+
+    // Callbacks
+    if (!IsInColBoxOld(col))
+        reg.get<SquareCollider>(a.id).OnTriggerEnter(&col);
+}
+
+void SqrVsCrl(const Box &a, const Box &b)
+{
+    auto &reg = Game::GetRegistry();
+
+    // Calc
+    Vec2 point = {0.f, 0.f};
+
+    auto maxX = a.pos.x + a.size.x / 2.f;
+    auto minX = a.pos.x - a.size.x / 2.f;
+
+    auto maxY = a.pos.y + a.size.y / 2.f;
+    auto minY = a.pos.y - a.size.y / 2.f;
+
+    point.x = Clamp(b.pos.x, maxX, minX);
+    point.y = Clamp(b.pos.x, maxY, minY);
+
+    auto distance = (point - b.pos.x).Magnitude();
+    auto isColliding = distance < b.size.x / 2.f;
+
+    if (isColliding)
+        return;
+
+    // Save collision
+    Collision col = {a, b};
+    colBox->push_back(col);
+
+    // Callbacks
+    if (!IsInColBoxOld(col))
+        reg.get<SquareCollider>(a.id).OnTriggerEnter(&col);
+}
+
+void CrlVsCrl(const Box &a, const Box &b)
+{
+    auto &reg = Game::GetRegistry();
+
+    // Calc
+    Vec2 point = {0.f, 0.f};
+    auto isColliding = Vec2::Distance(a.pos, b.pos) < a.size.x + b.size.x;
+
+    if (isColliding)
+        return;
+
+    // Save collision
+    Collision col = {a, b};
+    colBox->push_back(col);
+
+    // Callbacks
+    if (!IsInColBoxOld(col))
+        reg.get<SquareCollider>(a.id).OnTriggerEnter(&col);
+    else
+        reg.get<SquareCollider>(a.id).OnTriggerStay(&col);
+}
+
+void SqrVsPxl(const Box &a, const Box &b)
+{
+}
+
+void CrlVsPxl(const Box &a, const Box &b)
+{
+}
+
+void PxlVsPxl(const Box &a, const Box &b)
+{
 }

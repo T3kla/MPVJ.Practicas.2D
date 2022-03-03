@@ -9,6 +9,7 @@ struct Collider
     bool enable = true;
     bool IsTrigger = false;
 
-    void (*OnCollision)(Collision *) = Null;
-    void (*OnTrigger)(Collision *) = Null;
+    void (*OnTriggerEnter)(Collision *) = Null;
+    void (*OnTriggerStay)(Collision *) = Null;
+    void (*OnTriggerExit)(Collision *) = Null;
 };
