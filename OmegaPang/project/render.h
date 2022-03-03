@@ -30,6 +30,6 @@ class Render
     static const Color &GetBgColor();
     static void SetBgColor(const Color &color);
 
-    static const char *GetTitle();
+    static char *GetTitle();
     static void SetTitle(char *text);
 };

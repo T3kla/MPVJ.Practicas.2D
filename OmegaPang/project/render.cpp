@@ -21,7 +21,7 @@
 
 constexpr float WEIGHT_NORMLIZE = 11.f;
 
-static char buffer[256];
+static char titleBuffer[256];
 static int w = 1280;
 static int h = 720;
 
@@ -63,11 +63,20 @@ void Render::Awake()
 
     // Set Background
     SetBgColor(BGColor);
+
+    // Set Title
+    glfwSetWindowTitle(Window, titleBuffer);
 }
 
 void Render::Fixed()
 {
     auto &reg = Game::GetRegistry();
+
+    // Update fpse
+    auto ufps = Game::GetUpdateFPS();
+    auto ffps = Game::GetFixedFPS();
+    sprintf_s(titleBuffer, 256, "update: %9.0f | fps: %9.0f", ufps, ffps);
+    glfwSetWindowTitle(Window, titleBuffer);
 
     // Clear screen
     lgfx_clearcolorbuffer(BGColor.r, BGColor.g, BGColor.b);
@@ -109,7 +118,7 @@ void Render::SetBgColor(const Color &color)
     Instance.BGColor = color;
 }
 
-const char *Render::GetTitle()
+char *Render::GetTitle()
 {
     return Instance.Title;
 }

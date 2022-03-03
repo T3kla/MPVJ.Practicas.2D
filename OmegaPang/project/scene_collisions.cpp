@@ -91,5 +91,5 @@ void OnTriggerExit(Collision *col)
     auto &reg = Game::GetRegistry();
     auto *sr = reg.try_get<SpriteRenderer>(col->a.id);
     if (sr)
-        sr->color = {0.f, 0.f, 1.f, 1.f};
+        sr->color = {1.f, 1.f, 1.f, 1.f};
 }
