@@ -1,5 +1,7 @@
 #include "sys_physics.h"
 
+#include "litegfx.h"
+
 #include "game.h"
 
 #include "circle_collider.h"
@@ -264,22 +266,71 @@ void SqrVsPxl(const Box &a, const Box &b, bool first)
     auto *tx = sr.sprite->texture;
 
     Vec2 pxSize = {b.size.x / tx->width, b.size.y / tx->height};
-    Vec2 topLeft = b.pos - (b.size * sr.pivot) + pxSize / 2.f;
-    Vec2 pos = topLeft;
 
-    for (size_t i = 0; i < tx->height; i++)
+    //      Overlap
+    auto aMin = a.pos - a.size / 2.f;
+    auto aMax = a.pos + a.size / 2.f;
+    auto bMin = b.pos - b.size / 2.f;
+    auto bMax = b.pos + b.size / 2.f;
+
+    Vec2 overTL = {Clamp(bMin.x, aMax.x, aMin.x), Clamp(bMax.y, aMax.y, aMin.y)};
+    Vec2 overBR = {Clamp(bMax.x, aMax.x, aMin.x), Clamp(bMin.y, aMax.y, aMin.y)};
+
+    //      Offsets
+    auto width = sr.sprite->texture->width, height = sr.sprite->texture->height;
+
+    auto offXLeft = (int)ceilf((overTL.x - bMin.x) / pxSize.x);
+    auto offXRight = width - (int)ceilf((bMax.x - overBR.x) / pxSize.x);
+
+    auto offYTop = (int)ceilf((overTL.y - bMin.y) / pxSize.y);
+    auto offYBot = height - (int)ceilf((bMax.y - overBR.y) / pxSize.y);
+
+    //      Check pixels
+    Vec2 tl = b.pos - (b.size * sr.pivot) + pxSize / 2.f;
+    Vec2 pos = tl;
+
+    auto pixels = new unsigned char[width * height * 4];
+    ltex_getpixels(sr.sprite->texture, pixels);
+
+    bool isColliding = false;
+
+    for (size_t h = offYTop; h < offYBot; h++)
     {
-        pos.y = topLeft.y + (pxSize.y / 2.f) * i;
+        pos.y = tl.y + pxSize.y * h;
 
-        for (size_t j = 0; j < tx->width; j++)
+        for (size_t w = offXLeft; w < offXRight; w++)
         {
-            pos.x = topLeft.x + (pxSize.x / 2.f) * i;
+            pos.x = tl.x + pxSize.x * w;
+
+            if (pixels + (offYTop + h) * w * 4 + (offXLeft + w) * 4 + 3 >= 0)
+            {
+                isColliding = true;
+                goto end;
+            }
         }
     }
+end:
 
-    // pixel size
-    // pixels to check
-    // pixels against sqr
+    delete pixels;
+
+    if (!isColliding)
+        return;
+
+    // Callbacks
+    Collision col = {};
+    if (first)
+    {
+        col = {a, b};
+        if (!IsInColBoxOld(col))
+            reg.get<SquareCollider>(a.id).OnTriggerEnter(&col);
+    }
+    else
+    {
+        col = {b, a};
+        if (!IsInColBoxOld(col))
+            reg.get<CircleCollider>(b.id).OnTriggerEnter(&col);
+    }
+    colBox->push_back(col);
 }
 
 void CrlVsPxl(const Box &a, const Box &b, bool first)

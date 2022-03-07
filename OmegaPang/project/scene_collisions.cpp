@@ -19,6 +19,7 @@ entt::entity CreateSqr(entt::registry &);
 entt::entity CreateCrl(entt::registry &);
 entt::entity CreateBox(entt::registry &);
 entt::entity CreateBall(entt::registry &);
+entt::entity CreateBee(entt::registry &);
 
 void OnTriggerEnter(Collision *);
 void OnTriggerStay(Collision *);
@@ -26,6 +27,7 @@ void OnTriggerExit(Collision *);
 
 static entt::entity staticSquare;
 static entt::entity staticBall;
+static entt::entity staticBee;
 static entt::entity mouseSquare;
 
 static float t = 0.f;
@@ -39,8 +41,9 @@ void SceneCollisions::LoadScene()
     // Props
     staticSquare = CreateBox(reg);
     staticBall = CreateBall(reg);
+    staticBee = CreateBee(reg);
 
-    // Mouse followert
+    // Mouse follower
     mouseSquare = CreateSqr(reg);
 
     // Systems
@@ -65,6 +68,7 @@ void SceneCollisions::Fixed()
     // Scale stuff
     reg.get<Transform>(staticSquare).scale = Vec2::One() * (sinf(t) / 2.f + 1.f);
     reg.get<Transform>(staticBall).scale = Vec2::One() * (cosf(t) / 2.f + 1.f);
+    reg.get<Transform>(staticBee).scale = Vec2::One() * (sinf(t) / 2.f + 1.f);
 }
 
 entt::entity CreateSqr(entt::registry &reg)
@@ -135,6 +139,24 @@ entt::entity CreateBall(entt::registry &reg)
     sc.OnTriggerExit = &OnTriggerExit;
     auto &sr = reg.emplace<SpriteRenderer>(id);
     sr.sprite = &SpriteLoader::sprBall;
+    sr.size = {100.f, 100.f};
+    sr.layer = 0;
+
+    return id;
+}
+
+entt::entity CreateBee(entt::registry &reg)
+{
+    auto id = reg.create();
+
+    auto &go = reg.emplace<GameObject>(id, true);
+    auto &tf = reg.emplace<Transform>(id, Vec2(500.f, 100.f), Vec2::One(), 0.f);
+    auto &sc = reg.emplace<PixelCollider>(id);
+    sc.OnTriggerEnter = &OnTriggerEnter;
+    sc.OnTriggerStay = &OnTriggerStay;
+    sc.OnTriggerExit = &OnTriggerExit;
+    auto &sr = reg.emplace<SpriteRenderer>(id);
+    sr.sprite = &SpriteLoader::sprBee[0];
     sr.size = {100.f, 100.f};
     sr.layer = 0;
 
