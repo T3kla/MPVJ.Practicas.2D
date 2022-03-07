@@ -263,9 +263,10 @@ void SqrVsPxl(const Box &a, const Box &b, bool first)
 
     // Calc
     auto &sr = reg.get<SpriteRenderer>(b.id);
-    auto *tx = sr.sprite->texture;
+    auto width = sr.sprite->texture->width;
+    auto height = sr.sprite->texture->height;
 
-    Vec2 pxSize = {b.size.x / tx->width, b.size.y / tx->height};
+    Vec2 pxSize = {b.size.x / width, b.size.y / height};
 
     //      Overlap
     auto aMin = a.pos - a.size / 2.f;
@@ -273,11 +274,10 @@ void SqrVsPxl(const Box &a, const Box &b, bool first)
     auto bMin = b.pos - b.size / 2.f;
     auto bMax = b.pos + b.size / 2.f;
 
-    Vec2 overTL = {Clamp(bMin.x, aMax.x, aMin.x), Clamp(bMax.y, aMax.y, aMin.y)};
-    Vec2 overBR = {Clamp(bMax.x, aMax.x, aMin.x), Clamp(bMin.y, aMax.y, aMin.y)};
+    Vec2 overTL = {Clamp(bMin.x, aMax.x, aMin.x), Clamp(bMin.y, aMax.y, aMin.y)};
+    Vec2 overBR = {Clamp(bMax.x, aMax.x, aMin.x), Clamp(bMax.y, aMax.y, aMin.y)};
 
     //      Offsets
-    auto width = sr.sprite->texture->width, height = sr.sprite->texture->height;
 
     auto offXLeft = (int)ceilf((overTL.x - bMin.x) / pxSize.x);
     auto offXRight = width - (int)ceilf((bMax.x - overBR.x) / pxSize.x);
@@ -286,32 +286,26 @@ void SqrVsPxl(const Box &a, const Box &b, bool first)
     auto offYBot = height - (int)ceilf((bMax.y - overBR.y) / pxSize.y);
 
     //      Check pixels
-    Vec2 tl = b.pos - (b.size * sr.pivot) + pxSize / 2.f;
-    Vec2 pos = tl;
-
     auto pixels = new unsigned char[width * height * 4];
     ltex_getpixels(sr.sprite->texture, pixels);
 
     bool isColliding = false;
 
-    for (size_t h = offYTop; h < offYBot; h++)
-    {
-        pos.y = tl.y + pxSize.y * h;
-
-        for (size_t w = offXLeft; w < offXRight; w++)
+    for (int h = offYTop; h < offYBot; h++)
+        for (int w = offXLeft; w < offXRight; w++)
         {
-            pos.x = tl.x + pxSize.x * w;
+            unsigned char alpha = pixels[h * width * 4 + w * 4 + 3];
 
-            if (pixels + (offYTop + h) * w * 4 + (offXLeft + w) * 4 + 3 >= 0)
+            if (alpha != '\0')
             {
                 isColliding = true;
                 goto end;
             }
         }
-    }
+
 end:
 
-    delete pixels;
+    delete[] pixels;
 
     if (!isColliding)
         return;
@@ -328,7 +322,7 @@ end:
     {
         col = {b, a};
         if (!IsInColBoxOld(col))
-            reg.get<CircleCollider>(b.id).OnTriggerEnter(&col);
+            reg.get<PixelCollider>(b.id).OnTriggerEnter(&col);
     }
     colBox->push_back(col);
 }

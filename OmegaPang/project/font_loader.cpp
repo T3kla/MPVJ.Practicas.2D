@@ -49,7 +49,7 @@ void Load(const char *file, ltex_t *&texture, stbtt_bakedchar *&bakedChars)
     // Close stream
     fclose(stream);
 
-    // Alloc for alpha buffer
+    // Alloc for backed chars
     bakedChars = new stbtt_bakedchar[charNum];
 
     // Bake font data to alpha buffer

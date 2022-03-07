@@ -68,7 +68,7 @@ void SceneCollisions::Fixed()
     // Scale stuff
     reg.get<Transform>(staticSquare).scale = Vec2::One() * (sinf(t) / 2.f + 1.f);
     reg.get<Transform>(staticBall).scale = Vec2::One() * (cosf(t) / 2.f + 1.f);
-    reg.get<Transform>(staticBee).scale = Vec2::One() * (sinf(t) / 2.f + 1.f);
+    // reg.get<Transform>(staticBee).scale = Vec2::One() * (sinf(t) / 2.f + 1.f);
 }
 
 entt::entity CreateSqr(entt::registry &reg)
