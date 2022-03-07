@@ -7,7 +7,10 @@ Sprite SpriteLoader::sprBg;
 Sprite SpriteLoader::sprPlayerIdle;
 Sprite SpriteLoader::sprPlayerHitL;
 Sprite SpriteLoader::sprPlayerHitR;
+Sprite SpriteLoader::sprSqr;
+Sprite SpriteLoader::sprCrl;
 Sprite SpriteLoader::sprBox;
+Sprite SpriteLoader::sprBall;
 std::vector<Sprite> SpriteLoader::sprBalls;
 std::vector<Sprite> SpriteLoader::sprExpls;
 std::vector<Sprite> SpriteLoader::sprPlayerMoveL;
@@ -70,7 +73,11 @@ void SpriteLoader::SetSprites()
     auto *txBg = GetTexture("txBG.png")->texture;
     auto *txSheet = GetTexture("sprSheet.png")->texture;
     auto *txBee = GetTexture("sprBee.png")->texture;
-    auto *txBox = GetTexture("box.png")->texture;
+
+    auto *txColSqr = GetTexture("rect.png")->texture;
+    auto *txColCrl = GetTexture("circle.png")->texture;
+    auto *txColBall = GetTexture("ball.png")->texture;
+    auto *txColBox = GetTexture("box.png")->texture;
 
     // Sprite mapping
     sprBg = {txBg, Vec2::Zero(), Vec2::One()};
@@ -120,5 +127,8 @@ void SpriteLoader::SetSprites()
     sprBee.push_back({txBee, {0.750f, 0.0f}, {0.875f, 1.0f}});
     sprBee.push_back({txBee, {0.875f, 0.0f}, {1.000f, 1.0f}});
 
-    sprBox = {txBox, {0.0f, 0.0f}, {1.0f, 1.0f}};
+    sprSqr = {txColSqr, {0.0f, 0.0f}, {1.0f, 1.0f}};
+    sprCrl = {txColCrl, {0.0f, 0.0f}, {1.0f, 1.0f}};
+    sprBox = {txColBox, {0.0f, 0.0f}, {1.0f, 1.0f}};
+    sprBall = {txColBall, {0.0f, 0.0f}, {1.0f, 1.0f}};
 }

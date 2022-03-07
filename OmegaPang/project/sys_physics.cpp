@@ -6,6 +6,7 @@
 #include "gameobject.h"
 #include "pixel_collider.h"
 #include "rigidbody.h"
+#include "sprite.h"
 #include "sprite_renderer.h"
 #include "square_collider.h"
 #include "transform.h"
@@ -33,10 +34,10 @@ static const auto *const ptrCrlName = typeid(CircleCollider).name();
 static const auto *const ptrPxlName = typeid(PixelCollider).name();
 
 void SqrVsSqr(const Box &, const Box &);
-void SqrVsCrl(const Box &, const Box &);
+void SqrVsCrl(const Box &, const Box &, bool);
 void CrlVsCrl(const Box &, const Box &);
-void SqrVsPxl(const Box &, const Box &);
-void CrlVsPxl(const Box &, const Box &);
+void SqrVsPxl(const Box &, const Box &, bool);
+void CrlVsPxl(const Box &, const Box &, bool);
 void PxlVsPxl(const Box &, const Box &);
 
 static constexpr auto Clamp = [](float v, float max, float min) { return v >= max ? max : (v <= min ? min : v); };
@@ -95,15 +96,16 @@ void SysPhysics::Fixed()
     // Get colliding entities
     for (auto [entity, go, tf, sc] : sqrView.each())
         if (go.isActive && sc.enable)
-            eachBox.push_back({entity, tf.position + sc.center, sc.size, ptrSqrName});
+            eachBox.push_back({entity, tf.position + sc.center, Vec2::Hadamard(sc.size, tf.scale), ptrSqrName});
 
     for (auto [entity, go, tf, cc] : crlView.each())
         if (go.isActive && cc.enable)
-            eachBox.push_back({entity, tf.position + cc.center, {cc.radius, cc.radius}, ptrCrlName});
+            eachBox.push_back(
+                {entity, tf.position + cc.center, Vec2::Hadamard({cc.radius, cc.radius}, tf.scale), ptrCrlName});
 
     for (auto [entity, go, tf, pc, sr] : pxlView.each())
         if (go.isActive && pc.enable && sr.enable && sr.sprite)
-            eachBox.push_back({entity, tf.position, sr.size, ptrPxlName});
+            eachBox.push_back({entity, tf.position, Vec2::Hadamard(sr.size, tf.scale), ptrPxlName});
 
     // Set posible collisions
     Vec2 aMax, aMin, bMax, bMin;
@@ -136,25 +138,25 @@ void SysPhysics::Fixed()
             if (col.b->type == ptrSqrName)
                 SqrVsSqr(*col.a, *col.b);
             else if (col.b->type == ptrCrlName)
-                SqrVsCrl(*col.a, *col.b);
+                SqrVsCrl(*col.a, *col.b, true);
             else if (col.b->type == ptrPxlName)
-                SqrVsPxl(*col.a, *col.b);
+                SqrVsPxl(*col.a, *col.b, true);
         }
         else if (col.a->type == ptrCrlName)
         {
             if (col.b->type == ptrSqrName)
-                SqrVsCrl(*col.b, *col.a);
+                SqrVsCrl(*col.b, *col.a, false);
             else if (col.b->type == ptrCrlName)
                 CrlVsCrl(*col.a, *col.b);
             else if (col.b->type == ptrPxlName)
-                CrlVsPxl(*col.a, *col.b);
+                CrlVsPxl(*col.a, *col.b, true);
         }
         else if (col.a->type == ptrPxlName)
         {
             if (col.b->type == ptrSqrName)
-                SqrVsPxl(*col.b, *col.a);
+                SqrVsPxl(*col.b, *col.a, false);
             else if (col.b->type == ptrCrlName)
-                CrlVsPxl(*col.b, *col.a);
+                CrlVsPxl(*col.b, *col.a, false);
             else if (col.b->type == ptrPxlName)
                 PxlVsPxl(*col.b, *col.a);
         }
@@ -194,7 +196,7 @@ void SqrVsSqr(const Box &a, const Box &b)
         reg.get<SquareCollider>(a.id).OnTriggerEnter(&col);
 }
 
-void SqrVsCrl(const Box &a, const Box &b)
+void SqrVsCrl(const Box &a, const Box &b, bool first)
 {
     auto &reg = Game::GetRegistry();
 
@@ -208,21 +210,29 @@ void SqrVsCrl(const Box &a, const Box &b)
     auto minY = a.pos.y - a.size.y / 2.f;
 
     point.x = Clamp(b.pos.x, maxX, minX);
-    point.y = Clamp(b.pos.x, maxY, minY);
+    point.y = Clamp(b.pos.y, maxY, minY);
 
-    auto distance = (point - b.pos.x).Magnitude();
+    auto distance = Vec2::Distance(point, b.pos);
     auto isColliding = distance < b.size.x / 2.f;
 
-    if (isColliding)
+    if (!isColliding)
         return;
 
-    // Save collision
-    Collision col = {a, b};
-    colBox->push_back(col);
-
     // Callbacks
-    if (!IsInColBoxOld(col))
-        reg.get<SquareCollider>(a.id).OnTriggerEnter(&col);
+    Collision col = {};
+    if (first)
+    {
+        col = {a, b};
+        if (!IsInColBoxOld(col))
+            reg.get<SquareCollider>(a.id).OnTriggerEnter(&col);
+    }
+    else
+    {
+        col = {b, a};
+        if (!IsInColBoxOld(col))
+            reg.get<CircleCollider>(b.id).OnTriggerEnter(&col);
+    }
+    colBox->push_back(col);
 }
 
 void CrlVsCrl(const Box &a, const Box &b)
@@ -233,25 +243,46 @@ void CrlVsCrl(const Box &a, const Box &b)
     Vec2 point = {0.f, 0.f};
     auto isColliding = Vec2::Distance(a.pos, b.pos) < a.size.x + b.size.x;
 
-    if (isColliding)
+    if (!isColliding)
         return;
 
-    // Save collision
-    Collision col = {a, b};
-    colBox->push_back(col);
-
     // Callbacks
+    Collision col = {a, b};
     if (!IsInColBoxOld(col))
         reg.get<SquareCollider>(a.id).OnTriggerEnter(&col);
     else
         reg.get<SquareCollider>(a.id).OnTriggerStay(&col);
+    colBox->push_back(col);
 }
 
-void SqrVsPxl(const Box &a, const Box &b)
+void SqrVsPxl(const Box &a, const Box &b, bool first)
 {
+    auto &reg = Game::GetRegistry();
+
+    // Calc
+    auto &sr = reg.get<SpriteRenderer>(b.id);
+    auto *tx = sr.sprite->texture;
+
+    Vec2 pxSize = {b.size.x / tx->width, b.size.y / tx->height};
+    Vec2 topLeft = b.pos - (b.size * sr.pivot) + pxSize / 2.f;
+    Vec2 pos = topLeft;
+
+    for (size_t i = 0; i < tx->height; i++)
+    {
+        pos.y = topLeft.y + (pxSize.y / 2.f) * i;
+
+        for (size_t j = 0; j < tx->width; j++)
+        {
+            pos.x = topLeft.x + (pxSize.x / 2.f) * i;
+        }
+    }
+
+    // pixel size
+    // pixels to check
+    // pixels against sqr
 }
 
-void CrlVsPxl(const Box &a, const Box &b)
+void CrlVsPxl(const Box &a, const Box &b, bool first)
 {
 }
 

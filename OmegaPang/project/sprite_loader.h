@@ -36,6 +36,13 @@ class SpriteLoader
     static Sprite sprPlayerHitL;
     static Sprite sprPlayerHitR;
     static std::vector<Sprite> sprHook;
+
+    // Bee
     static std::vector<Sprite> sprBee;
+
+    // Collisions
+    static Sprite sprSqr;
+    static Sprite sprCrl;
     static Sprite sprBox;
+    static Sprite sprBall;
 };

@@ -16,12 +16,19 @@
 #include "sprite_loader.h"
 
 entt::entity CreateSqr(entt::registry &);
+entt::entity CreateCrl(entt::registry &);
+entt::entity CreateBox(entt::registry &);
+entt::entity CreateBall(entt::registry &);
+
 void OnTriggerEnter(Collision *);
 void OnTriggerStay(Collision *);
 void OnTriggerExit(Collision *);
 
 static entt::entity staticSquare;
+static entt::entity staticBall;
 static entt::entity mouseSquare;
+
+static float t = 0.f;
 
 void SceneCollisions::LoadScene()
 {
@@ -30,7 +37,10 @@ void SceneCollisions::LoadScene()
     auto &reg = Game::GetRegistry();
 
     // Props
-    staticSquare = CreateSqr(reg);
+    staticSquare = CreateBox(reg);
+    staticBall = CreateBall(reg);
+
+    // Mouse followert
     mouseSquare = CreateSqr(reg);
 
     // Systems
@@ -47,10 +57,51 @@ void SceneCollisions::Fixed()
 {
     auto &reg = Game::GetRegistry();
 
+    t += (float)STP * 0.001f;
+
+    // Move square to mouse
     reg.get<Transform>(mouseSquare).position = Input::GetMousePos();
+
+    // Scale stuff
+    reg.get<Transform>(staticSquare).scale = Vec2::One() * (sinf(t) / 2.f + 1.f);
+    reg.get<Transform>(staticBall).scale = Vec2::One() * (cosf(t) / 2.f + 1.f);
 }
 
 entt::entity CreateSqr(entt::registry &reg)
+{
+    auto id = reg.create();
+
+    auto &go = reg.emplace<GameObject>(id, true);
+    auto &tf = reg.emplace<Transform>(id, Vec2(25.f, 25.f), Vec2::One(), 0.f);
+    auto &sc = reg.emplace<SquareCollider>(id);
+    sc.center = {0.f, 0.f};
+    sc.size = {25.f, 25.f};
+    auto &sr = reg.emplace<SpriteRenderer>(id);
+    sr.sprite = &SpriteLoader::sprSqr;
+    sr.size = {25.f, 25.f};
+    sr.layer = 1;
+
+    return id;
+}
+
+entt::entity CreateCrl(entt::registry &reg)
+{
+    auto id = reg.create();
+
+    auto &go = reg.emplace<GameObject>(id, true);
+    auto &tf = reg.emplace<Transform>(id, Vec2(25.f, 25.f), Vec2::One(), 0.f);
+    auto &sc = reg.emplace<CircleCollider>(id);
+    sc.center = {0.f, 0.f};
+    sc.radius = 25.f;
+    auto &sr = reg.emplace<SpriteRenderer>(id);
+    sr.sprite = &SpriteLoader::sprCrl;
+    sr.size = {25.f, 25.f};
+    sr.layer = 1;
+
+    return id;
+}
+
+entt::entity CreateBox(entt::registry &reg)
 {
     auto id = reg.create();
 
@@ -64,6 +115,26 @@ entt::entity CreateSqr(entt::registry &reg)
     sc.OnTriggerExit = &OnTriggerExit;
     auto &sr = reg.emplace<SpriteRenderer>(id);
     sr.sprite = &SpriteLoader::sprBox;
+    sr.size = {100.f, 100.f};
+    sr.layer = 0;
+
+    return id;
+}
+
+entt::entity CreateBall(entt::registry &reg)
+{
+    auto id = reg.create();
+
+    auto &go = reg.emplace<GameObject>(id, true);
+    auto &tf = reg.emplace<Transform>(id, Vec2(300.f, 100.f), Vec2::One(), 0.f);
+    auto &sc = reg.emplace<CircleCollider>(id);
+    sc.center = {0.f, 0.f};
+    sc.radius = 100.f;
+    sc.OnTriggerEnter = &OnTriggerEnter;
+    sc.OnTriggerStay = &OnTriggerStay;
+    sc.OnTriggerExit = &OnTriggerExit;
+    auto &sr = reg.emplace<SpriteRenderer>(id);
+    sr.sprite = &SpriteLoader::sprBall;
     sr.size = {100.f, 100.f};
     sr.layer = 0;
 

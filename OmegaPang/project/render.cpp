@@ -75,7 +75,7 @@ void Render::Fixed()
     // Update fpse
     auto ufps = Game::GetUpdateFPS();
     auto ffps = Game::GetFixedFPS();
-    sprintf_s(titleBuffer, 256, "update: %9.0f | fps: %9.0f", ufps, ffps);
+    sprintf_s(titleBuffer, 256, "update: %0.0f | fps: %0.0f", ufps, ffps);
     glfwSetWindowTitle(Window, titleBuffer);
 
     // Clear screen
@@ -196,7 +196,7 @@ void RenderSprites()
         if (sr.sprite && sr.enable)
         {
             Vec2 fPos = tf.position + sr.offsetPosition;
-            Vec2 fScl = sr.size;
+            Vec2 fScl = Vec2::Hadamard(sr.size, tf.scale);
             float fRot = tf.rotation + sr.offsetRotation;
 
             // Reverse sprite
