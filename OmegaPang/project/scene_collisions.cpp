@@ -175,7 +175,7 @@ entt::entity CreateBee(entt::registry &reg)
     sc.OnTriggerExit = &OnTriggerExit;
     auto &sr = reg.emplace<SpriteRenderer>(id);
     sr.sprite = &SpriteLoader::sprBee;
-    sr.size = {100.f, 100.f};
+    sr.size = {200.f, 200.f};
     sr.layer = 0;
 
     return id;

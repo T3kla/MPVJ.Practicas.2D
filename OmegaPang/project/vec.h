@@ -41,6 +41,7 @@ struct Vec2
     static Vec2 Hadamard(const Vec2 &a, const Vec2 &b);
     static float Angle(const Vec2 &a, const Vec2 &b);
     static float Distance(const Vec2 &a, const Vec2 &b);
+    static float DistanceSq(const Vec2 &a, const Vec2 &b);
     static Vec2 RotateAround(const float &angle, const Vec2 &a, const Vec2 &axis = Vec2::Zero());
 
     static const Vec2 &Up();

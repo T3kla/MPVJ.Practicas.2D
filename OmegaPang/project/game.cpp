@@ -70,8 +70,9 @@ void Game::Run()
         while (fxCount >= STP)
         {
             FreqRefresh(nowFx, oldFx, freqFx);
+            Render::Fixed(); // FIXME: render first == debug mode
             Logic::Fixed();
-            Render::Fixed();
+            glfwSwapBuffers(Render::GetWindow());
             fxCount -= STP;
         }
     }
