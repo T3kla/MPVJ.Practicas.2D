@@ -38,7 +38,8 @@ class SpriteLoader
     static std::vector<Sprite> sprHook;
 
     // Bee
-    static std::vector<Sprite> sprBee;
+    static std::vector<Sprite> sprSheetBee;
+    static Sprite sprBee;
 
     // Collisions
     static Sprite sprSqr;

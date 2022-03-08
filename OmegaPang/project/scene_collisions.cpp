@@ -110,7 +110,7 @@ entt::entity CreateBox(entt::registry &reg)
     auto id = reg.create();
 
     auto &go = reg.emplace<GameObject>(id, true);
-    auto &tf = reg.emplace<Transform>(id, Vec2(100.f, 100.f), Vec2::One(), 0.f);
+    auto &tf = reg.emplace<Transform>(id, Vec2(100.f, 200.f), Vec2::One(), 0.f);
     auto &sc = reg.emplace<SquareCollider>(id);
     sc.center = {0.f, 0.f};
     sc.size = {100.f, 100.f};
@@ -130,7 +130,7 @@ entt::entity CreateBall(entt::registry &reg)
     auto id = reg.create();
 
     auto &go = reg.emplace<GameObject>(id, true);
-    auto &tf = reg.emplace<Transform>(id, Vec2(300.f, 100.f), Vec2::One(), 0.f);
+    auto &tf = reg.emplace<Transform>(id, Vec2(400.f, 200.f), Vec2::One(), 0.f);
     auto &sc = reg.emplace<CircleCollider>(id);
     sc.center = {0.f, 0.f};
     sc.radius = 100.f;
@@ -150,13 +150,13 @@ entt::entity CreateBee(entt::registry &reg)
     auto id = reg.create();
 
     auto &go = reg.emplace<GameObject>(id, true);
-    auto &tf = reg.emplace<Transform>(id, Vec2(500.f, 100.f), Vec2::One(), 0.f);
+    auto &tf = reg.emplace<Transform>(id, Vec2(700.f, 200.f), Vec2::One(), 0.f);
     auto &sc = reg.emplace<PixelCollider>(id);
     sc.OnTriggerEnter = &OnTriggerEnter;
     sc.OnTriggerStay = &OnTriggerStay;
     sc.OnTriggerExit = &OnTriggerExit;
     auto &sr = reg.emplace<SpriteRenderer>(id);
-    sr.sprite = &SpriteLoader::sprBee[0];
+    sr.sprite = &SpriteLoader::sprBee;
     sr.size = {100.f, 100.f};
     sr.layer = 0;
 

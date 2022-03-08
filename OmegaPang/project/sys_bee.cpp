@@ -71,7 +71,7 @@ void SysBee::Instantiate(const Vec2 &pos)
 
     auto &sr = reg.get_or_emplace<SpriteRenderer>(id);
     sr.enable = true;
-    sr.sprite = &SpriteLoader::sprBee[0];
+    sr.sprite = &SpriteLoader::sprSheetBee[0];
     sr.offsetPosition = Vec2::Zero();
     sr.offsetRotation = 0.f;
     sr.size = {100.f, 100.f};
@@ -81,7 +81,7 @@ void SysBee::Instantiate(const Vec2 &pos)
 
     auto &sa = reg.get_or_emplace<SpriteAnimation>(id);
     sa.enable = true;
-    sa.animation = &SpriteLoader::sprBee;
+    sa.animation = &SpriteLoader::sprSheetBee;
     sa.frame = 0;
     sa.speed = 0.f;
     sa.duration = 1.f;
