@@ -89,7 +89,7 @@ void Render::Fixed()
     RenderUI();
 
     // Swap Buffers
-    glfwSwapBuffers(Window);
+    // glfwSwapBuffers(Window);
 }
 
 GLFWwindow *Render::GetWindow()
@@ -217,29 +217,29 @@ void RenderSprites()
                               uv0.y, uv1.x, uv1.y);
 
             // Debug Alpha visualization
-            auto width = sr.sprite->texture->width;
-            auto height = sr.sprite->texture->height;
-            Vec2 size = Vec2::Hadamard(sr.size, tf.scale);
-            Vec2 pxSize = {size.x / width, size.y / height};
-            auto pixels = new unsigned char[width * height * 4];
-            Vec2 tl = tf.position - (size * 0.5f) + pxSize / 2.f;
-            Vec2 pos = tl;
-            ltex_getpixels(sr.sprite->texture, pixels);
-            for (int h = 0; h < height; h++)
-            {
-                pos.y = tl.y + pxSize.y * h;
-                for (int w = 0; w < width; w++)
-                {
-                    pos.x = tl.x + pxSize.x * w;
-                    unsigned char alpha = pixels[h * width * 4 + w * 4 + 3];
+            // auto width = sr.sprite->texture->width;
+            // auto height = sr.sprite->texture->height;
+            // Vec2 size = Vec2::Hadamard(sr.size, tf.scale);
+            // Vec2 pxSize = {size.x / width, size.y / height};
+            // auto pixels = new unsigned char[width * height * 4];
+            // Vec2 tl = tf.position - Vec2::Hadamard(size, sr.pivot) + pxSize / 2.f;
+            // Vec2 pos = tl;
+            // ltex_getpixels(sr.sprite->texture, pixels);
+            // for (int h = 0; h < height; h++)
+            //{
+            //    pos.y = tl.y + pxSize.y * h;
+            //    for (int w = 0; w < width; w++)
+            //    {
+            //        pos.x = tl.x + pxSize.x * w;
+            //        unsigned char alpha = pixels[h * width * 4 + w * 4 + 3];
 
-                    if (alpha != '\0')
-                    {
-                        lgfx_drawpoint(pos.x, pos.y);
-                    }
-                }
-            }
-            delete[] pixels;
+            //        if (alpha != '\0')
+            //        {
+            //            lgfx_drawpoint(pos.x, pos.y);
+            //        }
+            //    }
+            //}
+            // delete[] pixels;
         }
     }
 }

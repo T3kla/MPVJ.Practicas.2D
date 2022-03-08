@@ -74,6 +74,10 @@ void SysPhysics::Fixed()
 {
     auto &reg = Game::GetRegistry();
 
+    // Debug
+    lgfx_setcolor(1.0f, 0.1f, 0.1f, 1.0f);
+    lgfx_setblend(BLEND_SOLID);
+
     // Reset buffers
     eachBox.clear();
     posBox.clear();
@@ -276,7 +280,6 @@ void CrlVsCrl(const Box &a, const Box &b)
             cc->OnTriggerEnter(&col);
         else
             cc->OnTriggerStay(&col);
-    reg.get<CircleCollider>(a.id).OnTriggerStay(&col);
     colBox->push_back(col);
 }
 
@@ -301,7 +304,6 @@ void SqrVsPxl(const Box &a, const Box &b, bool first)
     Vec2 overBR = {Clamp(bMax.x, aMax.x, aMin.x), Clamp(bMax.y, aMax.y, aMin.y)};
 
     //      Offsets
-
     auto offXLeft = (int)ceilf((overTL.x - bMin.x) / pxSize.x);
     auto offXRight = width - (int)ceilf((bMax.x - overBR.x) / pxSize.x);
 
@@ -326,6 +328,8 @@ void SqrVsPxl(const Box &a, const Box &b, bool first)
             }
         }
 
+    return;
+
 end:
 
     delete[] pixels;
@@ -341,7 +345,8 @@ end:
         if (!IsInColBoxOld(col))
         {
             auto *sc = reg.try_get<SquareCollider>(a.id);
-            sc->OnTriggerEnter(&col);
+            if (sc)
+                sc->OnTriggerEnter(&col);
         }
     }
     else
@@ -350,7 +355,8 @@ end:
         if (!IsInColBoxOld(col))
         {
             auto *pc = reg.try_get<PixelCollider>(b.id);
-            pc->OnTriggerEnter(&col);
+            if (pc)
+                pc->OnTriggerEnter(&col);
         }
     }
     colBox->push_back(col);
@@ -358,8 +364,200 @@ end:
 
 void CrlVsPxl(const Box &a, const Box &b, bool first)
 {
+    auto &reg = Game::GetRegistry();
+
+    // Calc
+    auto &sr = reg.get<SpriteRenderer>(b.id);
+    auto width = sr.sprite->texture->width;
+    auto height = sr.sprite->texture->height;
+
+    Vec2 pxSize = {b.size.x / width, b.size.y / height};
+
+    //      Overlap
+    auto aMin = a.pos - a.size / 2.f;
+    auto aMax = a.pos + a.size / 2.f;
+    auto bMin = b.pos - b.size / 2.f;
+    auto bMax = b.pos + b.size / 2.f;
+
+    Vec2 overTL = {Clamp(bMin.x, aMax.x, aMin.x), Clamp(bMin.y, aMax.y, aMin.y)};
+    Vec2 overBR = {Clamp(bMax.x, aMax.x, aMin.x), Clamp(bMax.y, aMax.y, aMin.y)};
+
+    //      Offsets
+    auto offXLeft = (int)ceilf((overTL.x - bMin.x) / pxSize.x);
+    auto offXRight = width - (int)ceilf((bMax.x - overBR.x) / pxSize.x);
+
+    auto offYTop = (int)ceilf((overTL.y - bMin.y) / pxSize.y);
+    auto offYBot = height - (int)ceilf((bMax.y - overBR.y) / pxSize.y);
+
+    //      Check pixels
+    auto pixels = new unsigned char[width * height * 4];
+    ltex_getpixels(sr.sprite->texture, pixels);
+
+    Vec2 tl = b.pos - Vec2::Hadamard(sr.size, sr.pivot) + pxSize / 2.f;
+    Vec2 pos = tl;
+
+    bool isColliding = false;
+
+    for (int h = offYTop; h < offYBot; h++)
+    {
+        pos.y = tl.y + pxSize.y * h;
+
+        for (int w = offXLeft; w < offXRight; w++)
+        {
+            pos.x = tl.x + pxSize.x * w;
+
+            unsigned char alpha = pixels[h * width * 4 + w * 4 + 3];
+
+            if (Vec2::Distance(pos, a.pos) < a.size.x / 2.f && alpha != '\0')
+            {
+                isColliding = true;
+                goto end;
+            }
+        }
+    }
+
+end:
+
+    delete[] pixels;
+
+    if (!isColliding)
+        return;
+
+    // Callbacks
+    Collision col = {};
+    if (first)
+    {
+        col = {a, b};
+        if (!IsInColBoxOld(col))
+        {
+            auto *cc = reg.try_get<CircleCollider>(a.id);
+            if (cc)
+                cc->OnTriggerEnter(&col);
+        }
+    }
+    else
+    {
+        col = {b, a};
+        if (!IsInColBoxOld(col))
+        {
+            auto *pc = reg.try_get<PixelCollider>(b.id);
+            if (pc)
+                pc->OnTriggerEnter(&col);
+        }
+    }
+    colBox->push_back(col);
 }
 
 void PxlVsPxl(const Box &a, const Box &b)
 {
+    auto &reg = Game::GetRegistry();
+
+    // Calc
+    auto &aSR = reg.get<SpriteRenderer>(b.id);
+    auto aWidth = aSR.sprite->texture->width;
+    auto aHeight = aSR.sprite->texture->height;
+    auto &bSR = reg.get<SpriteRenderer>(b.id);
+    auto bWidth = bSR.sprite->texture->width;
+    auto bHeight = bSR.sprite->texture->height;
+
+    Vec2 aPxSize = {a.size.x / aWidth, a.size.y / bHeight};
+    Vec2 bPxSize = {b.size.x / bWidth, b.size.y / bHeight};
+
+    //      Overlap
+    auto aMin = a.pos - a.size / 2.f;
+    auto aMax = a.pos + a.size / 2.f;
+    auto bMin = b.pos - b.size / 2.f;
+    auto bMax = b.pos + b.size / 2.f;
+
+    Vec2 overTL = {Clamp(bMin.x, aMax.x, aMin.x), Clamp(bMin.y, aMax.y, aMin.y)};
+    Vec2 overBR = {Clamp(bMax.x, aMax.x, aMin.x), Clamp(bMax.y, aMax.y, aMin.y)};
+
+    //      Offsets
+    auto aOffXLeft = (int)ceilf((overTL.x - bMin.x) / aPxSize.x);
+    auto aOffXRight = aWidth - (int)ceilf((bMax.x - overBR.x) / aPxSize.x);
+    auto aOffYTop = (int)ceilf((overTL.y - bMin.y) / aPxSize.y);
+    auto aOffYBot = aHeight - (int)ceilf((bMax.y - overBR.y) / aPxSize.y);
+
+    auto bOffXLeft = (int)ceilf((overTL.x - aMin.x) / bPxSize.x);
+    auto bOffXRight = bWidth - (int)ceilf((aMax.x - overBR.x) / bPxSize.x);
+    auto bOffYTop = (int)ceilf((overTL.y - aMin.y) / bPxSize.y);
+    auto bOffYBot = bHeight - (int)ceilf((aMax.y - overBR.y) / bPxSize.y);
+
+    //      Check pixels
+    auto aPixels = new unsigned char[aWidth * aHeight * 4];
+    ltex_getpixels(aSR.sprite->texture, aPixels);
+
+    auto bPixels = new unsigned char[bWidth * bHeight * 4];
+    ltex_getpixels(bSR.sprite->texture, bPixels);
+
+    Vec2 aTL = b.pos - Vec2::Hadamard(aSR.size, aSR.pivot) + aPxSize / 2.f;
+    Vec2 aPos = aTL;
+
+    Vec2 bTL = b.pos - Vec2::Hadamard(bSR.size, bSR.pivot) + bPxSize / 2.f;
+    Vec2 bPos = bTL;
+
+    unsigned char alpha = '\0';
+    bool isColliding = false;
+
+    Vec2 aPxMax, aPxMin, bPxMax, bPxMin;
+
+    for (int ah = aOffYTop; ah < aOffYBot; ah++)
+    {
+        aPos.y = aTL.y + aPxSize.y * ah;
+
+        for (int aw = aOffXLeft; aw < aOffXRight; aw++)
+        {
+            if (aPixels[ah * aWidth * 4 + aw * 4 + 3] == '\0')
+                continue;
+
+            aPos.x = aTL.x + aPxSize.x * aw;
+
+            aPxMax = aPos + aPxSize / 2.f;
+            aPxMin = aPos - aPxSize / 2.f;
+
+            for (int bh = bOffYTop; bh < bOffYBot; bh++)
+            {
+                bPos.y = bTL.y + bPxSize.y * bh;
+
+                for (int bw = bOffXLeft; bw < bOffXRight; bw++)
+                {
+                    if (bPixels[bh * bWidth * 4 + bw * 4 + 3] == '\0')
+                        continue;
+
+                    bPos.x = bTL.x + bPxSize.x * bw;
+
+                    bPxMax = bPos + bPxSize / 2.f;
+                    bPxMin = bPos - bPxSize / 2.f;
+
+                    if ((bPxMax.x > aPxMax.x && bPxMin.x > aPxMax.x) || (bPxMax.x < aPxMin.x && bPxMin.x < aPxMin.x) ||
+                        (bPxMax.y > aPxMax.y && bPxMin.y > aPxMax.y) || (bPxMax.y < aPxMin.y && bPxMin.y < aPxMin.y))
+                        continue;
+
+                    lgfx_drawrect(aPos.x, aPos.y, aPxSize.x, aPxSize.y);
+                    lgfx_drawrect(bPos.x, bPos.y, bPxSize.x, bPxSize.y);
+
+                    isColliding = true;
+                    goto end;
+                }
+            }
+        }
+    }
+
+end:
+
+    delete[] aPixels;
+    delete[] bPixels;
+
+    if (!isColliding)
+        return;
+
+    // Callbacks
+    Collision col = {a, b};
+    auto *pc = reg.try_get<PixelCollider>(a.id);
+    if (pc)
+        if (!IsInColBoxOld(col))
+            pc->OnTriggerEnter(&col);
+        else
+            pc->OnTriggerStay(&col);
+    colBox->push_back(col);
 }
