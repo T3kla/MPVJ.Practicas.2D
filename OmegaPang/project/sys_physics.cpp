@@ -166,24 +166,34 @@ void SysPhysics::Fixed()
 
     // Exit callbacks
     for (auto &&col : *colBoxOld)
-        if (IsInColBox(col))
-        {
+        if (reg.valid(col.a.id))
             if (col.a.type == ptrSqrName)
-                reg.get<SquareCollider>(col.a.id).OnTriggerStay(&col);
+            {
+                auto *sc = reg.try_get<SquareCollider>(col.a.id);
+                if (sc)
+                    if (IsInColBox(col))
+                        sc->OnTriggerStay(&col);
+                    else
+                        sc->OnTriggerExit(&col);
+            }
             else if (col.a.type == ptrCrlName)
-                reg.get<CircleCollider>(col.a.id).OnTriggerStay(&col);
+            {
+                auto *cc = reg.try_get<CircleCollider>(col.a.id);
+                if (cc)
+                    if (IsInColBox(col))
+                        cc->OnTriggerStay(&col);
+                    else
+                        cc->OnTriggerExit(&col);
+            }
             else if (col.a.type == ptrPxlName)
-                reg.get<PixelCollider>(col.a.id).OnTriggerStay(&col);
-        }
-        else
-        {
-            if (col.a.type == ptrSqrName)
-                reg.get<SquareCollider>(col.a.id).OnTriggerExit(&col);
-            else if (col.a.type == ptrCrlName)
-                reg.get<CircleCollider>(col.a.id).OnTriggerExit(&col);
-            else if (col.a.type == ptrPxlName)
-                reg.get<PixelCollider>(col.a.id).OnTriggerExit(&col);
-        }
+            {
+                auto *pc = reg.try_get<PixelCollider>(col.a.id);
+                if (pc)
+                    if (IsInColBox(col))
+                        pc->OnTriggerStay(&col);
+                    else
+                        pc->OnTriggerExit(&col);
+            }
 }
 
 void SqrVsSqr(const Box &a, const Box &b)
@@ -195,7 +205,11 @@ void SqrVsSqr(const Box &a, const Box &b)
 
     // Callbacks
     if (!IsInColBoxOld(col))
-        reg.get<SquareCollider>(a.id).OnTriggerEnter(&col);
+    {
+        auto *sc = reg.try_get<SquareCollider>(a.id);
+        if (sc)
+            sc->OnTriggerEnter(&col);
+    }
 }
 
 void SqrVsCrl(const Box &a, const Box &b, bool first)
@@ -226,13 +240,19 @@ void SqrVsCrl(const Box &a, const Box &b, bool first)
     {
         col = {a, b};
         if (!IsInColBoxOld(col))
-            reg.get<SquareCollider>(a.id).OnTriggerEnter(&col);
+        {
+            auto *sc = reg.try_get<SquareCollider>(a.id);
+            sc->OnTriggerEnter(&col);
+        }
     }
     else
     {
         col = {b, a};
         if (!IsInColBoxOld(col))
-            reg.get<CircleCollider>(b.id).OnTriggerEnter(&col);
+        {
+            auto *cc = reg.try_get<CircleCollider>(b.id);
+            cc->OnTriggerEnter(&col);
+        }
     }
     colBox->push_back(col);
 }
@@ -242,18 +262,21 @@ void CrlVsCrl(const Box &a, const Box &b)
     auto &reg = Game::GetRegistry();
 
     // Calc
-    Vec2 point = {0.f, 0.f};
-    auto isColliding = Vec2::Distance(a.pos, b.pos) < a.size.x + b.size.x;
+    auto dis = Vec2::Distance(a.pos, b.pos);
+    auto isColliding = dis < (a.size.x / 2.f + b.size.x / 2.f);
 
     if (!isColliding)
         return;
 
     // Callbacks
     Collision col = {a, b};
-    if (!IsInColBoxOld(col))
-        reg.get<SquareCollider>(a.id).OnTriggerEnter(&col);
-    else
-        reg.get<SquareCollider>(a.id).OnTriggerStay(&col);
+    auto *cc = reg.try_get<CircleCollider>(a.id);
+    if (cc)
+        if (!IsInColBoxOld(col))
+            cc->OnTriggerEnter(&col);
+        else
+            cc->OnTriggerStay(&col);
+    reg.get<CircleCollider>(a.id).OnTriggerStay(&col);
     colBox->push_back(col);
 }
 
@@ -316,13 +339,19 @@ end:
     {
         col = {a, b};
         if (!IsInColBoxOld(col))
-            reg.get<SquareCollider>(a.id).OnTriggerEnter(&col);
+        {
+            auto *sc = reg.try_get<SquareCollider>(a.id);
+            sc->OnTriggerEnter(&col);
+        }
     }
     else
     {
         col = {b, a};
         if (!IsInColBoxOld(col))
-            reg.get<PixelCollider>(b.id).OnTriggerEnter(&col);
+        {
+            auto *pc = reg.try_get<PixelCollider>(b.id);
+            pc->OnTriggerEnter(&col);
+        }
     }
     colBox->push_back(col);
 }

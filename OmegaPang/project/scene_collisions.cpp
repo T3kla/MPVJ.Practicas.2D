@@ -1,5 +1,7 @@
 #include "scene_collisions.h"
 
+#include "glfw3.h"
+
 #include "game.h"
 #include "input.h"
 #include "render.h"
@@ -28,7 +30,7 @@ void OnTriggerExit(Collision *);
 static entt::entity staticSquare;
 static entt::entity staticBall;
 static entt::entity staticBee;
-static entt::entity mouseSquare;
+static entt::entity mouseFigure;
 
 static float t = 0.f;
 
@@ -44,7 +46,7 @@ void SceneCollisions::LoadScene()
     staticBee = CreateBee(reg);
 
     // Mouse follower
-    mouseSquare = CreateSqr(reg);
+    mouseFigure = CreateSqr(reg);
 
     // Systems
     sysPhysics = new SysPhysics();
@@ -63,11 +65,27 @@ void SceneCollisions::Fixed()
     t += (float)STP * 0.001f;
 
     // Move square to mouse
-    reg.get<Transform>(mouseSquare).position = Input::GetMousePos();
+    if (Input::GetKey(GLFW_MOUSE_BUTTON_LEFT))
+    {
+        reg.destroy(mouseFigure);
+        mouseFigure = CreateCrl(reg);
+    }
+    else if (Input::GetKey(GLFW_MOUSE_BUTTON_RIGHT))
+    {
+        reg.destroy(mouseFigure);
+        mouseFigure = CreateSqr(reg);
+    }
+    else if (Input::GetKey(GLFW_MOUSE_BUTTON_MIDDLE))
+    {
+        reg.destroy(mouseFigure);
+        mouseFigure = CreateBee(reg);
+    }
+
+    reg.get<Transform>(mouseFigure).position = Input::GetMousePos();
 
     // Scale stuff
-    reg.get<Transform>(staticSquare).scale = Vec2::One() * (sinf(t) / 2.f + 1.f);
-    reg.get<Transform>(staticBall).scale = Vec2::One() * (cosf(t) / 2.f + 1.f);
+    // reg.get<Transform>(staticSquare).scale = Vec2::One() * (sinf(t) / 2.f + 1.f);
+    // reg.get<Transform>(staticBall).scale = Vec2::One() * (cosf(t) / 2.f + 1.f);
     // reg.get<Transform>(staticBee).scale = Vec2::One() * (sinf(t) / 2.f + 1.f);
 }
 
