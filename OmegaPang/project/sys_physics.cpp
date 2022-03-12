@@ -304,15 +304,6 @@ void SqrVsPxl(const Box &a, const Box &b, bool first)
     Vec2 overTL = {Clamp(bMin.x, aMax.x, aMin.x), Clamp(bMin.y, aMax.y, aMin.y)};
     Vec2 overBR = {Clamp(bMax.x, aMax.x, aMin.x), Clamp(bMax.y, aMax.y, aMin.y)};
 
-    //      Check Box Drawing
-    lgfx_setcolor(1.0f, 0.1f, 0.1f, 1.0f);
-    lgfx_setblend(BLEND_SOLID);
-
-    lgfx_drawline(overTL.x, overTL.y, overBR.x, overTL.y);
-    lgfx_drawline(overTL.x, overBR.y, overBR.x, overBR.y);
-    lgfx_drawline(overTL.x, overTL.y, overTL.x, overBR.y);
-    lgfx_drawline(overBR.x, overTL.y, overBR.x, overBR.y);
-
     //      Offsets
     auto offXLeft = (int)ceilf((overTL.x - bMin.x) / pxSize.x);
     auto offXRight = width - (int)ceilf((bMax.x - overBR.x) / pxSize.x);
@@ -385,15 +376,6 @@ void CrlVsPxl(const Box &a, const Box &b, bool first)
 
     Vec2 overTL = {Clamp(bMin.x, aMax.x, aMin.x), Clamp(bMin.y, aMax.y, aMin.y)};
     Vec2 overBR = {Clamp(bMax.x, aMax.x, aMin.x), Clamp(bMax.y, aMax.y, aMin.y)};
-
-    //      Check Box Drawing
-    lgfx_setcolor(1.0f, 0.1f, 0.1f, 1.0f);
-    lgfx_setblend(BLEND_SOLID);
-
-    lgfx_drawline(overTL.x, overTL.y, overBR.x, overTL.y);
-    lgfx_drawline(overTL.x, overBR.y, overBR.x, overBR.y);
-    lgfx_drawline(overTL.x, overTL.y, overTL.x, overBR.y);
-    lgfx_drawline(overBR.x, overTL.y, overBR.x, overBR.y);
 
     //      Offsets
     auto offXLeft = (int)floorf((overTL.x - bMin.x) / pxSize.x);
@@ -485,15 +467,6 @@ void PxlVsPxl(const Box &a, const Box &b)
 
     Vec2 overTL = {Clamp(bMin.x, aMax.x, aMin.x), Clamp(bMin.y, aMax.y, aMin.y)};
     Vec2 overBR = {Clamp(bMax.x, aMax.x, aMin.x), Clamp(bMax.y, aMax.y, aMin.y)};
-
-    //      Check Box Drawing
-    lgfx_setcolor(1.0f, 0.1f, 0.1f, 1.0f);
-    lgfx_setblend(BLEND_SOLID);
-
-    lgfx_drawline(overTL.x, overTL.y, overBR.x, overTL.y);
-    lgfx_drawline(overTL.x, overBR.y, overBR.x, overBR.y);
-    lgfx_drawline(overTL.x, overTL.y, overTL.x, overBR.y);
-    lgfx_drawline(overBR.x, overTL.y, overBR.x, overBR.y);
 
     //      Offsets
     auto aOffXLeft = (int)floorf((overTL.x - aMin.x) / aPxSize.x);
