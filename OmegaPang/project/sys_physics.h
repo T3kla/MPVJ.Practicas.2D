@@ -25,7 +25,7 @@ struct Collision
 
     bool operator==(const Collision &rhs) const
     {
-        return a == rhs.a && b == rhs.b;
+        return a.id == rhs.a.id && b.id == rhs.b.id;
     }
 };
 

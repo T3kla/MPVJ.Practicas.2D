@@ -62,9 +62,6 @@
     <Filter Include="Source Files\ECS\Components\Physics\Colliders">
       <UniqueIdentifier>{e6905b97-5db0-45ca-a077-a55f0d0bc689}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Physics">
-      <UniqueIdentifier>{6f5f165c-94eb-46e7-b1cc-df0e7a095b70}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

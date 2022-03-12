@@ -74,10 +74,6 @@ void SysPhysics::Fixed()
 {
     auto &reg = Game::GetRegistry();
 
-    // Debug
-    lgfx_setcolor(1.0f, 0.1f, 0.1f, 1.0f);
-    lgfx_setblend(BLEND_SOLID);
-
     // Reset buffers
     eachBox.clear();
     posBox.clear();
@@ -137,8 +133,13 @@ void SysPhysics::Fixed()
     }
 
     // Collide
+    // Collision bufferCol = {};
     for (auto &&col : posBox)
     {
+        // bufferCol = {*col.b, *col.a};
+        // if (std::find(colBox->begin(), colBox->end(), bufferCol) != colBox->end())
+        //     continue;
+
         if (col.a->type == ptrSqrName)
         {
             if (col.b->type == ptrSqrName)
@@ -303,6 +304,15 @@ void SqrVsPxl(const Box &a, const Box &b, bool first)
     Vec2 overTL = {Clamp(bMin.x, aMax.x, aMin.x), Clamp(bMin.y, aMax.y, aMin.y)};
     Vec2 overBR = {Clamp(bMax.x, aMax.x, aMin.x), Clamp(bMax.y, aMax.y, aMin.y)};
 
+    //      Check Box Drawing
+    lgfx_setcolor(1.0f, 0.1f, 0.1f, 1.0f);
+    lgfx_setblend(BLEND_SOLID);
+
+    lgfx_drawline(overTL.x, overTL.y, overBR.x, overTL.y);
+    lgfx_drawline(overTL.x, overBR.y, overBR.x, overBR.y);
+    lgfx_drawline(overTL.x, overTL.y, overTL.x, overBR.y);
+    lgfx_drawline(overBR.x, overTL.y, overBR.x, overBR.y);
+
     //      Offsets
     auto offXLeft = (int)ceilf((overTL.x - bMin.x) / pxSize.x);
     auto offXRight = width - (int)ceilf((bMax.x - overBR.x) / pxSize.x);
@@ -318,17 +328,11 @@ void SqrVsPxl(const Box &a, const Box &b, bool first)
 
     for (int h = offYTop; h < offYBot; h++)
         for (int w = offXLeft; w < offXRight; w++)
-        {
-            unsigned char alpha = pixels[h * width * 4 + w * 4 + 3];
-
-            if (alpha != '\0')
+            if (pixels[h * width * 4 + w * 4 + 3] != '\0')
             {
                 isColliding = true;
                 goto end;
             }
-        }
-
-    return;
 
 end:
 
@@ -382,18 +386,27 @@ void CrlVsPxl(const Box &a, const Box &b, bool first)
     Vec2 overTL = {Clamp(bMin.x, aMax.x, aMin.x), Clamp(bMin.y, aMax.y, aMin.y)};
     Vec2 overBR = {Clamp(bMax.x, aMax.x, aMin.x), Clamp(bMax.y, aMax.y, aMin.y)};
 
-    //      Offsets
-    auto offXLeft = (int)ceilf((overTL.x - bMin.x) / pxSize.x);
-    auto offXRight = width - (int)ceilf((bMax.x - overBR.x) / pxSize.x);
+    //      Check Box Drawing
+    lgfx_setcolor(1.0f, 0.1f, 0.1f, 1.0f);
+    lgfx_setblend(BLEND_SOLID);
 
-    auto offYTop = (int)ceilf((overTL.y - bMin.y) / pxSize.y);
-    auto offYBot = height - (int)ceilf((bMax.y - overBR.y) / pxSize.y);
+    lgfx_drawline(overTL.x, overTL.y, overBR.x, overTL.y);
+    lgfx_drawline(overTL.x, overBR.y, overBR.x, overBR.y);
+    lgfx_drawline(overTL.x, overTL.y, overTL.x, overBR.y);
+    lgfx_drawline(overBR.x, overTL.y, overBR.x, overBR.y);
+
+    //      Offsets
+    auto offXLeft = (int)floorf((overTL.x - bMin.x) / pxSize.x);
+    auto offXRight = width - (int)floorf((bMax.x - overBR.x) / pxSize.x);
+
+    auto offYTop = (int)floorf((overTL.y - bMin.y) / pxSize.y);
+    auto offYBot = height - (int)floorf((bMax.y - overBR.y) / pxSize.y);
 
     //      Check pixels
-    auto pixels = new unsigned char[width * height * 4];
+    auto *pixels = new unsigned char[width * height * 4];
     ltex_getpixels(sr.sprite->texture, pixels);
 
-    Vec2 tl = b.pos - Vec2::Hadamard(sr.size, sr.pivot) + pxSize / 2.f;
+    Vec2 tl = b.pos - Vec2::Hadamard(b.size, sr.pivot) + pxSize / 2.f;
     Vec2 pos = tl;
 
     bool isColliding = false;
@@ -406,9 +419,10 @@ void CrlVsPxl(const Box &a, const Box &b, bool first)
         {
             pos.x = tl.x + pxSize.x * w;
 
-            unsigned char alpha = pixels[h * width * 4 + w * 4 + 3];
+            if (!pixels[h * width * 4 + w * 4 + 3] != '\0')
+                continue;
 
-            if (Vec2::Distance(pos, a.pos) < a.size.x / 2.f && alpha != '\0')
+            if (Vec2::Distance(pos, a.pos) < a.size.x / 2.f)
             {
                 isColliding = true;
                 goto end;
@@ -472,28 +486,37 @@ void PxlVsPxl(const Box &a, const Box &b)
     Vec2 overTL = {Clamp(bMin.x, aMax.x, aMin.x), Clamp(bMin.y, aMax.y, aMin.y)};
     Vec2 overBR = {Clamp(bMax.x, aMax.x, aMin.x), Clamp(bMax.y, aMax.y, aMin.y)};
 
-    //      Offsets
-    auto aOffXLeft = (int)ceilf((overTL.x - bMin.x) / aPxSize.x);
-    auto aOffXRight = aWidth - (int)ceilf((bMax.x - overBR.x) / aPxSize.x);
-    auto aOffYTop = (int)ceilf((overTL.y - bMin.y) / aPxSize.y);
-    auto aOffYBot = aHeight - (int)ceilf((bMax.y - overBR.y) / aPxSize.y);
+    //      Check Box Drawing
+    lgfx_setcolor(1.0f, 0.1f, 0.1f, 1.0f);
+    lgfx_setblend(BLEND_SOLID);
 
-    auto bOffXLeft = (int)ceilf((overTL.x - aMin.x) / bPxSize.x);
-    auto bOffXRight = bWidth - (int)ceilf((aMax.x - overBR.x) / bPxSize.x);
-    auto bOffYTop = (int)ceilf((overTL.y - aMin.y) / bPxSize.y);
-    auto bOffYBot = bHeight - (int)ceilf((aMax.y - overBR.y) / bPxSize.y);
+    lgfx_drawline(overTL.x, overTL.y, overBR.x, overTL.y);
+    lgfx_drawline(overTL.x, overBR.y, overBR.x, overBR.y);
+    lgfx_drawline(overTL.x, overTL.y, overTL.x, overBR.y);
+    lgfx_drawline(overBR.x, overTL.y, overBR.x, overBR.y);
+
+    //      Offsets
+    auto aOffXLeft = (int)floorf((overTL.x - aMin.x) / aPxSize.x);
+    auto aOffXRight = aWidth - (int)floorf((aMax.x - overBR.x) / aPxSize.x);
+    auto aOffYTop = (int)floorf((overTL.y - aMin.y) / aPxSize.y);
+    auto aOffYBot = aHeight - (int)floorf((aMax.y - overBR.y) / aPxSize.y);
+
+    auto bOffXLeft = (int)floorf((overTL.x - bMin.x) / bPxSize.x);
+    auto bOffXRight = bWidth - (int)floorf((bMax.x - overBR.x) / bPxSize.x);
+    auto bOffYTop = (int)floorf((overTL.y - bMin.y) / bPxSize.y);
+    auto bOffYBot = bHeight - (int)floorf((bMax.y - overBR.y) / bPxSize.y);
 
     //      Check pixels
-    auto aPixels = new unsigned char[aWidth * aHeight * 4];
+    auto *aPixels = new unsigned char[aWidth * aHeight * 4];
     ltex_getpixels(aSR.sprite->texture, aPixels);
 
-    auto bPixels = new unsigned char[bWidth * bHeight * 4];
+    auto *bPixels = new unsigned char[bWidth * bHeight * 4];
     ltex_getpixels(bSR.sprite->texture, bPixels);
 
-    Vec2 aTL = b.pos - Vec2::Hadamard(aSR.size, aSR.pivot) + aPxSize / 2.f;
+    Vec2 aTL = a.pos - Vec2::Hadamard(a.size, aSR.pivot) + aPxSize / 2.f;
     Vec2 aPos = aTL;
 
-    Vec2 bTL = b.pos - Vec2::Hadamard(bSR.size, bSR.pivot) + bPxSize / 2.f;
+    Vec2 bTL = b.pos - Vec2::Hadamard(b.size, bSR.pivot) + bPxSize / 2.f;
     Vec2 bPos = bTL;
 
     unsigned char alpha = '\0';
@@ -532,9 +555,6 @@ void PxlVsPxl(const Box &a, const Box &b)
                     if ((bPxMax.x > aPxMax.x && bPxMin.x > aPxMax.x) || (bPxMax.x < aPxMin.x && bPxMin.x < aPxMin.x) ||
                         (bPxMax.y > aPxMax.y && bPxMin.y > aPxMax.y) || (bPxMax.y < aPxMin.y && bPxMin.y < aPxMin.y))
                         continue;
-
-                    lgfx_drawrect(aPos.x, aPos.y, aPxSize.x, aPxSize.y);
-                    lgfx_drawrect(bPos.x, bPos.y, bPxSize.x, bPxSize.y);
 
                     isColliding = true;
                     goto end;
