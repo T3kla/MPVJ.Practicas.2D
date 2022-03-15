@@ -213,8 +213,8 @@ void RenderSprites()
 
             lgfx_setcolor(sr.color.r, sr.color.g, sr.color.b, sr.color.a);
             lgfx_setblend(sr.blend);
-            ltex_drawrotsized(sr.sprite->texture, fPos.x, fPos.y, fRot, sr.pivot.x, sr.pivot.y, fScl.x, fScl.y, uv0.x,
-                              uv0.y, uv1.x, uv1.y);
+            ltex_drawrotsized(sr.sprite->texture->texture, fPos.x, fPos.y, fRot, sr.pivot.x, sr.pivot.y, fScl.x, fScl.y,
+                              uv0.x, uv0.y, uv1.x, uv1.y);
 
             // Debug Alpha visualization
             // auto width = sr.sprite->texture->width;

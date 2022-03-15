@@ -87,6 +87,11 @@ void SceneCollisions::Fixed()
     reg.get<Transform>(staticSquare).scale = Vec2::One() * (sinf(t) / 2.f + 1.f);
     reg.get<Transform>(staticBall).scale = Vec2::One() * (cosf(t) / 2.f + 1.f);
     reg.get<Transform>(staticBee).scale = Vec2::One() * (sinf(t) / 2.f + 1.f);
+
+    auto a = (sinf(t) + 1.f) / 2.f;
+    auto b = (cosf(t) + 1.f) / 2.f;
+
+    reg.get<SpriteRenderer>(staticBee).pivot = {a, b};
 }
 
 entt::entity CreateSqr(entt::registry &reg)
@@ -128,7 +133,7 @@ entt::entity CreateBox(entt::registry &reg)
     auto id = reg.create();
 
     auto &go = reg.emplace<GameObject>(id, true);
-    auto &tf = reg.emplace<Transform>(id, Vec2(100.f, 200.f), Vec2::One(), 0.f);
+    auto &tf = reg.emplace<Transform>(id, Vec2(200.f, 300.f), Vec2::One(), 0.f);
     auto &sc = reg.emplace<SquareCollider>(id);
     sc.center = {0.f, 0.f};
     sc.size = {100.f, 100.f};
@@ -148,7 +153,7 @@ entt::entity CreateBall(entt::registry &reg)
     auto id = reg.create();
 
     auto &go = reg.emplace<GameObject>(id, true);
-    auto &tf = reg.emplace<Transform>(id, Vec2(400.f, 200.f), Vec2::One(), 0.f);
+    auto &tf = reg.emplace<Transform>(id, Vec2(500.f, 300.f), Vec2::One(), 0.f);
     auto &sc = reg.emplace<CircleCollider>(id);
     sc.center = {0.f, 0.f};
     sc.radius = 100.f;
@@ -168,7 +173,7 @@ entt::entity CreateBee(entt::registry &reg)
     auto id = reg.create();
 
     auto &go = reg.emplace<GameObject>(id, true);
-    auto &tf = reg.emplace<Transform>(id, Vec2(700.f, 200.f), Vec2::One(), 0.f);
+    auto &tf = reg.emplace<Transform>(id, Vec2(800.f, 300.f), Vec2::One(), 0.f);
     auto &sc = reg.emplace<PixelCollider>(id);
     sc.OnTriggerEnter = &OnTriggerEnter;
     sc.OnTriggerStay = &OnTriggerStay;

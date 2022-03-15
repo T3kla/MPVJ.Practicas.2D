@@ -290,8 +290,8 @@ void SqrVsPxl(const Box &a, const Box &b, bool first)
 
     // Calc
     auto &sr = reg.get<SpriteRenderer>(b.id);
-    auto width = sr.sprite->texture->width;
-    auto height = sr.sprite->texture->height;
+    auto width = sr.sprite->texture->texture->width;
+    auto height = sr.sprite->texture->texture->height;
 
     Vec2 pxSize = {b.size.x / width, b.size.y / height};
 
@@ -312,22 +312,17 @@ void SqrVsPxl(const Box &a, const Box &b, bool first)
     auto offYBot = height - (int)ceilf((bMax.y - overBR.y) / pxSize.y);
 
     //      Check pixels
-    auto pixels = new unsigned char[width * height * 4];
-    ltex_getpixels(sr.sprite->texture, pixels);
-
     bool isColliding = false;
 
     for (int h = offYTop; h < offYBot; h++)
         for (int w = offXLeft; w < offXRight; w++)
-            if (pixels[h * width * 4 + w * 4 + 3] != '\0')
+            if (sr.sprite->texture->alphaMap[h * width + w] != '\0')
             {
                 isColliding = true;
                 goto end;
             }
 
 end:
-
-    delete[] pixels;
 
     if (!isColliding)
         return;
@@ -363,8 +358,8 @@ void CrlVsPxl(const Box &a, const Box &b, bool first)
 
     // Calc
     auto &sr = reg.get<SpriteRenderer>(b.id);
-    auto width = sr.sprite->texture->width;
-    auto height = sr.sprite->texture->height;
+    auto width = sr.sprite->texture->texture->width;
+    auto height = sr.sprite->texture->texture->height;
 
     Vec2 pxSize = {b.size.x / width, b.size.y / height};
 
@@ -385,9 +380,6 @@ void CrlVsPxl(const Box &a, const Box &b, bool first)
     auto offYBot = height - (int)floorf((bMax.y - overBR.y) / pxSize.y);
 
     //      Check pixels
-    auto *pixels = new unsigned char[width * height * 4];
-    ltex_getpixels(sr.sprite->texture, pixels);
-
     Vec2 tl = b.pos - Vec2::Hadamard(b.size, sr.pivot) + pxSize / 2.f;
     Vec2 pos = tl;
 
@@ -401,7 +393,7 @@ void CrlVsPxl(const Box &a, const Box &b, bool first)
         {
             pos.x = tl.x + pxSize.x * w;
 
-            if (!pixels[h * width * 4 + w * 4 + 3] != '\0')
+            if (!sr.sprite->texture->alphaMap[h * width + w] != '\0')
                 continue;
 
             if (Vec2::Distance(pos, a.pos) < a.size.x / 2.f)
@@ -413,8 +405,6 @@ void CrlVsPxl(const Box &a, const Box &b, bool first)
     }
 
 end:
-
-    delete[] pixels;
 
     if (!isColliding)
         return;
@@ -450,14 +440,16 @@ void PxlVsPxl(const Box &a, const Box &b)
 
     // Calc
     auto &aSR = reg.get<SpriteRenderer>(b.id);
-    auto aWidth = aSR.sprite->texture->width;
-    auto aHeight = aSR.sprite->texture->height;
+    auto aWidth = aSR.sprite->texture->texture->width;
+    auto aHeight = aSR.sprite->texture->texture->height;
     auto &bSR = reg.get<SpriteRenderer>(b.id);
-    auto bWidth = bSR.sprite->texture->width;
-    auto bHeight = bSR.sprite->texture->height;
+    auto bWidth = bSR.sprite->texture->texture->width;
+    auto bHeight = bSR.sprite->texture->texture->height;
 
     Vec2 aPxSize = {a.size.x / aWidth, a.size.y / bHeight};
     Vec2 bPxSize = {b.size.x / bWidth, b.size.y / bHeight};
+    Vec2 aPxSizeHalf = aPxSize / 2.f;
+    Vec2 bPxSizeHalf = bPxSize / 2.f;
 
     //      Overlap
     auto aMin = a.pos - a.size / 2.f;
@@ -480,16 +472,10 @@ void PxlVsPxl(const Box &a, const Box &b)
     auto bOffYBot = bHeight - (int)floorf((bMax.y - overBR.y) / bPxSize.y);
 
     //      Check pixels
-    auto *aPixels = new unsigned char[aWidth * aHeight * 4];
-    ltex_getpixels(aSR.sprite->texture, aPixels);
-
-    auto *bPixels = new unsigned char[bWidth * bHeight * 4];
-    ltex_getpixels(bSR.sprite->texture, bPixels);
-
-    Vec2 aTL = a.pos - Vec2::Hadamard(a.size, aSR.pivot) + aPxSize / 2.f;
+    Vec2 aTL = a.pos - Vec2::Hadamard(a.size, aSR.pivot) + aPxSizeHalf;
     Vec2 aPos = aTL;
 
-    Vec2 bTL = b.pos - Vec2::Hadamard(b.size, bSR.pivot) + bPxSize / 2.f;
+    Vec2 bTL = b.pos - Vec2::Hadamard(b.size, bSR.pivot) + bPxSizeHalf;
     Vec2 bPos = bTL;
 
     unsigned char alpha = '\0';
@@ -503,13 +489,15 @@ void PxlVsPxl(const Box &a, const Box &b)
 
         for (int aw = aOffXLeft; aw < aOffXRight; aw++)
         {
-            if (aPixels[ah * aWidth * 4 + aw * 4 + 3] == '\0')
+            if (aSR.sprite->texture->alphaMap[ah * aWidth + aw] == '\0')
                 continue;
 
             aPos.x = aTL.x + aPxSize.x * aw;
 
-            aPxMax = aPos + aPxSize / 2.f;
-            aPxMin = aPos - aPxSize / 2.f;
+            aPxMax = aPos + aPxSizeHalf;
+            aPxMin = aPos - aPxSizeHalf;
+
+            // lgfx_drawpoint(aPos.x, aPos.y);
 
             for (int bh = bOffYTop; bh < bOffYBot; bh++)
             {
@@ -517,13 +505,15 @@ void PxlVsPxl(const Box &a, const Box &b)
 
                 for (int bw = bOffXLeft; bw < bOffXRight; bw++)
                 {
-                    if (bPixels[bh * bWidth * 4 + bw * 4 + 3] == '\0')
+                    if (aSR.sprite->texture->alphaMap[bh * bWidth + bw] == '\0')
                         continue;
 
                     bPos.x = bTL.x + bPxSize.x * bw;
 
-                    bPxMax = bPos + bPxSize / 2.f;
-                    bPxMin = bPos - bPxSize / 2.f;
+                    bPxMax = bPos + bPxSizeHalf;
+                    bPxMin = bPos - bPxSizeHalf;
+
+                    // lgfx_drawpoint(bPos.x, bPos.y);
 
                     if ((bPxMax.x > aPxMax.x && bPxMin.x > aPxMax.x) || (bPxMax.x < aPxMin.x && bPxMin.x < aPxMin.x) ||
                         (bPxMax.y > aPxMax.y && bPxMin.y > aPxMax.y) || (bPxMax.y < aPxMin.y && bPxMin.y < aPxMin.y))
@@ -537,9 +527,6 @@ void PxlVsPxl(const Box &a, const Box &b)
     }
 
 end:
-
-    delete[] aPixels;
-    delete[] bPixels;
 
     if (!isColliding)
         return;

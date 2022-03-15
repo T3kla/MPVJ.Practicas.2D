@@ -24,7 +24,7 @@ std::vector<Sprite> SpriteLoader::sprSheetBee;
 SpriteLoader SpriteLoader::Instance;
 std::vector<Texture> SpriteLoader::Textures;
 
-void Load(const char *file, ltex_t *&texture)
+void Load(const char *file, ltex_t *&texture, unsigned char *&alphaMap)
 {
     int w, h, c;
 
@@ -35,6 +35,11 @@ void Load(const char *file, ltex_t *&texture)
     if (!pixels)
         throw "Error loading image";
 
+    alphaMap = new unsigned char[w * h];
+
+    for (unsigned int i = 0; i < w * h; i++)
+        alphaMap[i] = pixels[i * 4 + 3];
+
     texture = ltex_alloc(w, h, 0);
     ltex_setpixels(texture, pixels);
     stbi_image_free(pixels);
@@ -43,10 +48,11 @@ void Load(const char *file, ltex_t *&texture)
 void SpriteLoader::LoadTexture(const char *name, const char *file)
 {
     ltex_t *tx = nullptr;
+    unsigned char *alpha = nullptr;
 
-    Load(file, tx);
+    Load(file, tx, alpha);
 
-    Textures.push_back({name, tx});
+    Textures.push_back({name, tx, alpha});
 }
 
 Texture *SpriteLoader::GetTexture(const char *name)
@@ -71,15 +77,15 @@ void SpriteLoader::UnloadTextures()
 
 void SpriteLoader::SetSprites()
 {
-    auto *txBg = GetTexture("txBG.png")->texture;
-    auto *txSheetPang = GetTexture("sheetPang.png")->texture;
-    auto *txSheetBee = GetTexture("sheetBee.png")->texture;
+    auto *txBg = GetTexture("txBG.png");
+    auto *txSheetPang = GetTexture("sheetPang.png");
+    auto *txSheetBee = GetTexture("sheetBee.png");
 
-    auto *txColSqr = GetTexture("rect.png")->texture;
-    auto *txColCrl = GetTexture("circle.png")->texture;
-    auto *txColBall = GetTexture("ball.png")->texture;
-    auto *txColBox = GetTexture("box.png")->texture;
-    auto *txBee = GetTexture("bee.png")->texture;
+    auto *txColSqr = GetTexture("rect.png");
+    auto *txColCrl = GetTexture("circle.png");
+    auto *txColBall = GetTexture("ball.png");
+    auto *txColBox = GetTexture("box.png");
+    auto *txBee = GetTexture("bee.png");
 
     // Sprite mapping
     sprBg = {txBg, Vec2::Zero(), Vec2::One()};
