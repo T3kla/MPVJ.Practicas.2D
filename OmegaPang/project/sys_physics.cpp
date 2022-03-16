@@ -14,6 +14,9 @@
 #include "transform.h"
 
 #include <algorithm>
+#include <iostream>
+#include <mutex>
+#include <thread>
 #include <unordered_map>
 #include <vector>
 
@@ -35,12 +38,19 @@ static const auto *const ptrSqrName = typeid(SquareCollider).name();
 static const auto *const ptrCrlName = typeid(CircleCollider).name();
 static const auto *const ptrPxlName = typeid(PixelCollider).name();
 
+static std::mutex isCollidingMutex;
+static int num_threads = std::thread::hardware_concurrency();
+
 void SqrVsSqr(const Box &, const Box &);
 void SqrVsCrl(const Box &, const Box &, bool);
 void CrlVsCrl(const Box &, const Box &);
 void SqrVsPxl(const Box &, const Box &, bool);
 void CrlVsPxl(const Box &, const Box &, bool);
 void PxlVsPxl(const Box &, const Box &);
+
+void NewFunction(int aOffYTop, int aOffYBot, Vec2 &aTL, Vec2 &aPxSize, int aOffXLeft, int aOffXRight,
+                 SpriteRenderer &aSR, int aWidth, Vec2 &aPxSizeHalf, int bOffYTop, int bOffYBot, Vec2 &bTL,
+                 Vec2 &bPxSize, int bOffXLeft, int bOffXRight, int bWidth, Vec2 &bPxSizeHalf, bool *isColliding);
 
 static constexpr auto Clamp = [](float v, float max, float min) { return v >= max ? max : (v <= min ? min : v); };
 
@@ -483,6 +493,58 @@ void PxlVsPxl(const Box &a, const Box &b)
 
     Vec2 aPxMax, aPxMin, bPxMax, bPxMin;
 
+    // Multithreading
+    int max_threads = 35;
+    int max_real_threads = max_threads;
+    std::vector<std::thread *> threads;
+    int lines = aOffYBot - aOffYTop;
+
+    if (lines < max_threads) // If there are less lines than wanted threads
+        max_real_threads = lines;
+
+    int linesPerThread = (int)floorf(lines / (max_real_threads));
+
+    for (int i = 0; i < max_real_threads + 1; i++)
+    {
+        auto a = i * linesPerThread;
+        auto b = (i + 1) * linesPerThread;
+
+        std::thread *thread;
+
+        if (i != max_real_threads)
+            thread = new std::thread(NewFunction, aOffYTop + a, aOffYTop + b, aTL, aPxSize, aOffXLeft, aOffXRight, aSR,
+                                     aWidth, aPxSizeHalf, bOffYTop, bOffYBot, bTL, bPxSize, bOffXLeft, bOffXRight,
+                                     bWidth, bPxSizeHalf, &isColliding);
+        else
+            thread = new std::thread(NewFunction, aOffYTop + a, aOffYBot, aTL, aPxSize, aOffXLeft, aOffXRight, aSR,
+                                     aWidth, aPxSizeHalf, bOffYTop, bOffYBot, bTL, bPxSize, bOffXLeft, bOffXRight,
+                                     bWidth, bPxSizeHalf, &isColliding);
+        threads.push_back(thread);
+    }
+
+    for (auto &&thread : threads)
+        thread->join();
+
+    if (!isColliding)
+        return;
+
+    // Callbacks
+    Collision col = {a, b};
+    auto *pc = reg.try_get<PixelCollider>(a.id);
+    if (pc)
+        if (!IsInColBoxOld(col))
+            pc->OnTriggerEnter(&col);
+        else
+            pc->OnTriggerStay(&col);
+    colBox->push_back(col);
+}
+
+void NewFunction(int aOffYTop, int aOffYBot, Vec2 &aTL, Vec2 &aPxSize, int aOffXLeft, int aOffXRight,
+                 SpriteRenderer &aSR, int aWidth, Vec2 &aPxSizeHalf, int bOffYTop, int bOffYBot, Vec2 &bTL,
+                 Vec2 &bPxSize, int bOffXLeft, int bOffXRight, int bWidth, Vec2 &bPxSizeHalf, bool *isColliding)
+{
+    Vec2 aPos = aTL, aPxMax, aPxMin, bPos = bTL, bPxMax, bPxMin;
+
     for (int ah = aOffYTop; ah < aOffYBot; ah++)
     {
         aPos.y = aTL.y + aPxSize.y * ah;
@@ -508,6 +570,10 @@ void PxlVsPxl(const Box &a, const Box &b)
                     if (aSR.sprite->texture->alphaMap[bh * bWidth + bw] == '\0')
                         continue;
 
+                    // If any other thread found collision
+                    if (*isColliding)
+                        return;
+
                     bPos.x = bTL.x + bPxSize.x * bw;
 
                     bPxMax = bPos + bPxSizeHalf;
@@ -519,25 +585,13 @@ void PxlVsPxl(const Box &a, const Box &b)
                         (bPxMax.y > aPxMax.y && bPxMin.y > aPxMax.y) || (bPxMax.y < aPxMin.y && bPxMin.y < aPxMin.y))
                         continue;
 
-                    isColliding = true;
-                    goto end;
+                    isCollidingMutex.lock();
+                    *isColliding = true;
+                    isCollidingMutex.unlock();
+
+                    return;
                 }
             }
         }
     }
-
-end:
-
-    if (!isColliding)
-        return;
-
-    // Callbacks
-    Collision col = {a, b};
-    auto *pc = reg.try_get<PixelCollider>(a.id);
-    if (pc)
-        if (!IsInColBoxOld(col))
-            pc->OnTriggerEnter(&col);
-        else
-            pc->OnTriggerStay(&col);
-    colBox->push_back(col);
 }

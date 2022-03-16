@@ -87,11 +87,6 @@ void SceneCollisions::Fixed()
     reg.get<Transform>(staticSquare).scale = Vec2::One() * (sinf(t) / 2.f + 1.f);
     reg.get<Transform>(staticBall).scale = Vec2::One() * (cosf(t) / 2.f + 1.f);
     reg.get<Transform>(staticBee).scale = Vec2::One() * (sinf(t) / 2.f + 1.f);
-
-    auto a = (sinf(t) + 1.f) / 2.f;
-    auto b = (cosf(t) + 1.f) / 2.f;
-
-    reg.get<SpriteRenderer>(staticBee).pivot = {a, b};
 }
 
 entt::entity CreateSqr(entt::registry &reg)
