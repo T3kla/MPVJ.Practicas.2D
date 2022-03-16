@@ -175,6 +175,7 @@
     <ClCompile Include="sys_physics.cpp" />
     <ClCompile Include="sys_player.cpp" />
     <ClCompile Include="sys_ui.cpp" />
+    <ClCompile Include="thread_pool.cpp" />
     <ClCompile Include="vec.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -220,6 +221,7 @@
     <ClInclude Include="sys_ui.h" />
     <ClInclude Include="textbox.h" />
     <ClInclude Include="texture.h" />
+    <ClInclude Include="thread_pool.h" />
     <ClInclude Include="transform.h" />
     <ClInclude Include="vec.h" />
   </ItemGroup>

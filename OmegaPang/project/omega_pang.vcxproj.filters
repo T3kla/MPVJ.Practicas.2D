@@ -149,6 +149,9 @@
     <ClCompile Include="pixel_collider.h">
       <Filter>Source Files\ECS\Components\Physics\Colliders</Filter>
     </ClCompile>
+    <ClCompile Include="thread_pool.cpp">
+      <Filter>Source Files\Engine\Loops</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stasis.h">
@@ -282,6 +285,9 @@
     </ClInclude>
     <ClInclude Include="collider.h">
       <Filter>Source Files\ECS\Components\Physics\Colliders</Filter>
+    </ClInclude>
+    <ClInclude Include="thread_pool.h">
+      <Filter>Source Files\Engine\Loops</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

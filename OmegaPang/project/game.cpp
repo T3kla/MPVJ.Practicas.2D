@@ -50,9 +50,8 @@ void Travel()
 void Game::Run()
 {
     Stasis::RefreshTime();
-
+    // ThreadPool::Init();
     Render::Awake();
-
     AssetLoader::LoadAssets();
 
     while (!glfwWindowShouldClose(Render::GetWindow()))
@@ -78,6 +77,7 @@ void Game::Run()
     }
 
     Logic::Quit();
+    // ThreadPool::Quit();
 }
 
 float Game::GetUpdateFPS()
