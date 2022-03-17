@@ -29,6 +29,17 @@ struct Collision
     }
 };
 
+struct Possible
+{
+    Box *a;
+    Box *b;
+
+    bool operator==(const Possible &rhs) const
+    {
+        return a == rhs.a && b == rhs.b;
+    }
+};
+
 class SysPhysics : public System
 {
   public:

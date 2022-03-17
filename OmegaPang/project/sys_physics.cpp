@@ -21,12 +21,6 @@
 #include <unordered_map>
 #include <vector>
 
-struct Possible
-{
-    Box *a;
-    Box *b;
-};
-
 static std::vector<Box> eachBox;       // Every Box box
 static std::vector<Possible> posBox;   // Every Box pair that intersects
 static std::vector<Collision> colBoxA; // Collision buffer
@@ -49,12 +43,17 @@ void SqrVsPxl(const Box &, const Box &, bool);
 void CrlVsPxl(const Box &, const Box &, bool);
 void PxlVsPxl(const Box &, const Box &);
 
-void NewFunction(int aOffYTop, int aOffYBot, Vec2 &aTL, Vec2 &aPxSize, int aOffXLeft, int aOffXRight,
+void PxlVsPxlJob(int aOffYTop, int aOffYBot, Vec2 &aTL, Vec2 &aPxSize, int aOffXLeft, int aOffXRight,
                  SpriteRenderer &aSR, int aWidth, Vec2 &aPxSizeHalf, int bOffYTop, int bOffYBot, Vec2 &bTL,
                  Vec2 &bPxSize, int bOffXLeft, int bOffXRight, int bWidth, Vec2 &bPxSizeHalf, bool *isColliding,
                  int *each);
 
 static constexpr auto Clamp = [](float v, float max, float min) { return v >= max ? max : (v <= min ? min : v); };
+
+static const bool IsInPosBox(const Possible &pos)
+{
+    return std::find(posBox.begin(), posBox.end(), pos) != posBox.end();
+};
 
 static const bool IsInColBox(const Collision &col)
 {
@@ -133,6 +132,9 @@ void SysPhysics::Fixed()
             if (a.id == b.id)
                 continue;
 
+            if (IsInPosBox({&b, &a}))
+                continue;
+
             bMax = b.pos + b.size / 2.f;
             bMin = b.pos - b.size / 2.f;
 
@@ -145,13 +147,8 @@ void SysPhysics::Fixed()
     }
 
     // Collide
-    Collision bufferCol = {};
     for (auto &&col : posBox)
     {
-        bufferCol = {*col.b, *col.a};
-        if (std::find(colBox->begin(), colBox->end(), bufferCol) != colBox->end())
-            continue;
-
         if (col.a->type == ptrSqrName)
         {
             if (col.b->type == ptrSqrName)
@@ -445,11 +442,11 @@ void PxlVsPxl(const Box &a, const Box &b)
         auto b = (i + 1) * linesPerThread;
 
         if (i < threadNum - 1)
-            ThreadPool::AddJob(std::bind(NewFunction, aOffYTop + a, aOffYTop + b, aTL, aPxSize, aOffXLeft, aOffXRight,
+            ThreadPool::AddJob(std::bind(PxlVsPxlJob, aOffYTop + a, aOffYTop + b, aTL, aPxSize, aOffXLeft, aOffXRight,
                                          aSR, aWidth, aPxSizeHalf, bOffYTop, bOffYBot, bTL, bPxSize, bOffXLeft,
                                          bOffXRight, bWidth, bPxSizeHalf, &isColliding, &each));
         else
-            ThreadPool::AddJob(std::bind(NewFunction, aOffYTop + a, aOffYBot, aTL, aPxSize, aOffXLeft, aOffXRight, aSR,
+            ThreadPool::AddJob(std::bind(PxlVsPxlJob, aOffYTop + a, aOffYBot, aTL, aPxSize, aOffXLeft, aOffXRight, aSR,
                                          aWidth, aPxSizeHalf, bOffYTop, bOffYBot, bTL, bPxSize, bOffXLeft, bOffXRight,
                                          bWidth, bPxSizeHalf, &isColliding, &each));
     }
@@ -462,7 +459,7 @@ void PxlVsPxl(const Box &a, const Box &b)
         Resolution<PixelCollider, PixelCollider>(a, b);
 }
 
-void NewFunction(int aOffYTop, int aOffYBot, Vec2 &aTL, Vec2 &aPxSize, int aOffXLeft, int aOffXRight,
+void PxlVsPxlJob(int aOffYTop, int aOffYBot, Vec2 &aTL, Vec2 &aPxSize, int aOffXLeft, int aOffXRight,
                  SpriteRenderer &aSR, int aWidth, Vec2 &aPxSizeHalf, int bOffYTop, int bOffYBot, Vec2 &bTL,
                  Vec2 &bPxSize, int bOffXLeft, int bOffXRight, int bWidth, Vec2 &bPxSizeHalf, bool *isColliding,
                  int *each)
@@ -483,8 +480,6 @@ void NewFunction(int aOffYTop, int aOffYBot, Vec2 &aTL, Vec2 &aPxSize, int aOffX
             aPxMax = aPos + aPxSizeHalf;
             aPxMin = aPos - aPxSizeHalf;
 
-            // lgfx_drawpoint(aPos.x, aPos.y);
-
             for (int bh = bOffYTop; bh < bOffYBot; bh++)
             {
                 bPos.y = bTL.y + bPxSize.y * bh;
@@ -494,7 +489,6 @@ void NewFunction(int aOffYTop, int aOffYBot, Vec2 &aTL, Vec2 &aPxSize, int aOffX
                     if (aSR.sprite->texture->alphaMap[bh * bWidth + bw] == '\0')
                         continue;
 
-                    // If any other thread found collision
                     if (*isColliding)
                         return;
 
@@ -502,8 +496,6 @@ void NewFunction(int aOffYTop, int aOffYBot, Vec2 &aTL, Vec2 &aPxSize, int aOffX
 
                     bPxMax = bPos + bPxSizeHalf;
                     bPxMin = bPos - bPxSizeHalf;
-
-                    // lgfx_drawpoint(bPos.x, bPos.y);
 
                     if ((bPxMax.x > aPxMax.x && bPxMin.x > aPxMax.x) || (bPxMax.x < aPxMin.x && bPxMin.x < aPxMin.x) ||
                         (bPxMax.y > aPxMax.y && bPxMin.y > aPxMax.y) || (bPxMax.y < aPxMin.y && bPxMin.y < aPxMin.y))
@@ -515,7 +507,6 @@ void NewFunction(int aOffYTop, int aOffYBot, Vec2 &aTL, Vec2 &aPxSize, int aOffX
         }
     }
 
-notfound:
     isCollidingMutex.lock();
     *each += 1;
     isCollidingMutex.unlock();
@@ -523,7 +514,6 @@ notfound:
 
 found:
     isCollidingMutex.lock();
-    *each += 1;
     *isColliding = true;
     isCollidingMutex.unlock();
     return;
