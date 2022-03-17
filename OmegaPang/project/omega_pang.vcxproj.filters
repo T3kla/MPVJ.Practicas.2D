@@ -150,7 +150,7 @@
       <Filter>Source Files\ECS\Components\Physics\Colliders</Filter>
     </ClCompile>
     <ClCompile Include="thread_pool.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Engine\Loops</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

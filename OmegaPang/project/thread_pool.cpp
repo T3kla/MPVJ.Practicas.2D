@@ -67,10 +67,7 @@ void ThreadPool::Loop()
 
         job();
     }
-end:
-    if (true)
-    {
-    }
+end:;
 };
 
 void ThreadPool::AddJob(Job newJob)

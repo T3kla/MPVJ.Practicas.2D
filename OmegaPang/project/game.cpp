@@ -55,6 +55,8 @@ void Game::Run()
     Render::Awake();
     AssetLoader::LoadAssets();
 
+    SceneLoader::LoadScene<SceneCollisions>();
+
     while (!glfwWindowShouldClose(Render::GetWindow()))
     {
         Stasis::RefreshTime();
