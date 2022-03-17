@@ -34,8 +34,9 @@ void ThreadPool::Quit()
 
     condition.notify_all();
 
-    for (std::thread &th : threads)
-        th.join();
+    for (auto &&t : threads)
+        if (t.joinable())
+            t.join();
 
     threads.clear();
 }
@@ -54,13 +55,21 @@ void ThreadPool::Loop()
         {
             std::unique_lock<std::mutex> lock(mutex);
 
-            condition.wait(lock, []() { return !jobs.empty() || shutdown; });
+            ThreadPool *a = &Instance;
+            condition.wait(lock, [a]() { return !jobs.empty() || shutdown; });
+
+            if (shutdown)
+                goto end;
 
             job = jobs.front();
             jobs.pop();
         }
 
         job();
+    }
+end:
+    if (true)
+    {
     }
 };
 

@@ -17,8 +17,8 @@ class ThreadPool
     static void Init();
     static void Quit();
 
-    static void Loop();
     static void AddJob(Job New_Job);
-
     static int GetThreadNum();
+
+    static void Loop();
 };

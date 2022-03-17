@@ -6,6 +6,7 @@
 #include "font_loader.h"
 #include "scene_loader.h"
 #include "sprite_loader.h"
+#include "thread_pool.h"
 
 #include "input.h"
 #include "logic.h"
@@ -50,7 +51,7 @@ void Travel()
 void Game::Run()
 {
     Stasis::RefreshTime();
-    // ThreadPool::Init();
+    ThreadPool::Init();
     Render::Awake();
     AssetLoader::LoadAssets();
 
@@ -77,7 +78,7 @@ void Game::Run()
     }
 
     Logic::Quit();
-    // ThreadPool::Quit();
+    ThreadPool::Quit();
 }
 
 float Game::GetUpdateFPS()

@@ -37,7 +37,7 @@ void Load(const char *file, ltex_t *&texture, unsigned char *&alphaMap)
 
     alphaMap = new unsigned char[w * h];
 
-    for (unsigned int i = 0; i < w * h; i++)
+    for (int i = 0; i < w * h; i++)
         alphaMap[i] = pixels[i * 4 + 3];
 
     texture = ltex_alloc(w, h, 0);
