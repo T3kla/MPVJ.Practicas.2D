@@ -20,6 +20,7 @@ class Input
   public:
     static Vec2 GetMousePos();
     static Vec2 GetMouseDelta();
+    static Vec2 GetMousePosWorld();
 
     static unsigned char GetKey(int key);
 };

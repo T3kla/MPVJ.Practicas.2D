@@ -181,6 +181,7 @@
   <ItemGroup>
     <ClInclude Include="ball.h" />
     <ClInclude Include="bee.h" />
+    <ClInclude Include="camera.h" />
     <ClInclude Include="collider.h" />
     <ClInclude Include="color.h" />
     <ClInclude Include="explosion.h" />

@@ -73,6 +73,7 @@ struct Vec2i
     Vec2i operator+(const Vec2i &_rhs) const;
     Vec2i operator-(const Vec2i &_rhs) const;
     Vec2i operator*(const int &_rhs) const;
+    Vec2 operator/(const float &_rhs) const;
     Vec2i &operator=(const Vec2i &_rhs);
     Vec2i &operator+=(const Vec2i &_rhs);
     Vec2i &operator-=(const Vec2i &_rhs);

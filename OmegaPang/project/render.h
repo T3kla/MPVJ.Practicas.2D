@@ -1,6 +1,7 @@
 #pragma once
 
 #include "color.h"
+#include <entt/entt.hpp>
 
 struct GLFWwindow;
 
@@ -32,4 +33,7 @@ class Render
 
     static char *GetTitle();
     static void SetTitle(char *text);
+
+    static entt::entity GetMainCamera();
+    static void SetMainCamera(entt::entity id);
 };

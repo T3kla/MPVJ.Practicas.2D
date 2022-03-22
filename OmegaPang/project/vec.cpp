@@ -262,6 +262,11 @@ Vec2i Vec2i::operator*(const int &_rhs) const
     return Vec2i(this->x * _rhs, this->y * _rhs);
 }
 
+Vec2 Vec2i::operator/(const float &_rhs) const
+{
+    return Vec2(x / _rhs, y / _rhs);
+}
+
 Vec2i &Vec2i::operator=(const Vec2i &_rhs)
 {
     this->x = _rhs.x;

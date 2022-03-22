@@ -1,7 +1,10 @@
 #include "input.h"
 
+#include "game.h"
 #include "glfw3.h"
+#include "litegfx.h"
 #include "render.h"
+#include "transform.h"
 
 Input Input::Instance;
 
@@ -29,6 +32,14 @@ Vec2 Input::GetMousePos()
 Vec2 Input::GetMouseDelta()
 {
     return Instance.MouseDelta;
+}
+
+Vec2 Input::GetMousePosWorld()
+{
+    auto &reg = Game::GetRegistry();
+    auto &tf = reg.get<Transform>(Render::GetMainCamera());
+    auto wSize = Render::GetWindowSize();
+    return tf.position + Instance.MousePos - wSize / 2.f;
 }
 
 unsigned char Input::GetKey(int key)

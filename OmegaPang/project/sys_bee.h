@@ -1,6 +1,7 @@
 #pragma once
 
 #include "system.h"
+#include <entt/entt.hpp>
 
 struct Vec2;
 
@@ -14,5 +15,5 @@ class SysBee : public System
     virtual void Fixed() override;
     virtual void Quit() override{};
 
-    static void Instantiate(const Vec2 &pos);
+    static entt::entity Instantiate(const Vec2 &pos);
 };

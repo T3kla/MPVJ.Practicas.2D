@@ -21,7 +21,7 @@ void SysBee::Fixed()
         if (!go.isActive || !be.enable)
             continue;
 
-        auto mousePos = Input::GetMousePos();
+        auto mousePos = Input::GetMousePosWorld();
         auto dir = mousePos - tf.position;
 
         // Directional behaviour
@@ -49,7 +49,7 @@ void SysBee::Fixed()
     }
 }
 
-void SysBee::Instantiate(const Vec2 &pos)
+entt::entity SysBee::Instantiate(const Vec2 &pos)
 {
     auto &reg = Game::GetRegistry();
 
@@ -76,7 +76,7 @@ void SysBee::Instantiate(const Vec2 &pos)
     sr.offsetRotation = 0.f;
     sr.size = {100.f, 100.f};
     sr.pivot = Vec2::One() * 0.5f;
-    sr.layer = 1;
+    sr.layer = 10;
     sr.blend = BLEND_ALPHA;
 
     auto &sa = reg.get_or_emplace<SpriteAnimation>(id);
@@ -86,6 +86,8 @@ void SysBee::Instantiate(const Vec2 &pos)
     sa.speed = 0.f;
     sa.duration = 1.f;
     sa.count = 0.f;
+
+    return id;
 }
 
 bool TryPoolling(entt::entity &id)

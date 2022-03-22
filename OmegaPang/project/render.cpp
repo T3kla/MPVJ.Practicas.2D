@@ -1,5 +1,6 @@
 #include "render.h"
 
+#include "camera.h"
 #include "entity.h"
 #include "font_loader.h"
 #include "game.h"
@@ -28,6 +29,7 @@ static int h = 720;
 static Vec2 uv0 = {};
 static Vec2 uv1 = {};
 
+void UpdateOrigin();
 void RenderRects();
 void RenderOvals();
 void RenderSprites();
@@ -83,13 +85,14 @@ void Render::Fixed()
 
     lgfx_setblend(BLEND_SOLID);
 
+    UpdateOrigin();
     RenderRects();
     RenderOvals();
     RenderSprites();
     RenderUI();
 
     // Swap Buffers
-    // glfwSwapBuffers(Window);
+    glfwSwapBuffers(Window);
 }
 
 GLFWwindow *Render::GetWindow()
@@ -128,6 +131,44 @@ void Render::SetTitle(char *text)
     Instance.Title = text;
     if (Instance.Title != nullptr)
         glfwSetWindowTitle(Window, Instance.Title);
+}
+
+entt::entity Render::GetMainCamera()
+{
+    auto cams = Game::GetRegistry().view<GameObject, Transform, Camera>();
+
+    for (auto [entity, go, tf, cm] : cams.each())
+    {
+        if (!go.isActive || !cm.main)
+            continue;
+        return entity;
+    }
+
+    return (entt::entity)0;
+}
+
+void Render::SetMainCamera(entt::entity id)
+{
+    auto cams = Game::GetRegistry().view<GameObject, Transform, Camera>();
+
+    for (auto [entity, go, tf, cm] : cams.each())
+    {
+        if (!go.isActive)
+            continue;
+        if (entity == id)
+            cm.main = true;
+        else
+            cm.main = false;
+    }
+}
+
+void UpdateOrigin()
+{
+    auto &reg = Game::GetRegistry();
+    auto &tf = reg.get<Transform>(Render::GetMainCamera());
+    auto wSize = Render::GetWindowSize();
+    auto pos = tf.position - wSize / 2.f;
+    lgfx_setorigin(pos.x, pos.y);
 }
 
 void RenderRects()

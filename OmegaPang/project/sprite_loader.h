@@ -40,6 +40,10 @@ class SpriteLoader
     // Bee
     static std::vector<Sprite> sprSheetBee;
     static Sprite sprBee;
+    static Sprite sprLevel;
+    static Sprite sprTrees1;
+    static Sprite sprTrees2;
+    static Sprite sprCloud;
 
     // Collisions
     static Sprite sprSqr;

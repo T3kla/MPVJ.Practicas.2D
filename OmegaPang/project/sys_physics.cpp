@@ -1,7 +1,5 @@
 #include "sys_physics.h"
 
-#include "litegfx.h"
-
 #include "game.h"
 
 #include "circle_collider.h"

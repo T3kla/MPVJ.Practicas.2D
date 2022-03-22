@@ -55,7 +55,7 @@ void Game::Run()
     Render::Awake();
     AssetLoader::LoadAssets();
 
-    SceneLoader::LoadScene<SceneCollisions>();
+    SceneLoader::LoadScene<SceneBee>(); // TODO: main scene
 
     while (!glfwWindowShouldClose(Render::GetWindow()))
     {
@@ -72,9 +72,8 @@ void Game::Run()
         while (fxCount >= STP)
         {
             FreqRefresh(nowFx, oldFx, freqFx);
-            Render::Fixed(); // FIXME: render first == debug mode
             Logic::Fixed();
-            glfwSwapBuffers(Render::GetWindow());
+            Render::Fixed();
             fxCount -= STP;
         }
     }

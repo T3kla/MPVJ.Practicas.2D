@@ -12,6 +12,10 @@ Sprite SpriteLoader::sprCrl;
 Sprite SpriteLoader::sprBox;
 Sprite SpriteLoader::sprBall;
 Sprite SpriteLoader::sprBee;
+Sprite SpriteLoader::sprLevel;
+Sprite SpriteLoader::sprTrees1;
+Sprite SpriteLoader::sprTrees2;
+Sprite SpriteLoader::sprCloud;
 std::vector<Sprite> SpriteLoader::sprBalls;
 std::vector<Sprite> SpriteLoader::sprExpls;
 std::vector<Sprite> SpriteLoader::sprPlayerMoveL;
@@ -24,9 +28,9 @@ std::vector<Sprite> SpriteLoader::sprSheetBee;
 SpriteLoader SpriteLoader::Instance;
 std::vector<Texture> SpriteLoader::Textures;
 
-void Load(const char *file, ltex_t *&texture, unsigned char *&alphaMap)
+void Load(const char *file, ltex_t *&texture, unsigned char *&alphaMap, int &w, int &h)
 {
-    int w, h, c;
+    int c;
 
     stbi_uc *pixels;
 
@@ -49,10 +53,11 @@ void SpriteLoader::LoadTexture(const char *name, const char *file)
 {
     ltex_t *tx = nullptr;
     unsigned char *alpha = nullptr;
+    int w, h;
 
-    Load(file, tx, alpha);
+    Load(file, tx, alpha, w, h);
 
-    Textures.push_back({name, tx, alpha});
+    Textures.push_back({name, tx, alpha, w, h});
 }
 
 Texture *SpriteLoader::GetTexture(const char *name)
@@ -85,7 +90,12 @@ void SpriteLoader::SetSprites()
     auto *txColCrl = GetTexture("circle.png");
     auto *txColBall = GetTexture("ball.png");
     auto *txColBox = GetTexture("box.png");
+
     auto *txBee = GetTexture("bee.png");
+    auto *txLevel = GetTexture("level.png");
+    auto *txTrees1 = GetTexture("trees1.png");
+    auto *txTrees2 = GetTexture("trees2.png");
+    auto *txClouds = GetTexture("clouds.png");
 
     // Sprite mapping
     sprBg = {txBg, Vec2::Zero(), Vec2::One()};
@@ -136,6 +146,10 @@ void SpriteLoader::SetSprites()
     sprSheetBee.push_back({txSheetBee, {0.875f, 0.0f}, {1.000f, 1.0f}});
 
     sprBee = {txBee, {0.0f, 0.0f}, {1.0f, 1.0f}};
+    sprLevel = {txLevel, {0.0f, 0.0f}, {1.0f, 1.0f}};
+    sprTrees1 = {txTrees1, {0.0f, 0.0f}, {1.0f, 1.0f}};
+    sprTrees2 = {txTrees2, {0.0f, 0.0f}, {1.0f, 1.0f}};
+    sprCloud = {txClouds, {0.0f, 0.0f}, {1.0f, 1.0f}};
 
     sprSqr = {txColSqr, {0.0f, 0.0f}, {1.0f, 1.0f}};
     sprCrl = {txColCrl, {0.0f, 0.0f}, {1.0f, 1.0f}};
