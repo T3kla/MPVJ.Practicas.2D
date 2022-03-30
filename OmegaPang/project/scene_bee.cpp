@@ -29,8 +29,8 @@ static Vec2 beePosOld = {0.f, 0.f};
 entt::entity CreateCamera(entt::registry &);
 void CreateLevel(entt::registry &, Vec2);
 void CreateCloud(entt::registry &, Vec2);
-void CreateTree1(entt::registry &, int);
-void CreateTree2(entt::registry &, int);
+void CreateTree1(entt::registry &, Vec2);
+void CreateTree2(entt::registry &, Vec2);
 
 void UpdateLevel(Vec2, Vec2);
 void UpdateCloud(Vec2, Vec2);
@@ -52,6 +52,8 @@ void SceneBee::LoadScene()
     camera = CreateCamera(reg);
     CreateLevel(reg, pos);
     CreateCloud(reg, pos);
+    CreateTree1(reg, pos);
+    CreateTree2(reg, pos);
 
     // Systems
     sysBee = new SysBee();
@@ -60,6 +62,7 @@ void SceneBee::LoadScene()
 void SceneBee::UnloadScene()
 {
     delete sysBee;
+    delete this;
 }
 
 void SceneBee::Fixed()
@@ -76,6 +79,8 @@ void SceneBee::Fixed()
     auto beeDelta = beePos - beePosOld;
     UpdateCloud(beePos, beeDelta);
     UpdateLevel(beePos, beeDelta);
+    UpdateTree1(beePos, beeDelta);
+    UpdateTree2(beePos, beeDelta);
 
     beePosOld = beePos;
 }
@@ -103,7 +108,7 @@ void CreateLevel(entt::registry &reg, Vec2 orig)
     auto &sr = reg.emplace<SpriteRenderer>(id);
     sr.sprite = &SpriteLoader::sprLevel;
     sr.size = Vec2((float)sr.sprite->texture->width, (float)sr.sprite->texture->height);
-    sr.layer = 5;
+    sr.layer = 4;
 
     level = id;
 }
@@ -120,7 +125,7 @@ void CreateCloud(entt::registry &reg, Vec2 orig)
     sr.sprite = &SpriteLoader::sprCloud;
     sr.size = Vec2((float)sr.sprite->texture->width * repeatRate, (float)sr.sprite->texture->height) * 3.f;
     sr.sprite->uv1.x *= repeatRate;
-    sr.layer = 4;
+    sr.layer = 1;
 
     cloud = id;
 }
@@ -128,14 +133,14 @@ void CreateCloud(entt::registry &reg, Vec2 orig)
 void CreateTree1(entt::registry &reg, Vec2 orig)
 {
     auto wSize = Render::GetWindowSize();
-    auto repeatRate = 3.f;
+    auto repeatRate = 5.f;
 
     auto id = reg.create();
     auto &go = reg.emplace<GameObject>(id, true);
     auto &tf = reg.emplace<Transform>(id, wSize / 2.f, Vec2::One(), 0.f);
     auto &sr = reg.emplace<SpriteRenderer>(id);
     sr.sprite = &SpriteLoader::sprTrees1;
-    sr.size = Vec2((float)sr.sprite->texture->width * repeatRate, (float)sr.sprite->texture->height) * 3.f;
+    sr.size = Vec2((float)sr.sprite->texture->width * repeatRate, (float)sr.sprite->texture->height) * 1.5f;
     sr.sprite->uv1.x *= repeatRate;
     sr.layer = 3;
 
@@ -145,14 +150,14 @@ void CreateTree1(entt::registry &reg, Vec2 orig)
 void CreateTree2(entt::registry &reg, Vec2 orig)
 {
     auto wSize = Render::GetWindowSize();
-    auto repeatRate = 3.f;
+    auto repeatRate = 5.f;
 
     auto id = reg.create();
     auto &go = reg.emplace<GameObject>(id, true);
     auto &tf = reg.emplace<Transform>(id, wSize / 2.f, Vec2::One(), 0.f);
     auto &sr = reg.emplace<SpriteRenderer>(id);
     sr.sprite = &SpriteLoader::sprTrees2;
-    sr.size = Vec2((float)sr.sprite->texture->width * repeatRate, (float)sr.sprite->texture->height) * 3.f;
+    sr.size = Vec2((float)sr.sprite->texture->width * repeatRate, (float)sr.sprite->texture->height) * 1.f;
     sr.sprite->uv1.x *= repeatRate;
     sr.layer = 2;
 
@@ -169,8 +174,8 @@ void UpdateLevel(Vec2 beePos, Vec2 beeDelta)
 
     tf.position.x = beePos.x;
 
-    sr.sprite->uv0.x += beeDelta.x * (float)STP * 0.001f * 0.05f;
-    sr.sprite->uv1.x += beeDelta.x * (float)STP * 0.001f * 0.05f;
+    sr.sprite->uv0.x += beeDelta.x * (float)STP * 0.001f * 0.02f;
+    sr.sprite->uv1.x += beeDelta.x * (float)STP * 0.001f * 0.02f;
 }
 
 void UpdateCloud(Vec2 beePos, Vec2 beeDelta)
@@ -182,8 +187,8 @@ void UpdateCloud(Vec2 beePos, Vec2 beeDelta)
 
     tf.position.x = beePos.x;
 
-    sr.sprite->uv0.x += beeDelta.x * (float)STP * 0.001f * 0.1f;
-    sr.sprite->uv1.x += beeDelta.x * (float)STP * 0.001f * 0.1f;
+    sr.sprite->uv0.x += beeDelta.x * (float)STP * 0.001f * 0.01f;
+    sr.sprite->uv1.x += beeDelta.x * (float)STP * 0.001f * 0.01f;
 }
 
 void UpdateTree1(Vec2 beePos, Vec2 beeDelta)
@@ -194,6 +199,7 @@ void UpdateTree1(Vec2 beePos, Vec2 beeDelta)
     auto &sr = reg.get<SpriteRenderer>(tree1);
 
     tf.position.x = beePos.x;
+    tf.position.y = 230.f;
 
     sr.sprite->uv0.x += beeDelta.x * (float)STP * 0.001f * 0.1f;
     sr.sprite->uv1.x += beeDelta.x * (float)STP * 0.001f * 0.1f;
@@ -207,7 +213,8 @@ void UpdateTree2(Vec2 beePos, Vec2 beeDelta)
     auto &sr = reg.get<SpriteRenderer>(tree2);
 
     tf.position.x = beePos.x;
+    tf.position.y = 260.f;
 
-    sr.sprite->uv0.x += beeDelta.x * (float)STP * 0.001f * 0.1f;
-    sr.sprite->uv1.x += beeDelta.x * (float)STP * 0.001f * 0.1f;
+    sr.sprite->uv0.x += beeDelta.x * (float)STP * 0.001f * 0.11f;
+    sr.sprite->uv1.x += beeDelta.x * (float)STP * 0.001f * 0.11f;
 }
