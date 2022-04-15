@@ -17,6 +17,7 @@
 #include "scene_collisions.h"
 #include "scene_fonts.h"
 #include "scene_pang.h"
+#include "scene_map.h"
 
 #include <algorithm>
 
@@ -46,6 +47,8 @@ void Travel()
         SceneLoader::LoadScene<SceneBee>();
     else if (Input::GetKey(GLFW_KEY_4))
         SceneLoader::LoadScene<SceneCollisions>();
+    else if (Input::GetKey(GLFW_KEY_5))
+        SceneLoader::LoadScene<SceneMap>();
 }
 
 void Game::Run()
@@ -55,7 +58,7 @@ void Game::Run()
     Render::Awake();
     AssetLoader::LoadAssets();
 
-    SceneLoader::LoadScene<SceneBee>(); // TODO: main scene
+    SceneLoader::LoadScene<SceneMap>(); // TODO: main scene
 
     while (!glfwWindowShouldClose(Render::GetWindow()))
     {

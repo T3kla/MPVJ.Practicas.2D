@@ -152,6 +152,9 @@
     <ClCompile Include="thread_pool.cpp">
       <Filter>Source Files\Engine\Loops</Filter>
     </ClCompile>
+    <ClCompile Include="scene_map.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stasis.h">
@@ -291,6 +294,9 @@
     </ClInclude>
     <ClInclude Include="camera.h">
       <Filter>Source Files\ECS\Components\Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="scene_map.h">
+      <Filter>Source Files\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

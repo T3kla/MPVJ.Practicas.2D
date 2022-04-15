@@ -152,6 +152,7 @@
     <ClCompile Include="scene_bee.cpp" />
     <ClCompile Include="scene_collisions.cpp" />
     <ClCompile Include="scene_loader.cpp" />
+    <ClCompile Include="scene_map.cpp" />
     <ClCompile Include="system.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="font_loader.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="scene_collisions.h" />
     <ClInclude Include="scene_loader.h" />
     <ClInclude Include="scene_fonts.h" />
+    <ClInclude Include="scene_map.h" />
     <ClInclude Include="size.h" />
     <ClInclude Include="sprite_animation.h" />
     <ClInclude Include="circle_collider.h" />
