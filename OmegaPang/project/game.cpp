@@ -16,8 +16,8 @@
 #include "scene_bee.h"
 #include "scene_collisions.h"
 #include "scene_fonts.h"
-#include "scene_pang.h"
 #include "scene_map.h"
+#include "scene_pang.h"
 
 #include <algorithm>
 
@@ -75,8 +75,9 @@ void Game::Run()
         while (fxCount >= STP)
         {
             FreqRefresh(nowFx, oldFx, freqFx);
+            Render::Fixed(); // FIXME: debug mode
             Logic::Fixed();
-            Render::Fixed();
+            glfwSwapBuffers(Render::GetWindow()); // FIXME: debug mode
             fxCount -= STP;
         }
     }

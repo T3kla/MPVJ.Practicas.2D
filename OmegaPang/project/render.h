@@ -1,6 +1,7 @@
 #pragma once
 
 #include "color.h"
+#include "vec.h"
 #include <entt/entt.hpp>
 
 struct GLFWwindow;
@@ -36,4 +37,9 @@ class Render
 
     static entt::entity GetMainCamera();
     static void SetMainCamera(entt::entity id);
+
+    // Debug
+    static void DrawDebugLine(Vec2 a, Vec2 b, Color color, Color revert);
+    static void DrawDebugSquare(Vec2 a, Vec2 b, Color color, Color revert);
+    static void DrawDebugDot(Vec2 pos, float size, Color color, Color revert);
 };

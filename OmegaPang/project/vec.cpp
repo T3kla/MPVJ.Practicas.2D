@@ -39,12 +39,6 @@ Vec2::Vec2(Vec2 &&_rhs) noexcept
     y = _rhs.y;
 }
 
-Vec2::Vec2(Vec2i _rhs)
-{
-    x = (float)_rhs.x;
-    y = (float)_rhs.y;
-}
-
 Vec2::Vec2(const Vec2i &_rhs)
 {
     x = (float)_rhs.x;

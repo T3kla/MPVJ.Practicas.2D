@@ -19,7 +19,12 @@
 #include <unordered_map>
 #include <vector>
 
-static std::vector<Box> eachBox;       // Every Box box
+#include "render.h"
+
+static Vec2 gravityVector = {0.f, 0.9806f};
+
+static std::vector<Box> eachCollider;  // Every Collider
+static std::vector<Box> eachRigidBody; // Every Rigidbody
 static std::vector<Possible> posBox;   // Every Box pair that intersects
 static std::vector<Collision> colBoxA; // Collision buffer
 static std::vector<Collision> colBoxB; // Collision buffer
@@ -73,7 +78,8 @@ void SwapColBox()
 
 SysPhysics::SysPhysics()
 {
-    eachBox.reserve(64);
+    eachCollider.reserve(64);
+    eachRigidBody.reserve(64);
     posBox.reserve(64);
     colBoxA.reserve(64);
     colBoxB.reserve(64);
@@ -84,19 +90,24 @@ void SysPhysics::Fixed()
     auto &reg = Game::GetRegistry();
 
     // Reset buffers
-    eachBox.clear();
+    eachCollider.clear();
+    eachRigidBody.clear();
     posBox.clear();
     SwapColBox();
 
     // Apply velocity
     auto rbView = reg.view<GameObject, Transform, RigidBody>();
+    auto step = (float)STP * 0.001f;
     for (auto [entity, go, tf, rb] : rbView.each())
     {
         if (!go.isActive || !rb.enable)
             continue;
 
-        tf.position += rb.velocity * (float)STP * 0.001f;
-        rb.velocity = rb.velocity * (1.f - rb.linearDrag);
+        if (rb.gravity)
+            rb.velocity += gravityVector * rb.gravityScale * step;
+
+        tf.position += rb.velocity;
+        // rb.velocity = rb.velocity * (1.f - rb.linearDrag);
     }
 
     // Set views
@@ -104,33 +115,54 @@ void SysPhysics::Fixed()
     auto crlView = reg.view<GameObject, Transform, CircleCollider>();
     auto pxlView = reg.view<GameObject, Transform, PixelCollider, SpriteRenderer>();
 
-    // Get colliding entities
+    auto sqrRbView = reg.view<GameObject, Transform, RigidBody, SquareCollider>();
+    auto crlRbView = reg.view<GameObject, Transform, RigidBody, CircleCollider>();
+    auto pxlRbView = reg.view<GameObject, Transform, RigidBody, PixelCollider, SpriteRenderer>();
+
+    // Get colliders
     for (auto [entity, go, tf, sc] : sqrView.each())
         if (go.isActive && sc.enable)
-            eachBox.push_back({entity, tf.position + sc.center, Vec2::Hadamard(sc.size, tf.scale), ptrSqrName});
+            eachCollider.push_back({entity, tf.position + sc.center, Vec2::Hadamard(sc.size, tf.scale), ptrSqrName});
 
     for (auto [entity, go, tf, cc] : crlView.each())
         if (go.isActive && cc.enable)
-            eachBox.push_back(
+            eachCollider.push_back(
                 {entity, tf.position + cc.center, Vec2::Hadamard({cc.radius, cc.radius}, tf.scale), ptrCrlName});
 
     for (auto [entity, go, tf, pc, sr] : pxlView.each())
         if (go.isActive && pc.enable && sr.enable && sr.sprite)
-            eachBox.push_back({entity, tf.position, Vec2::Hadamard(sr.size, tf.scale), ptrPxlName});
+            eachCollider.push_back({entity, tf.position, Vec2::Hadamard(sr.size, tf.scale), ptrPxlName});
+
+    // Get rigidbodies
+    for (auto [entity, go, tf, rb, sc] : sqrRbView.each())
+        if (go.isActive && rb.enable && sc.enable)
+            eachRigidBody.push_back({entity, tf.position + sc.center, Vec2::Hadamard(sc.size, tf.scale), ptrSqrName});
+
+    for (auto [entity, go, tf, rb, cc] : crlRbView.each())
+        if (go.isActive && rb.enable && cc.enable)
+            eachRigidBody.push_back(
+                {entity, tf.position + cc.center, Vec2::Hadamard({cc.radius, cc.radius}, tf.scale), ptrCrlName});
+
+    for (auto [entity, go, tf, rb, pc, sr] : pxlRbView.each())
+        if (go.isActive && rb.enable && pc.enable && sr.enable && sr.sprite)
+            eachRigidBody.push_back({entity, tf.position, Vec2::Hadamard(sr.size, tf.scale), ptrPxlName});
 
     // Set posible collisions
     Vec2 aMax, aMin, bMax, bMin;
-    for (auto &&a : eachBox)
+    for (auto &&a : eachRigidBody)
     {
         aMax = a.pos + a.size / 2.f;
         aMin = a.pos - a.size / 2.f;
 
-        for (auto &&b : eachBox)
+        for (auto &&b : eachCollider)
         {
-            if (a.id == b.id)
+            if (!reg.any_of<RigidBody>(a.id))
                 continue;
 
             if (IsInPosBox({&b, &a}))
+                continue;
+
+            if (a.id == b.id)
                 continue;
 
             bMax = b.pos + b.size / 2.f;
@@ -235,6 +267,34 @@ void SqrVsSqr(const Box &a, const Box &b)
     auto &reg = Game::GetRegistry();
 
     Resolution<SquareCollider, SquareCollider>(a, b);
+
+    auto dir = a.pos - b.pos;
+
+    auto disX = (a.size.x / 2.f + b.size.x / 2.f) - fabsf(dir.x);
+    auto disY = (a.size.y / 2.f + b.size.y / 2.f) - fabsf(dir.y);
+
+    Vec2 tl = Vec2(b.pos.x - b.size.x / 2.f, b.pos.y - b.size.y / 2.f);
+    Vec2 br = Vec2(b.pos.x + b.size.x / 2.f, b.pos.y + b.size.y / 2.f);
+    Render::DrawDebugSquare(tl, br, {1.f, 0.f, 0.f, 1.f}, {1.f, 1.f, 1.f, 1.f});
+
+    if (disX < 0.f || disY < 0.f)
+        return;
+
+    auto &aTF = reg.get<Transform>(a.id);
+    auto &aRB = reg.get<RigidBody>(a.id);
+
+    if (disY < disX)
+    {
+        if (disY > 0.f)
+            aRB.velocity.y = 0.f;
+        aTF.position.y += dir.y > 0.f ? disY : -disY;
+    }
+    else
+    {
+        if (disX > 0.f)
+            aRB.velocity.x = 0.f;
+        aTF.position.x += dir.x > 0.f ? disX : -disX;
+    }
 }
 
 void SqrVsCrl(const Box &a, const Box &b, bool first)

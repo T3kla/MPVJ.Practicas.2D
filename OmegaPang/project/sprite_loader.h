@@ -50,4 +50,17 @@ class SpriteLoader
     static Sprite sprCrl;
     static Sprite sprBox;
     static Sprite sprBall;
+
+    // Maps
+    static Sprite sprMapPlayerIdle;
+    static std::vector<Sprite> sprMapPlayerRun;
+    static Sprite sprMapGUI_06;
+    static Sprite sprMapGUI_08;
+    static Sprite sprMapGUI_09;
+    static Sprite sprMapGUI_11;
+    static Sprite sprMapGUI_16;
+    static Sprite sprMapGUI_17;
+    static Sprite sprMapGUI_18;
+    static Sprite sprMapGUI_19;
+    static Sprite sprMapGUI_29;
 };

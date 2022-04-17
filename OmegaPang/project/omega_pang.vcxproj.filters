@@ -62,6 +62,9 @@
     <Filter Include="Source Files\ECS\Components\Physics\Colliders">
       <UniqueIdentifier>{e6905b97-5db0-45ca-a077-a55f0d0bc689}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\XML">
+      <UniqueIdentifier>{9a04ca6d-4829-4fa7-894b-884c860d5534}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -154,6 +157,12 @@
     </ClCompile>
     <ClCompile Include="scene_map.cpp">
       <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="pugixml.cpp">
+      <Filter>Source Files\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="sys_mapPlayer.cpp">
+      <Filter>Source Files\ECS\Systems</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -297,6 +306,15 @@
     </ClInclude>
     <ClInclude Include="scene_map.h">
       <Filter>Source Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="pugiconfig.hpp">
+      <Filter>Source Files\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="pugixml.hpp">
+      <Filter>Source Files\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="sys_mapPlayer.h">
+      <Filter>Source Files\ECS\Systems</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

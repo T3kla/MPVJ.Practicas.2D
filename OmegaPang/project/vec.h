@@ -14,7 +14,6 @@ struct Vec2
     Vec2(const Vec2 &_rhs);
     Vec2(Vec2 &&_rhs) noexcept;
 
-    Vec2(Vec2i _rhs);
     Vec2(const Vec2i &_rhs);
 
     Vec2 operator+(const Vec2 &_rhs) const;

@@ -35,10 +35,6 @@ void RenderOvals();
 void RenderSprites();
 void RenderUI();
 
-void DrawDebugLine(Vec2 a, Vec2 b, Color color, Color revert);
-void DrawDebugSquare(Vec2 a, Vec2 b, Color color, Color revert);
-void DrawDebugDot(Vec2 pos, float size, Color color, Color revert);
-
 Render Render::Instance;
 char *Render::Title = nullptr;
 GLFWwindow *Render::Window = nullptr;
@@ -92,7 +88,7 @@ void Render::Fixed()
     RenderUI();
 
     // Swap Buffers
-    glfwSwapBuffers(Window);
+    // glfwSwapBuffers(Window); // FIXME: debug mode
 }
 
 GLFWwindow *Render::GetWindow()
@@ -165,9 +161,25 @@ void Render::SetMainCamera(entt::entity id)
 void UpdateOrigin()
 {
     auto &reg = Game::GetRegistry();
-    auto &tf = reg.get<Transform>(Render::GetMainCamera());
+
+    auto camID = Render::GetMainCamera();
+
+    if (!reg.valid(camID))
+        return;
+
+    auto *tf = reg.try_get<Transform>(camID);
+
+    if (tf == nullptr)
+        return;
+
+    auto *cm = reg.try_get<Camera>(camID);
+
+    if (cm == nullptr)
+        return;
+
     auto wSize = Render::GetWindowSize();
-    auto pos = tf.position - wSize / 2.f;
+    auto pos = tf->position - wSize / 2.f;
+
     lgfx_setorigin(pos.x, pos.y);
 }
 
@@ -267,7 +279,7 @@ void RenderSprites()
             // Vec2 pos = tl;
             // ltex_getpixels(sr.sprite->texture, pixels);
             // for (int h = 0; h < height; h++)
-            //{
+            // {
             //    pos.y = tl.y + pxSize.y * h;
             //    for (int w = 0; w < width; w++)
             //    {
@@ -279,7 +291,7 @@ void RenderSprites()
             //            lgfx_drawpoint(pos.x, pos.y);
             //        }
             //    }
-            //}
+            // }
             // delete[] pixels;
         }
     }
@@ -340,14 +352,14 @@ void RenderUI()
     }
 }
 
-void DrawDebugLine(Vec2 a, Vec2 b, Color color, Color revert)
+void Render::DrawDebugLine(Vec2 a, Vec2 b, Color color, Color revert)
 {
     lgfx_setcolor(color.r, color.g, color.b, color.a);
     lgfx_drawline(a.x, a.y, b.x, b.y);
     lgfx_setcolor(color.r, color.g, color.b, color.a);
 }
 
-void DrawDebugSquare(Vec2 a, Vec2 b, Color color, Color revert)
+void Render::DrawDebugSquare(Vec2 a, Vec2 b, Color color, Color revert)
 {
     lgfx_setcolor(color.r, color.g, color.b, color.a);
     lgfx_drawline(a.x, a.y, a.x, b.y);
@@ -357,7 +369,7 @@ void DrawDebugSquare(Vec2 a, Vec2 b, Color color, Color revert)
     lgfx_setcolor(revert.r, revert.g, revert.b, revert.a);
 }
 
-void DrawDebugDot(Vec2 pos, float size, Color color, Color revert)
+void Render::DrawDebugDot(Vec2 pos, float size, Color color, Color revert)
 {
     lgfx_setcolor(color.r, color.g, color.b, color.a);
     lgfx_drawoval(pos.x - size / 2.f, pos.y - size / 2.f, size, size);

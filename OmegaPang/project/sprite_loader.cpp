@@ -16,6 +16,16 @@ Sprite SpriteLoader::sprLevel;
 Sprite SpriteLoader::sprTrees1;
 Sprite SpriteLoader::sprTrees2;
 Sprite SpriteLoader::sprCloud;
+Sprite SpriteLoader::sprMapPlayerIdle;
+Sprite SpriteLoader::sprMapGUI_06;
+Sprite SpriteLoader::sprMapGUI_08;
+Sprite SpriteLoader::sprMapGUI_09;
+Sprite SpriteLoader::sprMapGUI_11;
+Sprite SpriteLoader::sprMapGUI_16;
+Sprite SpriteLoader::sprMapGUI_17;
+Sprite SpriteLoader::sprMapGUI_18;
+Sprite SpriteLoader::sprMapGUI_19;
+Sprite SpriteLoader::sprMapGUI_29;
 std::vector<Sprite> SpriteLoader::sprBalls;
 std::vector<Sprite> SpriteLoader::sprExpls;
 std::vector<Sprite> SpriteLoader::sprPlayerMoveL;
@@ -24,6 +34,7 @@ std::vector<Sprite> SpriteLoader::sprPlayerShootL;
 std::vector<Sprite> SpriteLoader::sprPlayerShootR;
 std::vector<Sprite> SpriteLoader::sprHook;
 std::vector<Sprite> SpriteLoader::sprSheetBee;
+std::vector<Sprite> SpriteLoader::sprMapPlayerRun;
 
 SpriteLoader SpriteLoader::Instance;
 std::vector<Texture> SpriteLoader::Textures;
@@ -97,6 +108,10 @@ void SpriteLoader::SetSprites()
     auto *txTrees2 = GetTexture("trees2.png");
     auto *txClouds = GetTexture("clouds.png");
 
+    auto *txPlayerIdle = GetTexture("idle.png");
+    auto *txPlayerRun = GetTexture("run.png");
+    auto *txTileset = GetTexture("tiles.png");
+
     // Sprite mapping
     sprBg = {txBg, Vec2::Zero(), Vec2::One()};
 
@@ -155,4 +170,21 @@ void SpriteLoader::SetSprites()
     sprCrl = {txColCrl, {0.0f, 0.0f}, {1.0f, 1.0f}};
     sprBox = {txColBox, {0.0f, 0.0f}, {1.0f, 1.0f}};
     sprBall = {txColBall, {0.0f, 0.0f}, {1.0f, 1.0f}};
+
+    sprMapPlayerIdle = {txPlayerIdle, {0.0f, 0.0f}, {1.0f, 1.0f}};
+    sprMapPlayerRun.push_back({txPlayerRun, {0.000f, 0.0f}, {0.166f, 1.0f}});
+    sprMapPlayerRun.push_back({txPlayerRun, {0.166f, 0.0f}, {0.333f, 1.0f}});
+    sprMapPlayerRun.push_back({txPlayerRun, {0.333f, 0.0f}, {0.500f, 1.0f}});
+    sprMapPlayerRun.push_back({txPlayerRun, {0.500f, 0.0f}, {0.666f, 1.0f}});
+    sprMapPlayerRun.push_back({txPlayerRun, {0.666f, 0.0f}, {0.833f, 1.0f}});
+    sprMapPlayerRun.push_back({txPlayerRun, {0.833f, 0.0f}, {1.000f, 1.0f}});
+    sprMapGUI_06 = {txTileset, {0.625f, 0.00f}, {0.750f, 0.20f}};
+    sprMapGUI_08 = {txTileset, {0.875f, 0.00f}, {1.000f, 0.20f}};
+    sprMapGUI_09 = {txTileset, {0.000f, 0.20f}, {0.125f, 0.40f}};
+    sprMapGUI_11 = {txTileset, {0.250f, 0.20f}, {0.375f, 0.40f}};
+    sprMapGUI_16 = {txTileset, {0.875f, 0.20f}, {1.000f, 0.40f}};
+    sprMapGUI_17 = {txTileset, {0.000f, 0.40f}, {0.125f, 0.60f}};
+    sprMapGUI_18 = {txTileset, {0.125f, 0.40f}, {0.250f, 0.60f}};
+    sprMapGUI_19 = {txTileset, {0.250f, 0.40f}, {0.375f, 0.60f}};
+    sprMapGUI_29 = {txTileset, {0.500f, 0.60f}, {0.625f, 0.80f}};
 }
