@@ -46,7 +46,7 @@ static void InstantiatePlayer()
     go.isActive = true;
 
     auto &tf = reg.get_or_emplace<Transform>(id);
-    tf.position = {300.f, -300.f};
+    tf.position = {500.f, 300.f};
     tf.scale = Vec2::One();
     tf.rotation = 0.f;
 

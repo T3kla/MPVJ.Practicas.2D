@@ -55,8 +55,6 @@ void SceneMap::LoadScene()
 
     for (auto it = all.begin(); it != all.end(); it++)
     {
-        pos.x++;
-
         if (pos.x >= mapSize.x)
         {
             pos.x = 0;
@@ -65,6 +63,8 @@ void SceneMap::LoadScene()
 
         auto gid = it->attribute("gid").as_int();
         auto worldPos = Vec2i::Hadamard(pos, tileSize);
+
+        pos.x++;
 
         CreateTile(reg, gid, worldPos);
     }
