@@ -20,7 +20,7 @@ class Render
 
     static Color BGColor;
 
-    static void Awake();
+    static void Init();
     static void Fixed();
 
   public:

@@ -28,26 +28,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -148,12 +148,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="asset_loader.cpp" />
+    <ClCompile Include="audio_loader.cpp" />
     <ClCompile Include="pixel_collider.h" />
     <ClCompile Include="pugixml.cpp" />
     <ClCompile Include="scene_bee.cpp" />
     <ClCompile Include="scene_collisions.cpp" />
     <ClCompile Include="scene_loader.cpp" />
     <ClCompile Include="scene_map.cpp" />
+    <ClCompile Include="sound.cpp" />
     <ClCompile Include="system.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="font_loader.cpp" />
@@ -182,6 +184,7 @@
     <ClCompile Include="vec.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="audio_loader.h" />
     <ClInclude Include="ball.h" />
     <ClInclude Include="bee.h" />
     <ClInclude Include="camera.h" />
@@ -203,6 +206,7 @@
     <ClInclude Include="scene_fonts.h" />
     <ClInclude Include="scene_map.h" />
     <ClInclude Include="size.h" />
+    <ClInclude Include="sound.h" />
     <ClInclude Include="sprite_animation.h" />
     <ClInclude Include="circle_collider.h" />
     <ClInclude Include="entity.h" />

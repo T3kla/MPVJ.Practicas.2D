@@ -46,7 +46,7 @@ void OnWindowResize(GLFWwindow *window, int w, int h)
     lgfx_setup2d(w, h);
 }
 
-void Render::Awake()
+void Render::Init()
 {
     if (glfwInit() == 0)
         std::cout << "Panic!" << std::endl;

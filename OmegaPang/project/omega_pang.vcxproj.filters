@@ -65,6 +65,9 @@
     <Filter Include="Source Files\XML">
       <UniqueIdentifier>{9a04ca6d-4829-4fa7-894b-884c860d5534}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Loaders\Sons">
+      <UniqueIdentifier>{b812c32e-4422-4bef-894c-4e20d57027a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -164,6 +167,12 @@
     <ClCompile Include="sys_mapPlayer.cpp">
       <Filter>Source Files\ECS\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="sound.cpp">
+      <Filter>Source Files\Engine\Loops</Filter>
+    </ClCompile>
+    <ClCompile Include="audio_loader.cpp">
+      <Filter>Source Files\Loaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stasis.h">
@@ -194,9 +203,6 @@
       <Filter>Source Files\ECS\Systems</Filter>
     </ClInclude>
     <ClInclude Include="sprite_loader.h">
-      <Filter>Source Files\Loaders</Filter>
-    </ClInclude>
-    <ClInclude Include="sprite.h">
       <Filter>Source Files\Loaders</Filter>
     </ClInclude>
     <ClInclude Include="sys_explosions.h">
@@ -262,9 +268,6 @@
     <ClInclude Include="sys_ui.h">
       <Filter>Source Files\ECS\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="font.h">
-      <Filter>Source Files\Loaders</Filter>
-    </ClInclude>
     <ClInclude Include="textbox.h">
       <Filter>Source Files\ECS\Components\Renderers</Filter>
     </ClInclude>
@@ -272,9 +275,6 @@
       <Filter>Source Files\ECS\Systems</Filter>
     </ClInclude>
     <ClInclude Include="scene_loader.h">
-      <Filter>Source Files\Loaders</Filter>
-    </ClInclude>
-    <ClInclude Include="scene.h">
       <Filter>Source Files\Loaders</Filter>
     </ClInclude>
     <ClInclude Include="scene_bee.h">
@@ -287,9 +287,6 @@
       <Filter>Source Files\ECS\Components\Gameplay</Filter>
     </ClInclude>
     <ClInclude Include="asset_loader.h">
-      <Filter>Source Files\Loaders</Filter>
-    </ClInclude>
-    <ClInclude Include="texture.h">
       <Filter>Source Files\Loaders</Filter>
     </ClInclude>
     <ClInclude Include="scene_collisions.h">
@@ -315,6 +312,24 @@
     </ClInclude>
     <ClInclude Include="sys_mapPlayer.h">
       <Filter>Source Files\ECS\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="sound.h">
+      <Filter>Source Files\Engine\Loops</Filter>
+    </ClInclude>
+    <ClInclude Include="font.h">
+      <Filter>Source Files\Loaders\Sons</Filter>
+    </ClInclude>
+    <ClInclude Include="scene.h">
+      <Filter>Source Files\Loaders\Sons</Filter>
+    </ClInclude>
+    <ClInclude Include="sprite.h">
+      <Filter>Source Files\Loaders\Sons</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>Source Files\Loaders\Sons</Filter>
+    </ClInclude>
+    <ClInclude Include="audio_loader.h">
+      <Filter>Source Files\Loaders</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

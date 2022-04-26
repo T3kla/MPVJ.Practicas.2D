@@ -11,6 +11,7 @@
 #include "input.h"
 #include "logic.h"
 #include "render.h"
+#include "sound.h"
 #include "stasis.h"
 
 #include "scene_bee.h"
@@ -54,11 +55,14 @@ void Travel()
 void Game::Run()
 {
     Stasis::RefreshTime();
+
     ThreadPool::Init();
-    Render::Awake();
+    Sound::Init();
+    Render::Init();
+
     AssetLoader::LoadAssets();
 
-    SceneLoader::LoadScene<SceneMap>(); // TODO: main scene
+    SceneLoader::LoadScene<SceneMap>();
 
     while (!glfwWindowShouldClose(Render::GetWindow()))
     {
