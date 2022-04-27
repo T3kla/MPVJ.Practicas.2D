@@ -57,7 +57,7 @@ void Game::Run()
     Stasis::RefreshTime();
 
     ThreadPool::Init();
-    Sound::Init();
+    Audio::Init();
     Render::Init();
 
     AssetLoader::LoadAssets();

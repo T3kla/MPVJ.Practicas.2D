@@ -31,7 +31,7 @@ void Load(const char *file, ltex_t *&texture, stbtt_bakedchar *&bakedChars)
     if (err != 0)
         throw "Error loading font file";
 
-    // Find fond length
+    // Find font length
     fseek(stream, 0, SEEK_END);
     auto fontLen = ftell(stream);
     fseek(stream, 0, SEEK_SET);

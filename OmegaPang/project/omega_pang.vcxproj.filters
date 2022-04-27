@@ -167,7 +167,7 @@
     <ClCompile Include="sys_mapPlayer.cpp">
       <Filter>Source Files\ECS\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="sound.cpp">
+    <ClCompile Include="audio.cpp">
       <Filter>Source Files\Engine\Loops</Filter>
     </ClCompile>
     <ClCompile Include="audio_loader.cpp">
@@ -313,7 +313,7 @@
     <ClInclude Include="sys_mapPlayer.h">
       <Filter>Source Files\ECS\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="sound.h">
+    <ClInclude Include="audio.h">
       <Filter>Source Files\Engine\Loops</Filter>
     </ClInclude>
     <ClInclude Include="font.h">
@@ -330,6 +330,9 @@
     </ClInclude>
     <ClInclude Include="audio_loader.h">
       <Filter>Source Files\Loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="sound.h">
+      <Filter>Source Files\Loaders\Sons</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

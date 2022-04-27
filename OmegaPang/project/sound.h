@@ -2,18 +2,10 @@
 
 #include "openal/AL/alc.h"
 
-class Sound
+struct Sound
 {
-    friend class Game;
-    static Sound Instance;
+    const char *name = nullptr;
+    ALCuint id;
 
-  private:
-    Sound() = default;
-    Sound(const Sound &) = delete;
-
-    ALCdevice *device;
-    ALCcontext *context;
-
-    static void Init();
-    static void Quit();
+    Sound(const char *name = nullptr, ALCuint id = 0) : name(name), id(id){};
 };

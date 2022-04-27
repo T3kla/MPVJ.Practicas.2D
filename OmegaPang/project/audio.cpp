@@ -1,16 +1,21 @@
-#include "sound.h"
+#include "audio.h"
 
-Sound Sound::Instance;
+Audio Audio::Instance;
 
-void Sound::Init()
+void Audio::Init()
 {
     Instance.device = alcOpenDevice(nullptr);
     Instance.context = alcCreateContext(Instance.device, nullptr);
     alcMakeContextCurrent(Instance.context);
 }
 
-void Sound::Quit()
+void Audio::Quit()
 {
     alcDestroyContext(Instance.context);
     alcCloseDevice(Instance.device);
+}
+
+void Audio::InitBuffers(int n)
+{
+    alGenBuffers(n, );
 }

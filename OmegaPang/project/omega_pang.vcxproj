@@ -155,7 +155,7 @@
     <ClCompile Include="scene_collisions.cpp" />
     <ClCompile Include="scene_loader.cpp" />
     <ClCompile Include="scene_map.cpp" />
-    <ClCompile Include="sound.cpp" />
+    <ClCompile Include="audio.cpp" />
     <ClCompile Include="system.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="font_loader.cpp" />
@@ -206,6 +206,7 @@
     <ClInclude Include="scene_fonts.h" />
     <ClInclude Include="scene_map.h" />
     <ClInclude Include="size.h" />
+    <ClInclude Include="audio.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="sprite_animation.h" />
     <ClInclude Include="circle_collider.h" />
