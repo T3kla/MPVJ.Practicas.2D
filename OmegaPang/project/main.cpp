@@ -12,6 +12,5 @@
 int main(void)
 {
     Game::Run();
-
     return 0;
 }

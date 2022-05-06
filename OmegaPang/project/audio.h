@@ -1,7 +1,7 @@
 #pragma once
 
-#include "openal/AL/al.h"
-#include "openal/AL/alc.h"
+#include "al.h"
+#include "alc.h"
 
 class Audio
 {
@@ -19,6 +19,4 @@ class Audio
 
     static void Init();
     static void Quit();
-
-    static void InitBuffers(int n);
 };

@@ -1,9 +1,11 @@
 #include "audio_loader.h"
 
-#include "openal/AL/al.h"
 #include <iostream>
 
 static FILE *stream;
+
+static constexpr int bufferLen = 52428800; // 50mb
+static unsigned char *buffer = nullptr;
 
 AudioLoader AudioLoader::Instance;
 std::vector<Sound> AudioLoader::Sounds;
@@ -18,16 +20,20 @@ void Load(const char *file)
     if (err != 0)
         throw "Error loading font file";
 
-    fread(stream)
+    fread(buffer, 4, 0, stream);
 
-        in.read(buffer, 4);
-
-    if (strncmp(buffer, "RIFF", 4) != 0)
-    {
+    if (strncmp((char *)buffer, "RIFF", 4) != 0)
         std::cout << "this is not a valid WAVE file" << std::endl;
-        return NULL;
-    }
-    in.read(buffer, 4)
+}
+
+void AudioLoader::InitBuffers()
+{
+    buffer = new unsigned char[bufferLen];
+}
+
+void AudioLoader::ClearBuffers()
+{
+    delete[] buffer;
 }
 
 void AudioLoader::LoadSound(const char *name, const char *file)
@@ -36,16 +42,16 @@ void AudioLoader::LoadSound(const char *name, const char *file)
 
     alGenBuffers(1, &newSound.id);
 
-    alBufferData(newSound.id, format, data, size, freq);
+    // alBufferData(newSound.id, format, data, size, freq);
 
     Sounds.push_back(newSound);
 }
 
 Sound *AudioLoader::GetSound(const char *name)
 {
-    for (auto &font : Sounds)
-        if (strcmp(font.name, name) == 0)
-            return &font;
+    for (auto &sound : Sounds)
+        if (strcmp(sound.name, name) == 0)
+            return &sound;
 
     return nullptr;
 }

@@ -14,8 +14,3 @@ void Audio::Quit()
     alcDestroyContext(Instance.context);
     alcCloseDevice(Instance.device);
 }
-
-void Audio::InitBuffers(int n)
-{
-    alGenBuffers(n, );
-}

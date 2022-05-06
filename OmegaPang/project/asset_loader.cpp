@@ -1,5 +1,6 @@
 #include "asset_loader.h"
 
+#include "audio_loader.h"
 #include "font_loader.h"
 #include "sprite_loader.h"
 
@@ -47,6 +48,23 @@ void AssetLoader::LoadAssets()
             SpriteLoader::LoadTexture(namePtr, path.c_str());
         }
     SpriteLoader::SetSprites();
+
+    // Load Audio
+    ext = ".wav";
+    AudioLoader::InitBuffers();
+    for (auto &p : std::filesystem::recursive_directory_iterator(path))
+        if (p.path().extension() == ext)
+        {
+            auto filename = p.path().filename().string();
+            auto path = p.path().string();
+
+            auto size = filename.capacity();
+            char *namePtr = new char[size];
+            strcpy_s(namePtr, size, filename.c_str());
+
+            AudioLoader::LoadSound(namePtr, path.c_str());
+        }
+    AudioLoader::ClearBuffers();
 }
 
 void AssetLoader::UnloadAssets()

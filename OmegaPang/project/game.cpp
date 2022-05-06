@@ -8,6 +8,7 @@
 #include "sprite_loader.h"
 #include "thread_pool.h"
 
+#include "audio.h"
 #include "input.h"
 #include "logic.h"
 #include "render.h"
