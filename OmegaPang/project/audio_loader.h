@@ -1,6 +1,6 @@
 #pragma once
 
-#include "al.h"
+#include "openal/al.h"
 #include "sound.h"
 
 #include <vector>

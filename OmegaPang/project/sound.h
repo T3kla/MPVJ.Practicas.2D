@@ -1,6 +1,6 @@
 #pragma once
 
-#include "alc.h"
+#include "openal/alc.h"
 
 struct Sound
 {

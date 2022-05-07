@@ -4,13 +4,13 @@
 
 static FILE *stream;
 
-static constexpr int bufferLen = 52428800; // 50mb
+static constexpr int bufferLen = 4; // 50mb => 52428800
 static unsigned char *buffer = nullptr;
 
 AudioLoader AudioLoader::Instance;
 std::vector<Sound> AudioLoader::Sounds;
 
-void Load(const char *file)
+void Load(const char *file, ALCuint bufferID)
 {
     errno_t err;
 
@@ -20,10 +20,106 @@ void Load(const char *file)
     if (err != 0)
         throw "Error loading font file";
 
-    fread(buffer, 4, 0, stream);
+    // ChunkID 4
+    memset(buffer, 0, bufferLen);
+    fread(buffer, 1, 4, stream);
+    char chunkID[4] = {};
+    memcpy(chunkID, buffer, 4);
 
-    if (strncmp((char *)buffer, "RIFF", 4) != 0)
-        std::cout << "this is not a valid WAVE file" << std::endl;
+    // RiffChunkSize 4
+    memset(buffer, 0, bufferLen);
+    fread(buffer, 1, 4, stream);
+    int riffChunkSize = 0;
+    memcpy(&riffChunkSize, buffer, 4);
+
+    // Format 4
+    memset(buffer, 0, bufferLen);
+    fread(buffer, 1, 4, stream);
+    char format[4] = {};
+    memcpy(format, buffer, 4);
+
+    // SubChunkId 4
+    memset(buffer, 0, bufferLen);
+    fread(buffer, 1, 4, stream);
+    char subChunkId[4] = {};
+    memcpy(subChunkId, buffer, 4);
+
+    // FmtChunkSize 4
+    memset(buffer, 0, bufferLen);
+    fread(buffer, 1, 4, stream);
+    int fmtChunkSize = 0;
+    memcpy(&fmtChunkSize, buffer, 4);
+
+    // AudioFormat 2
+    memset(buffer, 0, bufferLen);
+    fread(buffer + 2, 1, 2, stream);
+    int audioFormat = 0;
+    memcpy(&audioFormat, buffer, 4);
+
+    // Channels 2
+    memset(buffer, 0, bufferLen);
+    fread(buffer + 2, 1, 2, stream);
+    int channels = 0;
+    memcpy(&channels, buffer, 4);
+
+    // SampleRate 4
+    memset(buffer, 0, bufferLen);
+    fread(buffer, 1, 4, stream);
+    int sampleRate = 0;
+    memcpy(&sampleRate, buffer, 4);
+
+    // ByteRate 4
+    memset(buffer, 0, bufferLen);
+    fread(buffer, 1, 4, stream);
+    int byteRate = 0;
+    memcpy(&byteRate, buffer, 4);
+
+    // BlockAlign 2
+    memset(buffer, 0, bufferLen);
+    fread(buffer + 2, 1, 2, stream);
+    int blockAlign = 0;
+    memcpy(&blockAlign, buffer, 4);
+
+    // BitsPerSample 2
+    memset(buffer, 0, bufferLen);
+    fread(buffer + 2, 1, 2, stream);
+    int bitsPerSample = 0;
+    memcpy(&bitsPerSample, buffer, 4);
+
+    // ExtraParams
+    if (fmtChunkSize > 16)
+    {
+        // ExtraParamsSize 2
+        memset(buffer, 0, bufferLen);
+        fread(buffer, 1, 2, stream);
+        int ExtraParamsSize = (int)buffer;
+
+        // Jump ExtraParams
+        fseek(stream, ExtraParamsSize, SEEK_CUR);
+    }
+
+    // Search Data
+    do
+    {
+        fread(buffer, 1, 4, stream);
+    } while (strncmp((char *)buffer, "data", 4) != 0);
+
+    // DataSize 4
+    memset(buffer, 0, bufferLen);
+    fread(buffer, 1, 4, stream);
+    int dataSize = 0;
+    memcpy(&dataSize, buffer, 4);
+
+    auto *dataBuffer = new unsigned char[dataSize];
+
+    // DataFormat
+    ALenum dataFormat = 0;
+    if (bitsPerSample == 8)
+        dataFormat = channels == 1 ? AL_FORMAT_MONO8 : AL_FORMAT_STEREO8;
+    else if (bitsPerSample == 16)
+        dataFormat = channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
+
+    alBufferData(bufferID, bitsPerSample, );
 }
 
 void AudioLoader::InitBuffers()
@@ -41,6 +137,8 @@ void AudioLoader::LoadSound(const char *name, const char *file)
     auto newSound = Sound(name);
 
     alGenBuffers(1, &newSound.id);
+
+    Load(file, newSound.id);
 
     // alBufferData(newSound.id, format, data, size, freq);
 

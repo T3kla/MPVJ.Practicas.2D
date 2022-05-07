@@ -1,7 +1,7 @@
 #pragma once
 
-#include "al.h"
-#include "alc.h"
+#include "openal/al.h"
+#include "openal/alc.h"
 
 class Audio
 {
