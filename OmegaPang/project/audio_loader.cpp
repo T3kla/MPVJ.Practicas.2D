@@ -4,15 +4,14 @@
 
 static FILE *stream;
 
-static constexpr int bufferLen = 4; // 50mb => 52428800
-static unsigned char *buffer = nullptr;
-
 AudioLoader AudioLoader::Instance;
 std::vector<Sound> AudioLoader::Sounds;
 
 void Load(const char *file, ALCuint bufferID)
 {
     errno_t err;
+    const int bufferLen = 4;
+    unsigned char buffer[bufferLen];
 
     // Open file
     err = fopen_s(&stream, file, "r");
@@ -53,14 +52,14 @@ void Load(const char *file, ALCuint bufferID)
     // AudioFormat 2
     memset(buffer, 0, bufferLen);
     fread(buffer + 2, 1, 2, stream);
-    int audioFormat = 0;
-    memcpy(&audioFormat, buffer, 4);
+    short int audioFormat = 0;
+    memcpy(&audioFormat, buffer + 2, 2);
 
     // Channels 2
     memset(buffer, 0, bufferLen);
     fread(buffer + 2, 1, 2, stream);
-    int channels = 0;
-    memcpy(&channels, buffer, 4);
+    short int channels = 0;
+    memcpy(&channels, buffer + 2, 2);
 
     // SampleRate 4
     memset(buffer, 0, bufferLen);
@@ -77,14 +76,14 @@ void Load(const char *file, ALCuint bufferID)
     // BlockAlign 2
     memset(buffer, 0, bufferLen);
     fread(buffer + 2, 1, 2, stream);
-    int blockAlign = 0;
-    memcpy(&blockAlign, buffer, 4);
+    short int blockAlign = 0;
+    memcpy(&blockAlign, buffer + 2, 2);
 
     // BitsPerSample 2
     memset(buffer, 0, bufferLen);
     fread(buffer + 2, 1, 2, stream);
-    int bitsPerSample = 0;
-    memcpy(&bitsPerSample, buffer, 4);
+    short int bitsPerSample = 0;
+    memcpy(&bitsPerSample, buffer + 2, 2);
 
     // ExtraParams
     if (fmtChunkSize > 16)
@@ -99,18 +98,14 @@ void Load(const char *file, ALCuint bufferID)
     }
 
     // Search Data
-    do
-    {
+    while (strncmp((char *)buffer, "data", 4) != 0)
         fread(buffer, 1, 4, stream);
-    } while (strncmp((char *)buffer, "data", 4) != 0);
 
     // DataSize 4
     memset(buffer, 0, bufferLen);
     fread(buffer, 1, 4, stream);
     int dataSize = 0;
     memcpy(&dataSize, buffer, 4);
-
-    auto *dataBuffer = new unsigned char[dataSize];
 
     // DataFormat
     ALenum dataFormat = 0;
@@ -119,17 +114,10 @@ void Load(const char *file, ALCuint bufferID)
     else if (bitsPerSample == 16)
         dataFormat = channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
 
-    alBufferData(bufferID, bitsPerSample, );
-}
-
-void AudioLoader::InitBuffers()
-{
-    buffer = new unsigned char[bufferLen];
-}
-
-void AudioLoader::ClearBuffers()
-{
-    delete[] buffer;
+    // Alocate
+    auto *dataBuffer = new unsigned char[dataSize];
+    fread(dataBuffer, 1, dataSize, stream);
+    alBufferData(bufferID, bitsPerSample, dataBuffer, dataSize, sampleRate);
 }
 
 void AudioLoader::LoadSound(const char *name, const char *file)
@@ -137,10 +125,7 @@ void AudioLoader::LoadSound(const char *name, const char *file)
     auto newSound = Sound(name);
 
     alGenBuffers(1, &newSound.id);
-
     Load(file, newSound.id);
-
-    // alBufferData(newSound.id, format, data, size, freq);
 
     Sounds.push_back(newSound);
 }

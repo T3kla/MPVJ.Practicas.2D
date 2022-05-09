@@ -19,7 +19,7 @@ void AssetLoader::LoadAssets()
     // Load fonts
     ext = ".ttf";
     FontLoader::InitBuffers();
-    for (auto &p : std::filesystem::recursive_directory_iterator(path))
+    for (auto &p : std::filesystem::directory_iterator(path))
         if (p.path().extension() == ext)
         {
             auto filename = p.path().filename().string();
@@ -35,7 +35,7 @@ void AssetLoader::LoadAssets()
 
     // Load textures
     ext = ".png";
-    for (auto &p : std::filesystem::recursive_directory_iterator(path))
+    for (auto &p : std::filesystem::directory_iterator(path))
         if (p.path().extension() == ext)
         {
             auto filename = p.path().filename().string();
@@ -51,8 +51,7 @@ void AssetLoader::LoadAssets()
 
     // Load Audio
     ext = ".wav";
-    AudioLoader::InitBuffers();
-    for (auto &p : std::filesystem::recursive_directory_iterator(path))
+    for (auto &p : std::filesystem::directory_iterator(path))
         if (p.path().extension() == ext)
         {
             auto filename = p.path().filename().string();
@@ -64,7 +63,6 @@ void AssetLoader::LoadAssets()
 
             AudioLoader::LoadSound(namePtr, path.c_str());
         }
-    AudioLoader::ClearBuffers();
 }
 
 void AssetLoader::UnloadAssets()

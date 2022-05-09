@@ -12,9 +12,6 @@ class AudioLoader
     static AudioLoader Instance;
     static std::vector<Sound> Sounds;
 
-    static void InitBuffers();
-    static void ClearBuffers();
-
     static void LoadSound(const char *name, const char *file);
     static void UnloadSounds();
 

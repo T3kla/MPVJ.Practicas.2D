@@ -68,6 +68,9 @@
     <Filter Include="Source Files\Loaders\Sons">
       <UniqueIdentifier>{b812c32e-4422-4bef-894c-4e20d57027a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\ECS\Components\Audio">
+      <UniqueIdentifier>{efbe72b9-2e3f-456c-89bc-c5d753cb8bf9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -172,6 +175,9 @@
     </ClCompile>
     <ClCompile Include="audio_loader.cpp">
       <Filter>Source Files\Loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="scene_audio_1.cpp">
+      <Filter>Source Files\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -333,6 +339,15 @@
     </ClInclude>
     <ClInclude Include="sound.h">
       <Filter>Source Files\Loaders\Sons</Filter>
+    </ClInclude>
+    <ClInclude Include="audio_source.h">
+      <Filter>Source Files\ECS\Components\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="audio_listener.h">
+      <Filter>Source Files\ECS\Components\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="scene_audio_1.h">
+      <Filter>Source Files\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

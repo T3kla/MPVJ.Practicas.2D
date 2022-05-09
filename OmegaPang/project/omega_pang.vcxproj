@@ -151,6 +151,7 @@
     <ClCompile Include="audio_loader.cpp" />
     <ClCompile Include="pixel_collider.h" />
     <ClCompile Include="pugixml.cpp" />
+    <ClCompile Include="scene_audio_1.cpp" />
     <ClCompile Include="scene_bee.cpp" />
     <ClCompile Include="scene_collisions.cpp" />
     <ClCompile Include="scene_loader.cpp" />
@@ -184,7 +185,9 @@
     <ClCompile Include="vec.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="audio_listener.h" />
     <ClInclude Include="audio_loader.h" />
+    <ClInclude Include="audio_source.h" />
     <ClInclude Include="ball.h" />
     <ClInclude Include="bee.h" />
     <ClInclude Include="camera.h" />
@@ -200,6 +203,7 @@
     <ClInclude Include="pugiconfig.hpp" />
     <ClInclude Include="pugixml.hpp" />
     <ClInclude Include="scene.h" />
+    <ClInclude Include="scene_audio_1.h" />
     <ClInclude Include="scene_bee.h" />
     <ClInclude Include="scene_collisions.h" />
     <ClInclude Include="scene_loader.h" />
