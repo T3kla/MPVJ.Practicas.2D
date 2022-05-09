@@ -107,7 +107,7 @@ void SysPhysics::Fixed()
             rb.velocity += gravityVector * rb.gravityScale * step;
 
         tf.position += rb.velocity;
-        // rb.velocity = rb.velocity * (1.f - rb.linearDrag);
+        rb.velocity = rb.velocity * (1.f - rb.linearDrag);
     }
 
     // Set views

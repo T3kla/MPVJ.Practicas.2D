@@ -81,11 +81,6 @@ void SceneMap::UnloadScene()
     delete this;
 }
 
-void SceneMap::Fixed()
-{
-    auto &reg = Game::GetRegistry();
-}
-
 void SceneMap::CreateTile(entt::registry &reg, int gid, Vec2i pos)
 {
     if (gid == 0)

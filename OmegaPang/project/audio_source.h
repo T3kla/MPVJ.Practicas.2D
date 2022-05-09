@@ -1,5 +1,6 @@
 #pragma once
 
+#include "audio.h"
 #include "sound.h"
 
 struct AudioSource
@@ -12,7 +13,9 @@ struct AudioSource
     AudioSource(Sound *sound = nullptr) : sound(sound)
     {
         alGenSources(1, &id);
-        alSourcei(id, AL_BUFFER, sound->id);
+
+        if (sound)
+            Audio::SetSourceBuffer(*this, sound->id);
     };
 
     ~AudioSource()

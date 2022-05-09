@@ -15,6 +15,7 @@
 #include "sound.h"
 #include "stasis.h"
 
+#include "scene_audio_1.h"
 #include "scene_bee.h"
 #include "scene_collisions.h"
 #include "scene_fonts.h"
@@ -51,6 +52,8 @@ void Travel()
         SceneLoader::LoadScene<SceneCollisions>();
     else if (Input::GetKey(GLFW_KEY_5))
         SceneLoader::LoadScene<SceneMap>();
+    else if (Input::GetKey(GLFW_KEY_6))
+        SceneLoader::LoadScene<SceneAudio1>();
 }
 
 void Game::Run()
@@ -63,7 +66,7 @@ void Game::Run()
 
     AssetLoader::LoadAssets();
 
-    SceneLoader::LoadScene<SceneMap>();
+    SceneLoader::LoadScene<SceneAudio1>();
 
     while (!glfwWindowShouldClose(Render::GetWindow()))
     {
@@ -89,6 +92,7 @@ void Game::Run()
     }
 
     Logic::Quit();
+    Audio::Quit();
     ThreadPool::Quit();
 }
 

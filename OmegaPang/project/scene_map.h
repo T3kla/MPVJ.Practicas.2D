@@ -6,15 +6,11 @@
 #include "vec.h"
 #include <entt/entt.hpp>
 
-class SceneMap : public Scene, public System
+class SceneMap : public Scene
 {
   public:
     virtual void LoadScene() override;
     virtual void UnloadScene() override;
-
-    virtual void Update() override{};
-    virtual void Fixed() override;
-    virtual void Quit() override{};
 
     void CreateTile(entt::registry &, int, Vec2i);
 

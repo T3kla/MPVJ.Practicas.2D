@@ -90,11 +90,12 @@ void Load(const char *file, ALCuint bufferID)
     {
         // ExtraParamsSize 2
         memset(buffer, 0, bufferLen);
-        fread(buffer, 1, 2, stream);
-        int ExtraParamsSize = (int)buffer;
+        fread(buffer + 2, 1, 2, stream);
+        short int extraParamsSize = 0;
+        memcpy(&extraParamsSize, buffer + 2, 2);
 
         // Jump ExtraParams
-        fseek(stream, ExtraParamsSize, SEEK_CUR);
+        fseek(stream, extraParamsSize, SEEK_CUR);
     }
 
     // Search Data

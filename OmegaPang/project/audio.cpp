@@ -28,18 +28,19 @@ void Audio::Fixed()
     auto asView = reg.view<GameObject, Transform, RigidBody, AudioSource>();
     for (auto [entity, go, tf, rb, as] : asView.each())
     {
-        alSourcei(as.id, AL_SOURCE_RELATIVE, 0);
-        alSourcei(as.id, AL_LOOPING, 0);
-        alSourcei(as.id, AL_BUFFER, 0);
-        alSource3f(as.id, AL_POSITION, tf.position.x, tf.position.y, 0.f);
-        alSource3f(as.id, AL_DIRECTION, 0.f, 0.f, 0.f);
-        alSource3f(as.id, AL_VELOCITY, rb.velocity.x, rb.velocity.y, 0.f);
+        Audio::SetSourcePosition(as, tf.position);
+        Audio::SetSourceDirection(as, {0.f, 0.f});
+        Audio::SetSourceVelocity(as, rb.velocity);
     }
 
     auto alView = reg.view<GameObject, Transform, RigidBody, AudioListener>();
-    for (auto [entity, go, tf, rb, al] : asView.each())
-    {
-    }
+    for (auto [entity, go, tf, rb, al] : alView.each())
+        if (al.main)
+        {
+            Audio::SetListenerPosition(tf.position);
+            Audio::SetListenerOrientation({0.f, 0.f});
+            Audio::SetListenerVelocity(rb.velocity);
+        }
 }
 
 void Audio::Quit()
@@ -53,53 +54,53 @@ void Audio::Quit()
 
 // Void
 
-void Audio::SourcePlay(AudioSource source)
+void Audio::SourcePlay(const AudioSource &source)
 {
     alSourcePlay(source.id);
 }
 
-void Audio::SourceStop(AudioSource source)
+void Audio::SourceStop(const AudioSource &source)
 {
     alSourceStop(source.id);
 }
 
-void Audio::SourcePause(AudioSource source)
+void Audio::SourcePause(const AudioSource &source)
 {
     alSourcePause(source.id);
 }
 
 // Int
 
-void Audio::SetSourceRelative(AudioSource source, int value)
+void Audio::SetSourceRelative(const AudioSource &source, int value)
 {
     alSourcei(source.id, AL_SOURCE_RELATIVE, value);
 }
 
-void Audio::SetSourceLooping(AudioSource source, int value)
+void Audio::SetSourceLooping(const AudioSource &source, int value)
 {
     alSourcei(source.id, AL_LOOPING, value);
 }
 
-void Audio::SetSourceBuffer(AudioSource source, int value)
+void Audio::SetSourceBuffer(const AudioSource &source, int value)
 {
     alSourcei(source.id, AL_BUFFER, value);
 }
 
-int Audio::GetSourceRelative(AudioSource source)
+int Audio::GetSourceRelative(const AudioSource &source)
 {
     int value;
     alGetSourcei(source.id, AL_SOURCE_RELATIVE, &value);
     return value;
 }
 
-int Audio::GetSourceBuffer(AudioSource source)
+int Audio::GetSourceBuffer(const AudioSource &source)
 {
     int value;
     alGetSourcei(source.id, AL_BUFFER, &value);
     return value;
 }
 
-int Audio::GetSourceState(AudioSource source)
+int Audio::GetSourceState(const AudioSource &source)
 {
     int value;
     alGetSourcei(source.id, AL_SOURCE_STATE, &value);
@@ -108,69 +109,69 @@ int Audio::GetSourceState(AudioSource source)
 
 // Float
 
-void Audio::SetSourcePitch(AudioSource source, float value)
+void Audio::SetSourcePitch(const AudioSource &source, float value)
 {
     alSourcei(source.id, AL_PITCH, value);
 }
 
-void Audio::SetSourceGain(AudioSource source, float value)
+void Audio::SetSourceGain(const AudioSource &source, float value)
 {
     alSourcei(source.id, AL_GAIN, value);
 }
 
-void Audio::SetSourceMinGain(AudioSource source, float value)
+void Audio::SetSourceMinGain(const AudioSource &source, float value)
 {
     alSourcei(source.id, AL_MIN_GAIN, value);
 }
 
-void Audio::SetSourceMaxGain(AudioSource source, float value)
+void Audio::SetSourceMaxGain(const AudioSource &source, float value)
 {
     alSourcei(source.id, AL_MAX_GAIN, value);
 }
 
-void Audio::SetSourceMaxDistance(AudioSource source, float value)
+void Audio::SetSourceMaxDistance(const AudioSource &source, float value)
 {
     alSourcei(source.id, AL_MAX_DISTANCE, value);
 }
 
-void Audio::SetSourceRefDistance(AudioSource source, float value)
+void Audio::SetSourceRefDistance(const AudioSource &source, float value)
 {
     alSourcei(source.id, AL_REFERENCE_DISTANCE, value);
 }
 
-void Audio::SetSourceRolloff(AudioSource source, float value)
+void Audio::SetSourceRolloff(const AudioSource &source, float value)
 {
     alSourcei(source.id, AL_ROLLOFF_FACTOR, value);
 }
 
-void Audio::SetSourceConeOuterGain(AudioSource source, float value)
+void Audio::SetSourceConeOuterGain(const AudioSource &source, float value)
 {
     alSourcei(source.id, AL_CONE_OUTER_GAIN, value);
 }
 
-void Audio::SetSourceConeInnerAngle(AudioSource source, float value)
+void Audio::SetSourceConeInnerAngle(const AudioSource &source, float value)
 {
     alSourcei(source.id, AL_CONE_INNER_ANGLE, value);
 }
 
-void Audio::SetSourceConeOuterAngle(AudioSource source, float value)
+void Audio::SetSourceConeOuterAngle(const AudioSource &source, float value)
 {
     alSourcei(source.id, AL_CONE_OUTER_ANGLE, value);
 }
 
 // Vec3
 
-void Audio::SetSourcePosition(AudioSource source, Vec2 value)
+void Audio::SetSourcePosition(const AudioSource &source, Vec2 value)
 {
     alSource3f(source.id, AL_POSITION, value.x, value.y, 0.f);
 }
 
-void Audio::SetSourceDirection(AudioSource source, Vec2 value)
+void Audio::SetSourceDirection(const AudioSource &source, Vec2 value)
 {
     alSource3f(source.id, AL_DIRECTION, value.x, value.y, 0.f);
 }
 
-void Audio::SetSourceVelocity(AudioSource source, Vec2 value)
+void Audio::SetSourceVelocity(const AudioSource &source, Vec2 value)
 {
     alSource3f(source.id, AL_VELOCITY, value.x, value.y, 0.f);
 }
