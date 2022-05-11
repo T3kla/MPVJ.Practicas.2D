@@ -25,22 +25,28 @@ void Audio::Fixed()
 {
     auto &reg = Game::GetRegistry();
 
-    auto asView = reg.view<GameObject, Transform, RigidBody, AudioSource>();
-    for (auto [entity, go, tf, rb, as] : asView.each())
+    auto asView = reg.view<GameObject, Transform, AudioSource>();
+    for (auto [entity, go, tf, as] : asView.each())
     {
         Audio::SetSourcePosition(as, tf.position);
         Audio::SetSourceDirection(as, {0.f, 0.f});
-        Audio::SetSourceVelocity(as, rb.velocity);
+
+        auto *rb = reg.try_get<RigidBody>(entity);
+        Audio::SetSourceVelocity(as, rb ? rb->velocity : Vec2(0.f, 0.f));
     }
 
-    auto alView = reg.view<GameObject, Transform, RigidBody, AudioListener>();
-    for (auto [entity, go, tf, rb, al] : alView.each())
-        if (al.main)
-        {
-            Audio::SetListenerPosition(tf.position);
-            Audio::SetListenerOrientation({0.f, 0.f});
-            Audio::SetListenerVelocity(rb.velocity);
-        }
+    auto alView = reg.view<GameObject, Transform, AudioListener>();
+    for (auto [entity, go, tf, al] : alView.each())
+    {
+        if (!al.main)
+            continue;
+
+        Audio::SetListenerPosition(tf.position);
+        Audio::SetListenerOrientation({0.f, 0.f});
+
+        auto *rb = reg.try_get<RigidBody>(entity);
+        Audio::SetListenerOrientation(rb ? rb->velocity : Vec2(0.f, 0.f));
+    }
 }
 
 void Audio::Quit()
@@ -111,52 +117,52 @@ int Audio::GetSourceState(const AudioSource &source)
 
 void Audio::SetSourcePitch(const AudioSource &source, float value)
 {
-    alSourcei(source.id, AL_PITCH, value);
+    alSourcef(source.id, AL_PITCH, value);
 }
 
 void Audio::SetSourceGain(const AudioSource &source, float value)
 {
-    alSourcei(source.id, AL_GAIN, value);
+    alSourcef(source.id, AL_GAIN, value);
 }
 
 void Audio::SetSourceMinGain(const AudioSource &source, float value)
 {
-    alSourcei(source.id, AL_MIN_GAIN, value);
+    alSourcef(source.id, AL_MIN_GAIN, value);
 }
 
 void Audio::SetSourceMaxGain(const AudioSource &source, float value)
 {
-    alSourcei(source.id, AL_MAX_GAIN, value);
+    alSourcef(source.id, AL_MAX_GAIN, value);
 }
 
 void Audio::SetSourceMaxDistance(const AudioSource &source, float value)
 {
-    alSourcei(source.id, AL_MAX_DISTANCE, value);
+    alSourcef(source.id, AL_MAX_DISTANCE, value);
 }
 
 void Audio::SetSourceRefDistance(const AudioSource &source, float value)
 {
-    alSourcei(source.id, AL_REFERENCE_DISTANCE, value);
+    alSourcef(source.id, AL_REFERENCE_DISTANCE, value);
 }
 
 void Audio::SetSourceRolloff(const AudioSource &source, float value)
 {
-    alSourcei(source.id, AL_ROLLOFF_FACTOR, value);
+    alSourcef(source.id, AL_ROLLOFF_FACTOR, value);
 }
 
 void Audio::SetSourceConeOuterGain(const AudioSource &source, float value)
 {
-    alSourcei(source.id, AL_CONE_OUTER_GAIN, value);
+    alSourcef(source.id, AL_CONE_OUTER_GAIN, value);
 }
 
 void Audio::SetSourceConeInnerAngle(const AudioSource &source, float value)
 {
-    alSourcei(source.id, AL_CONE_INNER_ANGLE, value);
+    alSourcef(source.id, AL_CONE_INNER_ANGLE, value);
 }
 
 void Audio::SetSourceConeOuterAngle(const AudioSource &source, float value)
 {
-    alSourcei(source.id, AL_CONE_OUTER_ANGLE, value);
+    alSourcef(source.id, AL_CONE_OUTER_ANGLE, value);
 }
 
 // Vec3
@@ -178,7 +184,7 @@ void Audio::SetSourceVelocity(const AudioSource &source, Vec2 value)
 
 // ------------------------------------------------------------------ Listener
 
-// Float
+// Vec3
 
 void Audio::SetListenerPosition(Vec2 position)
 {
