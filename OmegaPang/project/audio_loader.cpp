@@ -118,7 +118,7 @@ void Load(const char *file, ALCuint bufferID)
     // Alocate
     auto *dataBuffer = new unsigned char[dataSize];
     fread(dataBuffer, 1, dataSize, stream);
-    alBufferData(bufferID, bitsPerSample, dataBuffer, dataSize, sampleRate);
+    alBufferData(bufferID, dataFormat, dataBuffer, dataSize, sampleRate);
 }
 
 void AudioLoader::LoadSound(const char *name, const char *file)
