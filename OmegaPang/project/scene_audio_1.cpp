@@ -24,7 +24,7 @@ entt::entity listener;
 
 static float pitch = 1.f;
 
-entt::entity CreateSrc(entt::registry &reg)
+entt::entity CreateSource(entt::registry &reg)
 {
     auto id = reg.create();
 
@@ -32,7 +32,7 @@ entt::entity CreateSrc(entt::registry &reg)
     auto &tf = reg.emplace<Transform>(id, Vec2(0.f, 0.f), Vec2::One(), 0.f);
     auto &rb = reg.emplace<RigidBody>(id);
     auto &cm = reg.emplace<Camera>(id, true, true, 1.f);
-    auto &as = reg.emplace<AudioSource>(id, AudioLoader::GetSound("engine.wav"));
+    auto &as = reg.emplace<AudioSource>(id, true, AudioLoader::GetSound("music.wav"));
     auto &sr = reg.emplace<SpriteRenderer>(id);
     sr.sprite = &SpriteLoader::sprCrl;
     sr.size = {25.f, 25.f};
@@ -41,12 +41,12 @@ entt::entity CreateSrc(entt::registry &reg)
     return id;
 }
 
-entt::entity CreateLsn(entt::registry &reg)
+entt::entity CreateListener(entt::registry &reg)
 {
     auto id = reg.create();
 
     auto &go = reg.emplace<GameObject>(id, true);
-    auto &tf = reg.emplace<Transform>(id, Vec2(0.f, 30.f), Vec2::One(), 0.f);
+    auto &tf = reg.emplace<Transform>(id, Vec2(0.f, 0.f), Vec2::One(), 0.f);
     auto &rb = reg.emplace<RigidBody>(id);
     auto &cm = reg.emplace<Camera>(id, true, true, 1.f);
     auto &al = reg.emplace<AudioListener>(id, true, true);
@@ -64,8 +64,8 @@ void SceneAudio1::LoadScene()
 
     auto &reg = Game::GetRegistry();
 
-    source = CreateSrc(reg);
-    listener = CreateLsn(reg);
+    source = CreateSource(reg);
+    listener = CreateListener(reg);
 
     // Systems
     sysPhysics = new SysPhysics();

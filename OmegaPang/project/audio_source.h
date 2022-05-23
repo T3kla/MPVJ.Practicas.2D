@@ -10,7 +10,7 @@ struct AudioSource
     ALCuint id = 0;
     Sound *sound = nullptr;
 
-    AudioSource(Sound *sound = nullptr) : sound(sound)
+    AudioSource(bool enable = true, Sound *sound = nullptr) : enable(enable), sound(sound)
     {
         alGenSources(1, &id);
 

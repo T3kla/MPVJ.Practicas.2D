@@ -31,6 +31,11 @@ void Audio::Fixed()
         Audio::SetSourcePosition(as, tf.position);
         Audio::SetSourceDirection(as, {0.f, 0.f});
 
+        auto a = Audio::GetSourceState(as);
+
+        if (a != 4114)
+            Audio::SourcePlay(as);
+
         auto *rb = reg.try_get<RigidBody>(entity);
         Audio::SetSourceVelocity(as, rb ? rb->velocity : Vec2(0.f, 0.f));
     }
@@ -45,7 +50,7 @@ void Audio::Fixed()
         Audio::SetListenerOrientation({0.f, 0.f});
 
         auto *rb = reg.try_get<RigidBody>(entity);
-        Audio::SetListenerOrientation(rb ? rb->velocity : Vec2(0.f, 0.f));
+        Audio::SetListenerVelocity(rb ? rb->velocity : Vec2(0.f, 0.f));
     }
 }
 
