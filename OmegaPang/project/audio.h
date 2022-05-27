@@ -2,8 +2,12 @@
 
 #include "openal/al.h"
 #include "openal/alc.h"
+#include <vector>
 
 struct AudioSource;
+struct AudioSlot;
+struct AudioEffect;
+struct AudioFilter;
 struct Vec2;
 
 class Audio
@@ -23,6 +27,13 @@ class Audio
     static void Quit();
 
   public:
+    // ------------------------------------------------------------------ Listener
+
+    // Float
+    static void SetListenerPosition(Vec2 value);
+    static void SetListenerOrientation(Vec2 value);
+    static void SetListenerVelocity(Vec2 value);
+
     // ------------------------------------------------------------------ Source
 
     // Void
@@ -34,6 +45,7 @@ class Audio
     static void SetSourceRelative(const AudioSource &source, int value);
     static void SetSourceLooping(const AudioSource &source, int value);
     static void SetSourceBuffer(const AudioSource &source, int value);
+    static void SetSourceSlot(const AudioSource &source, int value);
 
     static int GetSourceRelative(const AudioSource &source);
     static int GetSourceBuffer(const AudioSource &source);
@@ -56,10 +68,11 @@ class Audio
     static void SetSourceDirection(const AudioSource &source, Vec2 value);
     static void SetSourceVelocity(const AudioSource &source, Vec2 value);
 
-    // ------------------------------------------------------------------ Listener
+    // ------------------------------------------------------------------ Filter
 
-    // Float
-    static void SetListenerPosition(Vec2 value);
-    static void SetListenerOrientation(Vec2 value);
-    static void SetListenerVelocity(Vec2 value);
+    static void SetEffectReverb(const AudioEffect &effect, int value);
+    static void SetEffectChorus(const AudioEffect &effect, int value);
+    static void SetEffectDistortion(const AudioEffect &effect, int value);
+    static void SetEffectEcho(const AudioEffect &effect, int value);
+    static void SetEffectFlanger(const AudioEffect &effect, int value);
 };

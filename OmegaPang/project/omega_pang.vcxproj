@@ -148,8 +148,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="asset_loader.cpp" />
-    <ClCompile Include="audio_effect.cpp" />
-    <ClCompile Include="audio_filter.cpp" />
     <ClCompile Include="audio_loader.cpp" />
     <ClCompile Include="pixel_collider.h" />
     <ClCompile Include="pugixml.cpp" />
@@ -191,6 +189,7 @@
     <ClInclude Include="audio_filter.h" />
     <ClInclude Include="audio_listener.h" />
     <ClInclude Include="audio_loader.h" />
+    <ClInclude Include="audio_slot.h" />
     <ClInclude Include="audio_source.h" />
     <ClInclude Include="ball.h" />
     <ClInclude Include="bee.h" />

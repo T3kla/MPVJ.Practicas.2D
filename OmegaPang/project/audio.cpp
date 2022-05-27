@@ -2,8 +2,6 @@
 
 #include "vec.h"
 
-#include "audio_source.h"
-
 #include "game.h"
 
 #include "audio_listener.h"
@@ -11,6 +9,14 @@
 #include "gameobject.h"
 #include "rigidbody.h"
 #include "transform.h"
+
+#include "audio_effect.h"
+#include "audio_filter.h"
+#include "audio_slot.h"
+
+#include "openal/efx.h"
+
+LPALEFFECTI alEffecti = (LPALEFFECTI)alGetProcAddress("alEffecti");
 
 Audio Audio::Instance;
 
@@ -95,6 +101,11 @@ void Audio::SetSourceLooping(const AudioSource &source, int value)
 void Audio::SetSourceBuffer(const AudioSource &source, int value)
 {
     alSourcei(source.id, AL_BUFFER, value);
+}
+
+void Audio::SetSourceSlot(const AudioSource &source, int value)
+{
+    alSource3i(source.id, AL_AUXILIARY_SEND_FILTER, value, 0, 0);
 }
 
 int Audio::GetSourceRelative(const AudioSource &source)
@@ -204,4 +215,31 @@ void Audio::SetListenerOrientation(Vec2 orientation)
 void Audio::SetListenerVelocity(Vec2 velocity)
 {
     alListener3f(AL_VELOCITY, velocity.x, velocity.y, 0.f);
+}
+
+// ------------------------------------------------------------------ Filter
+
+void Audio::SetEffectReverb(const AudioEffect &effect, int value)
+{
+    alEffecti(effect.id, AL_EFFECT_REVERB, value);
+}
+
+void Audio::SetEffectChorus(const AudioEffect &effect, int value)
+{
+    alEffecti(effect.id, AL_EFFECT_CHORUS, value);
+}
+
+void Audio::SetEffectDistortion(const AudioEffect &effect, int value)
+{
+    alEffecti(effect.id, AL_EFFECT_DISTORTION, value);
+}
+
+void Audio::SetEffectEcho(const AudioEffect &effect, int value)
+{
+    alEffecti(effect.id, AL_EFFECT_ECHO, value);
+};
+
+void Audio::SetEffectFlanger(const AudioEffect &effect, int value)
+{
+    alEffecti(effect.id, AL_EFFECT_FLANGER, value);
 }

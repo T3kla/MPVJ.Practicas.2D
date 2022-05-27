@@ -143,7 +143,10 @@ Sound *AudioLoader::GetSound(const char *name)
 void AudioLoader::UnloadSounds()
 {
     for (auto &sound : Sounds)
+    {
+        delete sound.name;
         alDeleteBuffers(1, &sound.id);
+    }
 
     Sounds.clear();
 }
