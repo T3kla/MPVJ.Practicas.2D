@@ -68,11 +68,18 @@ class Audio
     static void SetSourceDirection(const AudioSource &source, Vec2 value);
     static void SetSourceVelocity(const AudioSource &source, Vec2 value);
 
-    // ------------------------------------------------------------------ Filter
+    // ------------------------------------------------------------------ Effects
 
     static void SetEffectReverb(const AudioEffect &effect, int value);
     static void SetEffectChorus(const AudioEffect &effect, int value);
     static void SetEffectDistortion(const AudioEffect &effect, int value);
     static void SetEffectEcho(const AudioEffect &effect, int value);
     static void SetEffectFlanger(const AudioEffect &effect, int value);
+
+    // ------------------------------------------------------------------ Filter
+
+    static void SetFilterNull(const AudioFilter &effect, int value);
+    static void SetFilterLowPass(const AudioFilter &effect, int value);
+    static void SetFilterHighPass(const AudioFilter &effect, int value);
+    static void SetFilterBandPass(const AudioFilter &effect, int value);
 };

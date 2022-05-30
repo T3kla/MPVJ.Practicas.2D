@@ -1,16 +1,22 @@
 #pragma once
 
+#include "openal/efx.h"
+
+LPALGENFILTERS alGenFilters = (LPALGENFILTERS)alGetProcAddress("alGenFilters");
+
+LPALDELETEFILTERS alDeleteFilters = (LPALDELETEFILTERS)alGetProcAddress("alDeleteFilters");
+
 struct AudioFilter
 {
-
     ALuint id;
 
-    AudioFilter(ALuint id = 0)
-        : id(id){
-              // alGenEffects(1, &id);
-          };
+    AudioFilter(ALuint id = 0) : id(id)
+    {
+        alGenFilters(1, &id);
+    };
 
-    ~AudioFilter(){
-        // alDeleteEffects(1, &id);
+    ~AudioFilter()
+    {
+        alDeleteFilters(1, &id);
     };
 };

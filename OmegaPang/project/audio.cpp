@@ -217,7 +217,7 @@ void Audio::SetListenerVelocity(Vec2 velocity)
     alListener3f(AL_VELOCITY, velocity.x, velocity.y, 0.f);
 }
 
-// ------------------------------------------------------------------ Filter
+// ------------------------------------------------------------------ Effects
 
 void Audio::SetEffectReverb(const AudioEffect &effect, int value)
 {
@@ -242,4 +242,22 @@ void Audio::SetEffectEcho(const AudioEffect &effect, int value)
 void Audio::SetEffectFlanger(const AudioEffect &effect, int value)
 {
     alEffecti(effect.id, AL_EFFECT_FLANGER, value);
+}
+
+// ------------------------------------------------------------------ Filters
+
+void SetFilterNull(const AudioFilter &effect, int value)
+{
+}
+
+void SetFilterLowPass(const AudioFilter &effect, int value)
+{
+}
+
+void SetFilterHighPass(const AudioFilter &effect, int value)
+{
+}
+
+void SetFilterBandPass(const AudioFilter &effect, int value)
+{
 }
