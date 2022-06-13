@@ -99,7 +99,22 @@ void Load(const char *file, ALCuint bufferID)
     }
 
     // Search Data
-    while (strncmp((char *)buffer, "data", 4) != 0)
+
+    auto cont = false;
+    while (cont == false)
+    {
+        if (strncmp((char *)buffer, "da", 2) != 0 && strncmp((char *)buffer, "ta", 2) != 0)
+        {
+            fread(buffer, 1, 4, stream);
+            cont = true;
+        }
+        else
+        {
+            fseek(stream, -2, SEEK_CUR);
+        }
+    }
+
+    while (strncmp((char *)buffer, "da", 2) != 0)
         fread(buffer, 1, 4, stream);
 
     // DataSize 4

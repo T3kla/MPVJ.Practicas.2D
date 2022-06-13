@@ -34,30 +34,20 @@ void Audio::Fixed()
     auto asView = reg.view<GameObject, Transform, AudioSource>();
     for (auto [entity, go, tf, as] : asView.each())
     {
-        Audio::SetSourcePosition(as, tf.position);
-        Audio::SetSourceDirection(as, {0.f, 0.f});
-
-        auto a = Audio::GetSourceState(as);
-
-        if (a != 4114)
-            Audio::SourcePlay(as);
-
         auto *rb = reg.try_get<RigidBody>(entity);
+        Audio::SetSourcePosition(as, tf.position);
         Audio::SetSourceVelocity(as, rb ? rb->velocity : Vec2(0.f, 0.f));
     }
 
     auto alView = reg.view<GameObject, Transform, AudioListener>();
     for (auto [entity, go, tf, al] : alView.each())
-    {
-        if (!al.main)
-            continue;
-
-        Audio::SetListenerPosition(tf.position);
-        Audio::SetListenerOrientation({0.f, 0.f});
-
-        auto *rb = reg.try_get<RigidBody>(entity);
-        Audio::SetListenerVelocity(rb ? rb->velocity : Vec2(0.f, 0.f));
-    }
+        if (al.main)
+        {
+            auto *rb = reg.try_get<RigidBody>(entity);
+            Audio::SetListenerPosition(tf.position);
+            Audio::SetListenerVelocity(rb ? rb->velocity : Vec2(0.f, 0.f));
+            break;
+        }
 }
 
 void Audio::Quit()
@@ -65,6 +55,25 @@ void Audio::Quit()
     alcMakeContextCurrent(nullptr);
     alcDestroyContext(Instance.context);
     alcCloseDevice(Instance.device);
+}
+
+// ------------------------------------------------------------------ Listener
+
+// Vec3
+
+void Audio::SetListenerPosition(Vec2 position)
+{
+    alListener3f(AL_POSITION, position.x, position.y, 0.f);
+}
+
+void Audio::SetListenerOrientation(Vec2 orientation)
+{
+    alListener3f(AL_ORIENTATION, orientation.x, orientation.y, 0.f);
+}
+
+void Audio::SetListenerVelocity(Vec2 velocity)
+{
+    alListener3f(AL_VELOCITY, velocity.x, velocity.y, 0.f);
 }
 
 // ------------------------------------------------------------------ Source
@@ -106,6 +115,11 @@ void Audio::SetSourceBuffer(const AudioSource &source, int value)
 void Audio::SetSourceSlot(const AudioSource &source, int value)
 {
     alSource3i(source.id, AL_AUXILIARY_SEND_FILTER, value, 0, 0);
+}
+
+void Audio::SetSourceFilter(const AudioSource &source, int value)
+{
+    alSourcei(source.id, AL_DIRECT_FILTER, value);
 }
 
 int Audio::GetSourceRelative(const AudioSource &source)
@@ -198,26 +212,19 @@ void Audio::SetSourceVelocity(const AudioSource &source, Vec2 value)
     alSource3f(source.id, AL_VELOCITY, value.x, value.y, 0.f);
 }
 
-// ------------------------------------------------------------------ Listener
+// ------------------------------------------------------------------ Slot
 
-// Vec3
-
-void Audio::SetListenerPosition(Vec2 position)
+AudioSlot *Audio::CreateSlot()
 {
-    alListener3f(AL_POSITION, position.x, position.y, 0.f);
-}
-
-void Audio::SetListenerOrientation(Vec2 orientation)
-{
-    alListener3f(AL_ORIENTATION, orientation.x, orientation.y, 0.f);
-}
-
-void Audio::SetListenerVelocity(Vec2 velocity)
-{
-    alListener3f(AL_VELOCITY, velocity.x, velocity.y, 0.f);
+    return new AudioSlot();
 }
 
 // ------------------------------------------------------------------ Effects
+
+AudioEffect *Audio::CreateEffect()
+{
+    return new AudioEffect();
+}
 
 void Audio::SetEffectReverb(const AudioEffect &effect, int value)
 {
@@ -246,18 +253,27 @@ void Audio::SetEffectFlanger(const AudioEffect &effect, int value)
 
 // ------------------------------------------------------------------ Filters
 
-void SetFilterNull(const AudioFilter &effect, int value)
+AudioFilter *Audio::CreateFilter()
 {
+    return new AudioFilter();
 }
 
-void SetFilterLowPass(const AudioFilter &effect, int value)
+void Audio::SetFilterNull(const AudioFilter &filter, int value)
 {
+    alFilteri(filter.id, AL_FILTER_TYPE, AL_FILTER_NULL);
 }
 
-void SetFilterHighPass(const AudioFilter &effect, int value)
+void Audio::SetFilterLowPass(const AudioFilter &filter, int value)
 {
+    alFilteri(filter.id, AL_FILTER_TYPE, AL_FILTER_LOWPASS);
 }
 
-void SetFilterBandPass(const AudioFilter &effect, int value)
+void Audio::SetFilterHighPass(const AudioFilter &filter, int value)
 {
+    alFilteri(filter.id, AL_FILTER_TYPE, AL_FILTER_HIGHPASS);
+}
+
+void Audio::SetFilterBandPass(const AudioFilter &filter, int value)
+{
+    alFilteri(filter.id, AL_FILTER_TYPE, AL_FILTER_BANDPASS);
 }

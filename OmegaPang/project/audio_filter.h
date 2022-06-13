@@ -6,6 +6,8 @@ LPALGENFILTERS alGenFilters = (LPALGENFILTERS)alGetProcAddress("alGenFilters");
 
 LPALDELETEFILTERS alDeleteFilters = (LPALDELETEFILTERS)alGetProcAddress("alDeleteFilters");
 
+LPALFILTERI alFilteri = (LPALFILTERI)alGetProcAddress("alFilteri");
+
 struct AudioFilter
 {
     ALuint id;

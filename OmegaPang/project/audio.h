@@ -46,6 +46,7 @@ class Audio
     static void SetSourceLooping(const AudioSource &source, int value);
     static void SetSourceBuffer(const AudioSource &source, int value);
     static void SetSourceSlot(const AudioSource &source, int value);
+    static void SetSourceFilter(const AudioSource &source, int value);
 
     static int GetSourceRelative(const AudioSource &source);
     static int GetSourceBuffer(const AudioSource &source);
@@ -68,8 +69,13 @@ class Audio
     static void SetSourceDirection(const AudioSource &source, Vec2 value);
     static void SetSourceVelocity(const AudioSource &source, Vec2 value);
 
+    // ------------------------------------------------------------------ Slot
+
+    static AudioSlot *CreateSlot();
+
     // ------------------------------------------------------------------ Effects
 
+    static AudioEffect *CreateEffect();
     static void SetEffectReverb(const AudioEffect &effect, int value);
     static void SetEffectChorus(const AudioEffect &effect, int value);
     static void SetEffectDistortion(const AudioEffect &effect, int value);
@@ -78,6 +84,7 @@ class Audio
 
     // ------------------------------------------------------------------ Filter
 
+    static AudioFilter *CreateFilter();
     static void SetFilterNull(const AudioFilter &effect, int value);
     static void SetFilterLowPass(const AudioFilter &effect, int value);
     static void SetFilterHighPass(const AudioFilter &effect, int value);

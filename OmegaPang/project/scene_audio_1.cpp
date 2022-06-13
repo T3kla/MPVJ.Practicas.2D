@@ -33,7 +33,11 @@ entt::entity CreateSource1(entt::registry &reg)
     auto &tf = reg.emplace<Transform>(id, Vec2(0.f, 0.f), Vec2::One(), 0.f);
     auto &rb = reg.emplace<RigidBody>(id);
     auto &cm = reg.emplace<Camera>(id, true, true, 1.f);
+
     auto &as = reg.emplace<AudioSource>(id, true, AudioLoader::GetSound("music.wav"));
+    Audio::SetSourceRolloff(as, 0.2f);
+    Audio::SourcePlay(as);
+
     auto &sr = reg.emplace<SpriteRenderer>(id);
     sr.sprite = &SpriteLoader::sprSqr;
     sr.size = {25.f, 25.f};
@@ -45,9 +49,14 @@ entt::entity CreateSource2(entt::registry &reg)
 {
     auto id = reg.create();
     auto &go = reg.emplace<GameObject>(id, true);
-    auto &tf = reg.emplace<Transform>(id, Vec2(100.f, 0.f), Vec2::One(), 0.f);
+    auto &tf = reg.emplace<Transform>(id, Vec2(300.f, 0.f), Vec2::One(), 0.f);
     auto &rb = reg.emplace<RigidBody>(id);
-    auto &as = reg.emplace<AudioSource>(id, true, AudioLoader::GetSound("file1.wav"));
+
+    auto &as = reg.emplace<AudioSource>(id, true, AudioLoader::GetSound("engine.wav"));
+    Audio::SetSourceLooping(as, 1);
+    Audio::SetSourceRolloff(as, 0.2f);
+    Audio::SourcePlay(as);
+
     auto &sr = reg.emplace<SpriteRenderer>(id);
     sr.sprite = &SpriteLoader::sprSqr;
     sr.size = {25.f, 25.f};
@@ -59,9 +68,14 @@ entt::entity CreateSource3(entt::registry &reg)
 {
     auto id = reg.create();
     auto &go = reg.emplace<GameObject>(id, true);
-    auto &tf = reg.emplace<Transform>(id, Vec2(-100.f, 0.f), Vec2::One(), 0.f);
+    auto &tf = reg.emplace<Transform>(id, Vec2(-300.f, 0.f), Vec2::One(), 0.f);
     auto &rb = reg.emplace<RigidBody>(id);
-    auto &as = reg.emplace<AudioSource>(id, true, AudioLoader::GetSound("engine.wav"));
+
+    auto &as = reg.emplace<AudioSource>(id, true, AudioLoader::GetSound("file1.wav"));
+    Audio::SetSourceLooping(as, 1);
+    Audio::SetSourceRolloff(as, 0.2f);
+    Audio::SourcePlay(as);
+
     auto &sr = reg.emplace<SpriteRenderer>(id);
     sr.sprite = &SpriteLoader::sprSqr;
     sr.size = {25.f, 25.f};
@@ -113,20 +127,25 @@ void SceneAudio1::Fixed()
     auto step = (float)STP * 0.001f;
 
     // Move listener
-    if (Input::GetKey(GLFW_KEY_A) || Input::GetKey(GLFW_KEY_LEFT))
-        reg.get<RigidBody>(listener).velocity.x -= step * 20.f;
-
-    if (Input::GetKey(GLFW_KEY_D) || Input::GetKey(GLFW_KEY_RIGHT))
-        reg.get<RigidBody>(listener).velocity.x += step * 20.f;
+    auto &lisTF = reg.get<Transform>(listener);
+    auto &lisRB = reg.get<RigidBody>(listener);
+    auto dir = Input::GetMousePosWorld() - lisTF.position;
+    lisRB.AddForce(dir, step);
 
     // Change pitch
     if (Input::GetKey(GLFW_KEY_W) || Input::GetKey(GLFW_KEY_UP))
         pitch += step * 10.f;
-
     if (Input::GetKey(GLFW_KEY_S) || Input::GetKey(GLFW_KEY_DOWN))
         pitch -= step * 10.f;
 
-    Audio::SetSourcePitch(reg.get<AudioSource>(source1), pitch);
-    Audio::SetSourcePitch(reg.get<AudioSource>(source2), pitch);
-    Audio::SetSourcePitch(reg.get<AudioSource>(source3), pitch);
+    auto *src1 = reg.try_get<AudioSource>(source1);
+    auto *src2 = reg.try_get<AudioSource>(source2);
+    auto *src3 = reg.try_get<AudioSource>(source3);
+
+    if (src1)
+        Audio::SetSourcePitch(*src1, pitch);
+    if (src2)
+        Audio::SetSourcePitch(*src2, pitch);
+    if (src3)
+        Audio::SetSourcePitch(*src3, pitch);
 }
