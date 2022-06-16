@@ -35,6 +35,8 @@ entt::entity CreateSource1(entt::registry &reg)
     auto &cm = reg.emplace<Camera>(id, true, true, 1.f);
 
     auto &as = reg.emplace<AudioSource>(id, true, AudioLoader::GetSound("music.wav"));
+    Audio::SetSourceGain(as, 2);
+    Audio::SetSourceLooping(as, 1);
     Audio::SetSourceRolloff(as, 0.2f);
     Audio::SourcePlay(as);
 
@@ -53,6 +55,7 @@ entt::entity CreateSource2(entt::registry &reg)
     auto &rb = reg.emplace<RigidBody>(id);
 
     auto &as = reg.emplace<AudioSource>(id, true, AudioLoader::GetSound("engine.wav"));
+    Audio::SetSourceGain(as, 2);
     Audio::SetSourceLooping(as, 1);
     Audio::SetSourceRolloff(as, 0.2f);
     Audio::SourcePlay(as);
@@ -72,6 +75,7 @@ entt::entity CreateSource3(entt::registry &reg)
     auto &rb = reg.emplace<RigidBody>(id);
 
     auto &as = reg.emplace<AudioSource>(id, true, AudioLoader::GetSound("file1.wav"));
+    Audio::SetSourceGain(as, 2);
     Audio::SetSourceLooping(as, 1);
     Audio::SetSourceRolloff(as, 0.2f);
     Audio::SourcePlay(as);
@@ -105,6 +109,8 @@ void SceneAudio1::LoadScene()
 
     auto &reg = Game::GetRegistry();
 
+    alDopplerFactor(3.f);
+
     source1 = CreateSource1(reg);
     source2 = CreateSource2(reg);
     source3 = CreateSource3(reg);
@@ -134,9 +140,9 @@ void SceneAudio1::Fixed()
 
     // Change pitch
     if (Input::GetKey(GLFW_KEY_W) || Input::GetKey(GLFW_KEY_UP))
-        pitch += step * 10.f;
+        pitch += step;
     if (Input::GetKey(GLFW_KEY_S) || Input::GetKey(GLFW_KEY_DOWN))
-        pitch -= step * 10.f;
+        pitch -= step;
 
     auto *src1 = reg.try_get<AudioSource>(source1);
     auto *src2 = reg.try_get<AudioSource>(source2);
