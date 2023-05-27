@@ -25,7 +25,7 @@ void SysBee::Fixed()
         auto dir = mousePos - tf.position;
 
         // Directional behaviour
-        auto fSTP = (float)STP;
+        auto fSTP = static_cast<float>(STP);
         if (dir.Magnitude() < 50.f)
         {
             tf.rotation += (0.f - tf.rotation > 0.f ? 1.f : -1.f) * 32.f * fSTP * 0.001f;
