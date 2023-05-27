@@ -3,16 +3,13 @@
 #include "glfw3.h"
 
 #include "asset_loader.h"
-#include "font_loader.h"
 #include "scene_loader.h"
-#include "sprite_loader.h"
 #include "thread_pool.h"
 
 #include "audio.h"
 #include "input.h"
 #include "logic.h"
 #include "render.h"
-#include "sound.h"
 #include "stasis.h"
 
 #include "scene_audio_1.h"
@@ -21,8 +18,6 @@
 #include "scene_fonts.h"
 #include "scene_map.h"
 #include "scene_pang.h"
-
-#include <algorithm>
 
 static double fxCount = 0.;
 
@@ -66,7 +61,7 @@ void Game::Run()
 
     AssetLoader::LoadAssets();
 
-    SceneLoader::LoadScene<SceneAudio1>();
+    SceneLoader::LoadScene<SceneFonts>();
 
     while (!glfwWindowShouldClose(Render::GetWindow()))
     {
@@ -80,6 +75,7 @@ void Game::Run()
         dt = Stasis::GetDelta();
         fxCount += dt;
         fxCount = fmin(fxCount, STP * 2.);
+
         while (fxCount >= STP)
         {
             FreqRefresh(nowFx, oldFx, freqFx);
@@ -100,12 +96,12 @@ void Game::Run()
 
 float Game::GetUpdateFPS()
 {
-    return (float)(1000. / dt);
+    return static_cast<float>(1000. / dt);
 }
 
 float Game::GetFixedFPS()
 {
-    return (float)(1000. / freqFx);
+    return static_cast<float>(1000. / freqFx);
 }
 
 entt::registry &Game::GetRegistry()

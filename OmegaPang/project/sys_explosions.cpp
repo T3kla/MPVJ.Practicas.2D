@@ -10,7 +10,7 @@
 #include <entt/entt.hpp>
 
 static auto GetView = []() { return Game::GetRegistry().view<GameObject, Transform, Explosion, SpriteRenderer>(); };
-static bool TryPoolling(entt::entity &id);
+static bool TryPolling(entt::entity &id);
 
 void SysExplosions::Fixed()
 {
@@ -35,7 +35,7 @@ void SysExplosions::Instantiate(const Vec2 &pos, Size size)
 
     entt::entity id;
 
-    if (!TryPoolling(id))
+    if (!TryPolling(id))
         id = reg.create();
 
     Sprite *sprite = nullptr;
@@ -86,7 +86,7 @@ void SysExplosions::Instantiate(const Vec2 &pos, Size size)
     sr.blend = BLEND_ALPHA;
 }
 
-bool TryPoolling(entt::entity &id)
+bool TryPolling(entt::entity &id)
 {
     for (auto [entity, go, tf, ex, sr] : GetView().each())
         if (!go.isActive && ex.enable)

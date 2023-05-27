@@ -10,9 +10,7 @@ class Game
     static Game Instance;
     static entt::registry Registry;
 
-  private:
     Game() = default;
-    Game(const Game &) = delete;
 
   public:
     static void Run();

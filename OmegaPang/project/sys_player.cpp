@@ -76,7 +76,7 @@ void InstantiatePlayer()
     go.isActive = true;
 
     auto &tf = reg.get_or_emplace<Transform>(id);
-    tf.position = {wSize.x / 2.f, wSize.y - 50.f};
+    tf.position = {static_cast<float>(wSize.x) / 2.f, static_cast<float>(wSize.y) - 50.f};
     tf.scale = Vec2::One();
     tf.rotation = 0.f;
 
@@ -88,7 +88,7 @@ void InstantiatePlayer()
     auto &pl = reg.get_or_emplace<Player>(id);
     pl.enable = true;
     pl.health = 3;
-    pl.speed = 5000.f;
+    pl.speed = 10.f;
     pl.state = stateIdle;
     pl.reversed = false;
 
@@ -121,10 +121,10 @@ void InstantiatePlayerText()
     auto *font = FontLoader::GetFont("fontOrange.ttf");
 
     auto plain = SysUI::Instantiate({80.f, 100.f}, "Health: 3", font, 11.f, {1.f, 1.f, 1.f, 1.f});
-    auto shadw = SysUI::Instantiate({82.f, 102.f}, "Health: 3", font, 11.f, {0.f, 0.f, 0.f, 1.f});
+    auto shadow = SysUI::Instantiate({82.f, 102.f}, "Health: 3", font, 11.f, {0.f, 0.f, 0.f, 1.f});
 
     textPlain = Entity(plain, &reg);
-    textShadw = Entity(shadw, &reg);
+    textShadw = Entity(shadow, &reg);
 }
 
 SysPlayer::SysPlayer()
@@ -135,7 +135,7 @@ SysPlayer::SysPlayer()
 
 void SysPlayer::Update()
 {
-    auto time = (float)Stasis::GetDeltaScaled() * 0.001f;
+    auto time = static_cast<float>(Stasis::GetDeltaScaled()) * 0.001f;
     moveBlockCounter -= time;
     shootBlockCounter -= time;
     hurtBlockCounter -= time;
@@ -155,7 +155,7 @@ void SysPlayer::Update()
         return;
 
     // Collision with balls
-    for (auto [entity, ball_go, ball_tf, ball_rb, ball_bl, ball_cc] : GetBallsView().each())
+    for (auto &[entity, ball_go, ball_tf, ball_rb, ball_bl, ball_cc] : GetBallsView().each())
     {
         if (!ball_go.isActive || pl.health <= 0 || blinkCounter > 0.f)
             continue;
@@ -192,9 +192,9 @@ void SysPlayer::Update()
     Vec2 add = Vec2::Zero();
 
     if (CanMove() && Input::GetKey(GLFW_KEY_A))
-        add -= pl.speed * (float)Stasis::GetDeltaScaled() * 0.001f;
+        add -= pl.speed * static_cast<float>(Stasis::GetDelta());
     if (CanMove() && Input::GetKey(GLFW_KEY_D))
-        add += pl.speed * (float)Stasis::GetDeltaScaled() * 0.001f;
+        add += pl.speed * static_cast<float>(Stasis::GetDelta());
 
     rb.velocity += add;
 
@@ -206,9 +206,9 @@ void SysPlayer::Update()
     pl.reversed = rb.velocity.x < 0.f ? true : false;
 
     // Bounds
-    if (tf.position.x > wSize.x - cc.radius / 2.f)
+    if (tf.position.x > static_cast<float>(wSize.x) - cc.radius / 2.f)
     {
-        tf.position.x = wSize.x - cc.radius / 2.f - 1.f;
+        tf.position.x = static_cast<float>(wSize.x) - cc.radius / 2.f - 1.f;
         rb.velocity.x = 0;
     }
     if (tf.position.x < cc.radius / 2.f)
@@ -231,7 +231,7 @@ void SysPlayer::Update()
     else if (!CanShoot())
         pl.state = stateShooting;
     else if (CanMove())
-        pl.state = velMag < 200.f ? stateIdle : stateMoving;
+        pl.state = velMag > pl.speed / 2.f ? stateMoving : stateIdle;
 
     UpdateAnimation();
 }

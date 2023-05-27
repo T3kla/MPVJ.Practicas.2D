@@ -6,12 +6,9 @@
 #include "transform.h"
 
 static auto GetView = []() { return Game::GetRegistry().view<GameObject, RectTransform, TextBox>(); };
-static bool TryPoolling(entt::entity &id);
+static bool TryPooling(entt::entity &id);
 
-void SysUI::Fixed()
-{
-    // do stuff?
-}
+void SysUI::Fixed(){};
 
 entt::entity SysUI::Instantiate(const Vec2 &pos, const char *text, Font *font, float weight, const Color &color)
 {
@@ -19,7 +16,7 @@ entt::entity SysUI::Instantiate(const Vec2 &pos, const char *text, Font *font, f
 
     entt::entity id;
 
-    if (!TryPoolling(id))
+    if (!TryPooling(id))
         id = reg.create();
 
     auto &go = reg.get_or_emplace<GameObject>(id);
@@ -46,7 +43,7 @@ entt::entity SysUI::Instantiate(const Vec2 &pos, const char *text, Font *font, f
     return id;
 }
 
-bool TryPoolling(entt::entity &id)
+bool TryPooling(entt::entity &id)
 {
     for (auto [entity, go, tf, tb] : GetView().each())
         if (!go.isActive && tb.enable)

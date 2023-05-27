@@ -3,17 +3,19 @@
 #include "scene.h"
 #include "system.h"
 
+class SysPhysics ;
+class SysMapPlayer;
+
 class SceneAudio1 : public Scene, public System
 {
   public:
-    virtual void LoadScene() override;
-    virtual void UnloadScene() override;
+    void LoadScene() override;
+    void UnloadScene() override;
 
-    virtual void Update() override{};
-    virtual void Fixed() override;
-    virtual void Quit() override{};
+    void Update() override{};
+    void Fixed() override;
+    void Quit() override{};
 
   private:
-    class SysPhysics *sysPhysics;
-    class SysMapPlayer *sysPlayer;
+    SysPhysics *sysPhysics = nullptr;
 };

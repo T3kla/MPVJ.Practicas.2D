@@ -1,7 +1,6 @@
 #include "render.h"
 
 #include "camera.h"
-#include "entity.h"
 #include "font_loader.h"
 #include "game.h"
 #include "gameobject.h"
@@ -17,10 +16,9 @@
 #include "textbox.h"
 #include "transform.h"
 
-#include <algorithm>
 #include <entt/entt.hpp>
 
-constexpr float WEIGHT_NORMLIZE = 11.f;
+constexpr float WEIGHT_NORMALIZE = 11.f;
 
 static char titleBuffer[256];
 static int w = 1280;
@@ -40,10 +38,10 @@ char *Render::Title = nullptr;
 GLFWwindow *Render::Window = nullptr;
 Color Render::BGColor = {0.5f, 0.44f, 0.37f, 1.f};
 
-void OnWindowResize(GLFWwindow *window, int w, int h)
+void OnWindowResize(GLFWwindow *window, int width, int height)
 {
-    Render::SetWindowSize(w, h);
-    lgfx_setup2d(w, h);
+    Render::SetWindowSize(width, height);
+    lgfx_setup2d(width, height);
 }
 
 void Render::Init()
@@ -68,17 +66,16 @@ void Render::Init()
 
 void Render::Fixed()
 {
-    auto &reg = Game::GetRegistry();
+    // Update window title
 
-    // Update fpse
-    auto ufps = Game::GetUpdateFPS();
-    auto ffps = Game::GetFixedFPS();
-    sprintf_s(titleBuffer, 256, "update: %0.0f | fps: %0.0f", ufps, ffps);
+    auto fFps = static_cast<double> (Game::GetFixedFPS());
+    auto uFps = static_cast<double> (Game::GetUpdateFPS());
+    sprintf_s(titleBuffer, 256, "fps: %0.0f | update: %0.2f", fFps, uFps);
     glfwSetWindowTitle(Window, titleBuffer);
 
     // Clear screen
-    lgfx_clearcolorbuffer(BGColor.r, BGColor.g, BGColor.b);
 
+    lgfx_clearcolorbuffer(BGColor.r, BGColor.g, BGColor.b);
     lgfx_setblend(BLEND_SOLID);
 
     UpdateOrigin();
@@ -109,24 +106,30 @@ void Render::SetWindowSize(const int &width, const int &height)
 
 const Color &Render::GetBgColor()
 {
-    return Instance.BGColor;
+    return BGColor;
 }
 
 void Render::SetBgColor(const Color &color)
 {
-    Instance.BGColor = color;
+    BGColor = color;
 }
 
 char *Render::GetTitle()
 {
-    return Instance.Title;
+    return Title;
 }
 
 void Render::SetTitle(char *text)
 {
-    Instance.Title = text;
-    if (Instance.Title != nullptr)
-        glfwSetWindowTitle(Window, Instance.Title);
+    Title = text;
+
+    if (Title != nullptr)
+        glfwSetWindowTitle(Window, Title);
+}
+
+void Render::SetOrigin(const Vec2& pos)
+{
+    lgfx_setorigin(pos.x, pos.y);
 }
 
 entt::entity Render::GetMainCamera()
@@ -137,10 +140,11 @@ entt::entity Render::GetMainCamera()
     {
         if (!go.isActive || !cm.main)
             continue;
+
         return entity;
     }
 
-    return (entt::entity)0;
+    return static_cast<entt::entity>(0);
 }
 
 void Render::SetMainCamera(entt::entity id)
@@ -151,10 +155,8 @@ void Render::SetMainCamera(entt::entity id)
     {
         if (!go.isActive)
             continue;
-        if (entity == id)
-            cm.main = true;
-        else
-            cm.main = false;
+
+        cm.main = entity == id;
     }
 }
 
@@ -172,9 +174,7 @@ void UpdateOrigin()
     if (tf == nullptr)
         return;
 
-    auto *cm = reg.try_get<Camera>(camID);
-
-    if (cm == nullptr)
+    if (reg.try_get<Camera>(camID) == nullptr)
         return;
 
     auto wSize = Render::GetWindowSize();
@@ -234,13 +234,13 @@ void RenderSprites()
         auto sa = reg.try_get<SpriteAnimation>(entity);
         if (sa && sa->enable && sa->animation)
         {
-            sa->count += (float)STP * 0.001f;
+            sa->count += static_cast<float>(STP) * 0.001f;
 
             if (sa->count >= sa->duration)
                 sa->count = fmodf(sa->count, sa->duration);
 
-            auto frameFreq = sa->duration / sa->animation->size();
-            auto frame = (int)floorf(sa->count / frameFreq);
+            auto frameFreq = sa->duration / static_cast<float>(sa->animation->size());
+            auto frame = static_cast<int>(floorf(sa->count / frameFreq));
 
             sr.sprite = &sa->animation->at(frame);
         }
@@ -336,13 +336,13 @@ void RenderUI()
         {
             stbtt_GetBakedQuad(tb.font->bake, txSize, txSize, tb.text.at(i), &x, &y, &q, true);
 
-            auto h = (q.y1 - q.y0) / WEIGHT_NORMLIZE * tb.weight;
-            auto w = (q.x1 - q.x0) / WEIGHT_NORMLIZE * tb.weight;
+            auto height = (q.y1 - q.y0) / WEIGHT_NORMALIZE * tb.weight;
+            auto width = (q.x1 - q.x0) / WEIGHT_NORMALIZE * tb.weight;
 
             // y = y + h - (q.y1 - q.y0);
-            x = x + w - (q.x1 - q.x0);
+            x = x + width - (q.x1 - q.x0);
 
-            ltex_drawrotsized(tb.font->texture, x, y, 0.f, 1.f, 1.f, w, h, q.s0, q.t0, q.s1, q.t1);
+            ltex_drawrotsized(tb.font->texture, x, y, 0.f, 1.f, 1.f, width, height, q.s0, q.t0, q.s1, q.t1);
 
             // Next letter position
             // DrawDebugDot({x, y}, 3.f, {1.f, 1.f, 1.f, 1.f}, tb.color);
@@ -352,14 +352,15 @@ void RenderUI()
     }
 }
 
-void Render::DrawDebugLine(Vec2 a, Vec2 b, Color color, Color revert)
+void Render::DrawDebugLine(const Vec2& a, const Vec2& b, Color color, Color revert)
 {
     lgfx_setcolor(color.r, color.g, color.b, color.a);
     lgfx_drawline(a.x, a.y, b.x, b.y);
     lgfx_setcolor(color.r, color.g, color.b, color.a);
+    lgfx_setcolor(revert.r, revert.g, revert.b, revert.a);
 }
 
-void Render::DrawDebugSquare(Vec2 a, Vec2 b, Color color, Color revert)
+void Render::DrawDebugSquare(const Vec2& a, const Vec2& b, Color color, Color revert)
 {
     lgfx_setcolor(color.r, color.g, color.b, color.a);
     lgfx_drawline(a.x, a.y, a.x, b.y);
@@ -369,7 +370,7 @@ void Render::DrawDebugSquare(Vec2 a, Vec2 b, Color color, Color revert)
     lgfx_setcolor(revert.r, revert.g, revert.b, revert.a);
 }
 
-void Render::DrawDebugDot(Vec2 pos, float size, Color color, Color revert)
+void Render::DrawDebugDot(const Vec2& pos, float size, Color color, Color revert)
 {
     lgfx_setcolor(color.r, color.g, color.b, color.a);
     lgfx_drawoval(pos.x - size / 2.f, pos.y - size / 2.f, size, size);

@@ -17,7 +17,7 @@
 
 #include <entt/entt.hpp>
 
-bool TryPoolling(entt::entity &id);
+bool TryPolling(entt::entity &id);
 
 auto GetView = []() {
     return Game::GetRegistry().view<GameObject, Transform, Hook, SquareCollider, SpriteRenderer, SpriteAnimation>();
@@ -65,7 +65,7 @@ void SysHook::Instantiate(const Vec2 &pos)
 
     entt::entity id;
 
-    if (!TryPoolling(id))
+    if (!TryPolling(id))
         id = reg.create();
 
     auto &go = reg.get_or_emplace<GameObject>(id);
@@ -104,7 +104,7 @@ void SysHook::Instantiate(const Vec2 &pos)
     sa.count = 0.f;
 }
 
-bool TryPoolling(entt::entity &id)
+bool TryPolling(entt::entity &id)
 {
     // Pooling
     for (auto [entity, go, tf, hk, sc, sr, sa] : GetView().each())

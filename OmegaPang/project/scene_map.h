@@ -2,15 +2,17 @@
 
 #include "pugixml.hpp"
 #include "scene.h"
-#include "system.h"
 #include "vec.h"
 #include <entt/entt.hpp>
+
+class SysPhysics;
+class SysMapPlayer;
 
 class SceneMap : public Scene
 {
   public:
-    virtual void LoadScene() override;
-    virtual void UnloadScene() override;
+    void LoadScene() override;
+    void UnloadScene() override;
 
     void CreateTile(entt::registry &, int, Vec2i);
 
@@ -24,6 +26,6 @@ class SceneMap : public Scene
     Vec2i tileSize = {0, 0};
 
   private:
-    class SysPhysics *sysPhysics;
-    class SysMapPlayer *sysPlayer;
+    SysPhysics *sysPhysics = nullptr;
+    SysMapPlayer *sysPlayer = nullptr;
 };

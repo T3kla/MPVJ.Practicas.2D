@@ -13,15 +13,13 @@
 #include "transform.h"
 
 #include <algorithm>
-#include <iostream>
 #include <mutex>
 #include <thread>
-#include <unordered_map>
 #include <vector>
 
 #include "render.h"
 
-static Vec2 gravityVector = {0.f, 0.9806f};
+static Vec2 gravityVector = {0.f, 9.806f};
 
 static std::vector<Box> eachCollider;  // Every Collider
 static std::vector<Box> eachRigidBody; // Every Rigidbody
@@ -147,7 +145,7 @@ void SysPhysics::Fixed()
         if (go.isActive && rb.enable && pc.enable && sr.enable && sr.sprite)
             eachRigidBody.push_back({entity, tf.position, Vec2::Hadamard(sr.size, tf.scale), ptrPxlName});
 
-    // Set posible collisions
+    // Set possible collisions
     Vec2 aMax, aMin, bMax, bMin;
     for (auto &&a : eachRigidBody)
     {

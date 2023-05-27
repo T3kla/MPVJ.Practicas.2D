@@ -12,7 +12,7 @@
 static auto GetView = []() {
     return Game::GetRegistry().view<GameObject, Transform, Bee, SpriteRenderer, SpriteAnimation>();
 };
-static bool TryPoolling(entt::entity &id);
+static bool TryPolling(entt::entity &id);
 
 void SysBee::Fixed()
 {
@@ -55,7 +55,7 @@ entt::entity SysBee::Instantiate(const Vec2 &pos)
 
     entt::entity id;
 
-    if (!TryPoolling(id))
+    if (!TryPolling(id))
         id = reg.create();
 
     auto &go = reg.get_or_emplace<GameObject>(id);
@@ -90,7 +90,7 @@ entt::entity SysBee::Instantiate(const Vec2 &pos)
     return id;
 }
 
-bool TryPoolling(entt::entity &id)
+bool TryPolling(entt::entity &id)
 {
     for (auto [entity, go, tf, be, sr, sa] : GetView().each())
         if (!go.isActive && be.enable)

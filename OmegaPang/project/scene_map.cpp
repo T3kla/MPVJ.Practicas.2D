@@ -1,14 +1,10 @@
 #include "scene_map.h"
 
-#include "glfw3.h"
-
 #include "game.h"
 #include "input.h"
 #include "render.h"
 
-#include "circle_collider.h"
 #include "gameobject.h"
-#include "pixel_collider.h"
 #include "sprite_renderer.h"
 #include "square_collider.h"
 #include "transform.h"
@@ -17,8 +13,6 @@
 #include "sys_physics.h"
 
 #include "sprite_loader.h"
-
-#include "pugixml.hpp"
 
 void SceneMap::LoadScene()
 {
@@ -53,7 +47,7 @@ void SceneMap::LoadScene()
     Vec2i pos = {0, 0};
     auto all = doc.child("map").child("layer").child("data").children();
 
-    for (auto it = all.begin(); it != all.end(); it++)
+    for (auto &it : all)
     {
         if (pos.x >= mapSize.x)
         {
@@ -61,7 +55,7 @@ void SceneMap::LoadScene()
             pos.y++;
         }
 
-        auto gid = it->attribute("gid").as_int();
+        auto gid = it.attribute("gid").as_int();
         auto worldPos = Vec2i::Hadamard(pos, tileSize);
 
         pos.x++;

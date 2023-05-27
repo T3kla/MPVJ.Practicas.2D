@@ -1,11 +1,14 @@
 #pragma once
 
+#include "game.h"
+#include "scene.h"
+
 class SceneLoader
 {
     static SceneLoader Instance;
 
   private:
-    class Scene *current;
+    Scene *current = nullptr;
 
   public:
     SceneLoader() = default;

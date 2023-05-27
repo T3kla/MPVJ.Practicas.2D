@@ -44,9 +44,9 @@ class SysPhysics : public System
 {
   public:
     SysPhysics();
-    virtual ~SysPhysics() override = default;
+    ~SysPhysics() override = default;
 
-    virtual void Update() override{};
-    virtual void Fixed() override;
-    virtual void Quit() override{};
+    void Update() override{};
+    void Fixed() override;
+    void Quit() override{};
 };

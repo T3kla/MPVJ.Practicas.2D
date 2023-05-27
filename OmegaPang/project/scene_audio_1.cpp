@@ -11,7 +11,6 @@
 #include "audio_listener.h"
 #include "audio_source.h"
 #include "camera.h"
-#include "circle_collider.h"
 #include "gameobject.h"
 #include "rigidbody.h"
 #include "sprite_renderer.h"
@@ -29,10 +28,10 @@ static float pitch = 1.f;
 entt::entity CreateSource1(entt::registry &reg)
 {
     auto id = reg.create();
-    auto &go = reg.emplace<GameObject>(id, true);
-    auto &tf = reg.emplace<Transform>(id, Vec2(0.f, 0.f), Vec2::One(), 0.f);
-    auto &rb = reg.emplace<RigidBody>(id);
-    auto &cm = reg.emplace<Camera>(id, true, true, 1.f);
+    reg.emplace<GameObject>(id, true);
+    reg.emplace<Transform>(id, Vec2(0.f, 0.f), Vec2::One(), 0.f);
+    reg.emplace<RigidBody>(id);
+    reg.emplace<Camera>(id, true, true, 1.f);
 
     auto &as = reg.emplace<AudioSource>(id, true, AudioLoader::GetSound("music.wav"));
     Audio::SetSourceGain(as, 2);
@@ -50,9 +49,9 @@ entt::entity CreateSource1(entt::registry &reg)
 entt::entity CreateSource2(entt::registry &reg)
 {
     auto id = reg.create();
-    auto &go = reg.emplace<GameObject>(id, true);
-    auto &tf = reg.emplace<Transform>(id, Vec2(300.f, 0.f), Vec2::One(), 0.f);
-    auto &rb = reg.emplace<RigidBody>(id);
+    reg.emplace<GameObject>(id, true);
+    reg.emplace<Transform>(id, Vec2(300.f, 0.f), Vec2::One(), 0.f);
+    reg.emplace<RigidBody>(id);
 
     auto &as = reg.emplace<AudioSource>(id, true, AudioLoader::GetSound("engine.wav"));
     Audio::SetSourceGain(as, 2);
@@ -70,9 +69,9 @@ entt::entity CreateSource2(entt::registry &reg)
 entt::entity CreateSource3(entt::registry &reg)
 {
     auto id = reg.create();
-    auto &go = reg.emplace<GameObject>(id, true);
-    auto &tf = reg.emplace<Transform>(id, Vec2(-300.f, 0.f), Vec2::One(), 0.f);
-    auto &rb = reg.emplace<RigidBody>(id);
+    reg.emplace<GameObject>(id, true);
+    reg.emplace<Transform>(id, Vec2(-300.f, 0.f), Vec2::One(), 0.f);
+    reg.emplace<RigidBody>(id);
 
     auto &as = reg.emplace<AudioSource>(id, true, AudioLoader::GetSound("file1.wav"));
     Audio::SetSourceGain(as, 2);
@@ -90,11 +89,11 @@ entt::entity CreateSource3(entt::registry &reg)
 entt::entity CreateListener(entt::registry &reg)
 {
     auto id = reg.create();
+    reg.emplace<GameObject>(id, true);
+    reg.emplace<Transform>(id, Vec2(0.f, 0.f), Vec2::One(), 0.f);
+    reg.emplace<RigidBody>(id);
+    reg.emplace<AudioListener>(id, true, true);
 
-    auto &go = reg.emplace<GameObject>(id, true);
-    auto &tf = reg.emplace<Transform>(id, Vec2(0.f, 0.f), Vec2::One(), 0.f);
-    auto &rb = reg.emplace<RigidBody>(id);
-    auto &al = reg.emplace<AudioListener>(id, true, true);
     auto &sr = reg.emplace<SpriteRenderer>(id);
     sr.sprite = &SpriteLoader::sprCrl;
     sr.size = {35.f, 35.f};
@@ -130,7 +129,7 @@ void SceneAudio1::Fixed()
 {
     auto &reg = Game::GetRegistry();
 
-    auto step = (float)STP * 0.001f;
+    auto step = static_cast<float>(STP) * 0.001f;
 
     // Move listener
     auto &lisTF = reg.get<Transform>(listener);

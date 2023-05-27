@@ -9,6 +9,7 @@
 void SceneFonts::LoadScene()
 {
     Render::SetBgColor({0.5f, 0.44f, 0.37f, 1.f});
+    Render::SetOrigin({0.f,0.f});
 
     auto *slap = FontLoader::GetFont("fontSlap.ttf");
     auto *org = FontLoader::GetFont("fontOrange.ttf");

@@ -13,7 +13,7 @@
 static auto GetView = []() {
     return Game::GetRegistry().view<GameObject, Transform, RigidBody, Ball, CircleCollider>();
 };
-static bool TryPoolling(entt::entity &id);
+static bool TryPolling(entt::entity &id);
 static float ReboundPerSize(Size size);
 
 void SysBalls::Fixed()
@@ -24,13 +24,13 @@ void SysBalls::Fixed()
             continue;
 
         // Gravity
-        rb.velocity -= Vec2::Down() * 600.f * (float)STP * 0.001f;
+        // rb.velocity -= Vec2::Down() * 600.f * static_cast<float>(STP) * 0.001f;
 
         // Rebound
         auto wSize = Render::GetWindowSize();
-        if (tf.position.x > wSize.x - cc.radius / 2.f)
+        if (tf.position.x > static_cast<float>(wSize.x) - cc.radius / 2.f)
         {
-            tf.position.x = wSize.x - cc.radius / 2.f - 1.f;
+            tf.position.x = static_cast<float>(wSize.x) - cc.radius / 2.f - 1.f;
             rb.velocity.x *= -1.f;
         }
         if (tf.position.x < cc.radius / 2.f)
@@ -38,9 +38,9 @@ void SysBalls::Fixed()
             tf.position.x = cc.radius / 2.f + 1.f;
             rb.velocity.x *= -1.f;
         }
-        if (tf.position.y > wSize.y - cc.radius / 2.f)
+        if (tf.position.y > static_cast<float>(wSize.y) - cc.radius / 2.f)
         {
-            tf.position.y = wSize.y - cc.radius / 2.f - 1.f;
+            tf.position.y = static_cast<float>(wSize.y) - cc.radius / 2.f - 1.f;
             rb.velocity.y = -ReboundPerSize(bl.size) * 1.2f;
         }
     }
@@ -55,7 +55,7 @@ void SysBalls::Instantiate(const Vec2 &pos, bool right, Size size)
 
     entt::entity id;
 
-    if (!TryPoolling(id))
+    if (!TryPolling(id))
         id = reg.create();
 
     Sprite *sprite = nullptr;
@@ -97,8 +97,10 @@ void SysBalls::Instantiate(const Vec2 &pos, bool right, Size size)
 
     auto &rb = reg.get_or_emplace<RigidBody>(id);
     rb.enable = true;
-    rb.velocity = {175.f * (right ? 1.f : -1.f), -200.f};
+    rb.velocity = {3.f * (right ? 1.f : -1.f), -5.0f};
     rb.linearDrag = 0.0f;
+    rb.gravity = true;
+    rb.gravityScale = 1.f;
 
     auto &bl = reg.get_or_emplace<Ball>(id);
     bl.enable = true;
@@ -120,7 +122,7 @@ void SysBalls::Instantiate(const Vec2 &pos, bool right, Size size)
     sr.blend = BLEND_ALPHA;
 }
 
-bool TryPoolling(entt::entity &id)
+bool TryPolling(entt::entity &id)
 {
     for (auto [entity, go, tf, rb, bl, cc] : GetView().each())
         if (!go.isActive && bl.enable)
@@ -137,14 +139,14 @@ float ReboundPerSize(Size size)
     switch (size)
     {
     case Size::L:
-        return 650.f;
+        return 11.f;
     case Size::B:
-        return 550.f;
+        return 9.f;
     case Size::M:
-        return 450.f;
+        return 7.f;
     case Size::S:
-        return 350.f;
+        return 6.f;
     default:
-        return 100.f;
+        return 5.f;
     }
 }

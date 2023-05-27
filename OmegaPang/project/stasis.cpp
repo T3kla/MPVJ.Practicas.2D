@@ -19,14 +19,14 @@ void Stasis::RefreshFreq()
     if (!QueryPerformanceFrequency(&buffer))
         throw "Counter error";
 
-    Instance.freq = double(buffer.QuadPart) / 1000.;
+    Instance.freq = static_cast<double>(buffer.QuadPart) / 1000.0;
 }
 
 void Stasis::RefreshTime()
 {
     QueryPerformanceCounter(&buffer);
 
-    Instance.delta = double(buffer.QuadPart - Instance.old) / Instance.freq;
+    Instance.delta = static_cast<double>(buffer.QuadPart - Instance.old) / Instance.freq;
     Instance.deltaScaled = Instance.delta * Instance.scale;
 
     Instance.old = buffer.QuadPart;

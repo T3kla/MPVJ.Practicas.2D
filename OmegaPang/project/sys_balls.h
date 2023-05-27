@@ -9,11 +9,11 @@ class SysBalls : public System
 {
   public:
     SysBalls() = default;
-    virtual ~SysBalls() override = default;
+    ~SysBalls() override = default;
 
-    virtual void Update() override{};
-    virtual void Fixed() override;
-    virtual void Quit() override{};
+    void Update() override{};
+    void Fixed() override;
+    void Quit() override{};
 
     static void Instantiate(const Vec2 &pos, bool right, Size size);
 };
