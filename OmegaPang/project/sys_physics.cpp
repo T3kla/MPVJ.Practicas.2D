@@ -95,7 +95,7 @@ void SysPhysics::Fixed()
 
     // Apply velocity
     auto rbView = reg.view<GameObject, Transform, RigidBody>();
-    auto step = (float)STP * 0.001f;
+    auto step = static_cast<float>(STP) * 0.001f;
     for (auto [entity, go, tf, rb] : rbView.each())
     {
         if (!go.isActive || !rb.enable)

@@ -37,6 +37,7 @@ static float t = 0.f;
 void SceneCollisions::LoadScene()
 {
     Render::SetBgColor({0.5f, 0.44f, 0.37f, 0.5f});
+    Render::SetOrigin({0.0f, 0.0f});
 
     auto &reg = Game::GetRegistry();
 
@@ -62,7 +63,7 @@ void SceneCollisions::Fixed()
 {
     auto &reg = Game::GetRegistry();
 
-    t += (float)STP * 0.001f;
+    t += static_cast<float>(STP) * 0.001f;
 
     // Move square to mouse
     if (Input::GetKey(GLFW_MOUSE_BUTTON_LEFT))
@@ -93,11 +94,13 @@ entt::entity CreateSqr(entt::registry &reg)
 {
     auto id = reg.create();
 
-    auto &go = reg.emplace<GameObject>(id, true);
-    auto &tf = reg.emplace<Transform>(id, Vec2(25.f, 25.f), Vec2::One(), 0.f);
+    reg.emplace<GameObject>(id, true);
+    reg.emplace<Transform>(id, Vec2(25.f, 25.f), Vec2::One(), 0.f);
+
     auto &sc = reg.emplace<SquareCollider>(id);
     sc.center = {0.f, 0.f};
     sc.size = {25.f, 25.f};
+
     auto &sr = reg.emplace<SpriteRenderer>(id);
     sr.sprite = &SpriteLoader::sprSqr;
     sr.size = {25.f, 25.f};
@@ -110,11 +113,13 @@ entt::entity CreateCrl(entt::registry &reg)
 {
     auto id = reg.create();
 
-    auto &go = reg.emplace<GameObject>(id, true);
-    auto &tf = reg.emplace<Transform>(id, Vec2(25.f, 25.f), Vec2::One(), 0.f);
+    reg.emplace<GameObject>(id, true);
+    reg.emplace<Transform>(id, Vec2(25.f, 25.f), Vec2::One(), 0.f);
+
     auto &sc = reg.emplace<CircleCollider>(id);
     sc.center = {0.f, 0.f};
     sc.radius = 25.f;
+
     auto &sr = reg.emplace<SpriteRenderer>(id);
     sr.sprite = &SpriteLoader::sprCrl;
     sr.size = {25.f, 25.f};
@@ -127,14 +132,16 @@ entt::entity CreateBox(entt::registry &reg)
 {
     auto id = reg.create();
 
-    auto &go = reg.emplace<GameObject>(id, true);
-    auto &tf = reg.emplace<Transform>(id, Vec2(200.f, 300.f), Vec2::One(), 0.f);
+    reg.emplace<GameObject>(id, true);
+    reg.emplace<Transform>(id, Vec2(200.f, 300.f), Vec2::One(), 0.f);
+
     auto &sc = reg.emplace<SquareCollider>(id);
     sc.center = {0.f, 0.f};
     sc.size = {100.f, 100.f};
     sc.OnTriggerEnter = &OnTriggerEnter;
     sc.OnTriggerStay = &OnTriggerStay;
     sc.OnTriggerExit = &OnTriggerExit;
+
     auto &sr = reg.emplace<SpriteRenderer>(id);
     sr.sprite = &SpriteLoader::sprBox;
     sr.size = {100.f, 100.f};
@@ -147,14 +154,16 @@ entt::entity CreateBall(entt::registry &reg)
 {
     auto id = reg.create();
 
-    auto &go = reg.emplace<GameObject>(id, true);
-    auto &tf = reg.emplace<Transform>(id, Vec2(500.f, 300.f), Vec2::One(), 0.f);
+    reg.emplace<GameObject>(id, true);
+    reg.emplace<Transform>(id, Vec2(500.f, 300.f), Vec2::One(), 0.f);
+
     auto &sc = reg.emplace<CircleCollider>(id);
     sc.center = {0.f, 0.f};
     sc.radius = 100.f;
     sc.OnTriggerEnter = &OnTriggerEnter;
     sc.OnTriggerStay = &OnTriggerStay;
     sc.OnTriggerExit = &OnTriggerExit;
+
     auto &sr = reg.emplace<SpriteRenderer>(id);
     sr.sprite = &SpriteLoader::sprBall;
     sr.size = {100.f, 100.f};
@@ -167,12 +176,14 @@ entt::entity CreateBee(entt::registry &reg)
 {
     auto id = reg.create();
 
-    auto &go = reg.emplace<GameObject>(id, true);
-    auto &tf = reg.emplace<Transform>(id, Vec2(800.f, 300.f), Vec2::One(), 0.f);
+    reg.emplace<GameObject>(id, true);
+    reg.emplace<Transform>(id, Vec2(800.f, 300.f), Vec2::One(), 0.f);
+
     auto &sc = reg.emplace<PixelCollider>(id);
     sc.OnTriggerEnter = &OnTriggerEnter;
     sc.OnTriggerStay = &OnTriggerStay;
     sc.OnTriggerExit = &OnTriggerExit;
+
     auto &sr = reg.emplace<SpriteRenderer>(id);
     sr.sprite = &SpriteLoader::sprBee;
     sr.size = {200.f, 200.f};
@@ -184,23 +195,23 @@ entt::entity CreateBee(entt::registry &reg)
 void OnTriggerEnter(Collision *col)
 {
     auto &reg = Game::GetRegistry();
-    auto *sr = reg.try_get<SpriteRenderer>(col->a.id);
-    if (sr)
+
+    if (auto *sr = reg.try_get<SpriteRenderer>(col->a.id))
         sr->color = {1.f, 0.f, 0.f, 1.f};
 }
 
 void OnTriggerStay(Collision *col)
 {
     auto &reg = Game::GetRegistry();
-    auto *sr = reg.try_get<SpriteRenderer>(col->a.id);
-    if (sr)
+
+    if (auto *sr = reg.try_get<SpriteRenderer>(col->a.id))
         sr->color = {0.f, 1.f, 0.f, 1.f};
 }
 
 void OnTriggerExit(Collision *col)
 {
     auto &reg = Game::GetRegistry();
-    auto *sr = reg.try_get<SpriteRenderer>(col->a.id);
-    if (sr)
+
+    if (auto *sr = reg.try_get<SpriteRenderer>(col->a.id))
         sr->color = {1.f, 1.f, 1.f, 1.f};
 }
