@@ -8,11 +8,11 @@ class SysMapPlayer : public System
 {
   public:
     SysMapPlayer();
-    virtual ~SysMapPlayer() override = default;
+    ~SysMapPlayer() override = default;
 
-    virtual void Update() override{};
-    virtual void Fixed() override;
-    virtual void Quit() override{};
+    void Update() override{};
+    void Fixed() override;
+    void Quit() override{};
 
     static Entity *GetPlayer();
 };

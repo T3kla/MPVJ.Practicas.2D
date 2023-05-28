@@ -51,17 +51,17 @@ void PxlVsPxlJob(int aOffYTop, int aOffYBot, Vec2 &aTL, Vec2 &aPxSize, int aOffX
 
 static constexpr auto Clamp = [](float v, float max, float min) { return v >= max ? max : (v <= min ? min : v); };
 
-static const bool IsInPosBox(const Possible &pos)
+static bool IsInPosBox(const Possible &pos)
 {
     return std::find(posBox.begin(), posBox.end(), pos) != posBox.end();
 };
 
-static const bool IsInColBox(const Collision &col)
+static bool IsInColBox(const Collision& col)
 {
     return std::find(colBox->begin(), colBox->end(), col) != colBox->end();
 };
 
-static const bool IsInColBoxOld(const Collision &col)
+static bool IsInColBoxOld(const Collision &col)
 {
     return std::find(colBoxOld->begin(), colBoxOld->end(), col) != colBoxOld->end();
 };
@@ -208,34 +208,26 @@ void SysPhysics::Fixed()
 
     // Exit callbacks
     for (auto &&col : *colBoxOld)
-        if (reg.valid(col.a.id))
-            if (col.a.type == ptrSqrName)
-            {
-                auto *sc = reg.try_get<SquareCollider>(col.a.id);
-                if (sc)
-                    if (IsInColBox(col))
-                        sc->OnTriggerStay(&col);
-                    else
-                        sc->OnTriggerExit(&col);
-            }
-            else if (col.a.type == ptrCrlName)
-            {
-                auto *cc = reg.try_get<CircleCollider>(col.a.id);
-                if (cc)
-                    if (IsInColBox(col))
-                        cc->OnTriggerStay(&col);
-                    else
-                        cc->OnTriggerExit(&col);
-            }
-            else if (col.a.type == ptrPxlName)
-            {
-                auto *pc = reg.try_get<PixelCollider>(col.a.id);
-                if (pc)
-                    if (IsInColBox(col))
-                        pc->OnTriggerStay(&col);
-                    else
-                        pc->OnTriggerExit(&col);
-            }
+    {
+        if (!reg.valid(col.a.id))
+            continue;
+
+        if (col.a.type == ptrSqrName)
+        {
+            if (auto *sc = reg.try_get<SquareCollider>(col.a.id))
+                IsInColBox(col) ? sc->OnTriggerStay(&col) : sc->OnTriggerExit(&col);
+        }
+        else if (col.a.type == ptrCrlName)
+        {
+            if (auto *cc = reg.try_get<CircleCollider>(col.a.id))
+                IsInColBox(col) ? cc->OnTriggerStay(&col) : cc->OnTriggerExit(&col);
+        }
+        else if (col.a.type == ptrPxlName)
+        {
+            if (auto *pc = reg.try_get<PixelCollider>(col.a.id))
+                IsInColBox(col) ? pc->OnTriggerStay(&col) : pc->OnTriggerExit(&col);
+        }
+    }
 }
 
 template <class T1, class T2> void Resolution(const Box &a, const Box &b)
@@ -271,13 +263,18 @@ void SqrVsSqr(const Box &a, const Box &b)
     auto disX = (a.size.x / 2.f + b.size.x / 2.f) - fabsf(dir.x);
     auto disY = (a.size.y / 2.f + b.size.y / 2.f) - fabsf(dir.y);
 
-    Vec2 tl = Vec2(b.pos.x - b.size.x / 2.f, b.pos.y - b.size.y / 2.f);
-    Vec2 br = Vec2(b.pos.x + b.size.x / 2.f, b.pos.y + b.size.y / 2.f);
+    auto tl = Vec2(b.pos.x - b.size.x / 2.f, b.pos.y - b.size.y / 2.f);
+    auto br = Vec2(b.pos.x + b.size.x / 2.f, b.pos.y + b.size.y / 2.f);
     Render::DrawDebugSquare(tl, br, {1.f, 0.f, 0.f, 1.f}, {1.f, 1.f, 1.f, 1.f});
 
     if (disX < 0.f || disY < 0.f)
         return;
 
+    auto &bSC = reg.get<SquareCollider>(b.id);
+
+    if(bSC.isTrigger)
+        return;
+	
     auto &aTF = reg.get<Transform>(a.id);
     auto &aRB = reg.get<RigidBody>(a.id);
 
@@ -312,9 +309,8 @@ void SqrVsCrl(const Box &a, const Box &b, bool first)
     point.y = Clamp(b.pos.y, maxY, minY);
 
     auto distance = Vec2::Distance(point, b.pos);
-    auto isColliding = distance < b.size.x / 2.f;
 
-    if (isColliding)
+    if (distance < b.size.x / 2.f)
         Resolution<SquareCollider, CircleCollider>(a, b);
 }
 
@@ -324,9 +320,8 @@ void CrlVsCrl(const Box &a, const Box &b)
 
     // Calc
     auto dis = Vec2::Distance(a.pos, b.pos);
-    auto isColliding = dis < (a.size.x / 2.f + b.size.x / 2.f);
 
-    if (isColliding)
+    if (dis < (a.size.x / 2.f + b.size.x / 2.f))
         Resolution<CircleCollider, CircleCollider>(a, b);
 }
 
@@ -339,7 +334,7 @@ void SqrVsPxl(const Box &a, const Box &b, bool first)
     auto width = sr.sprite->texture->texture->width;
     auto height = sr.sprite->texture->texture->height;
 
-    Vec2 pxSize = {b.size.x / width, b.size.y / height};
+    Vec2 pxSize = {b.size.x / static_cast<float>(width), b.size.y / static_cast<float>(height)};
 
     //      Overlap
     auto aMin = a.pos - a.size / 2.f;
@@ -351,11 +346,11 @@ void SqrVsPxl(const Box &a, const Box &b, bool first)
     Vec2 overBR = {Clamp(bMax.x, aMax.x, aMin.x), Clamp(bMax.y, aMax.y, aMin.y)};
 
     //      Offsets
-    auto offXLeft = (int)ceilf((overTL.x - bMin.x) / pxSize.x);
-    auto offXRight = width - (int)ceilf((bMax.x - overBR.x) / pxSize.x);
+    auto offXLeft = static_cast<int>(ceilf((overTL.x - bMin.x) / pxSize.x));
+    auto offXRight = width - static_cast<int>(ceilf((bMax.x - overBR.x) / pxSize.x));
 
-    auto offYTop = (int)ceilf((overTL.y - bMin.y) / pxSize.y);
-    auto offYBot = height - (int)ceilf((bMax.y - overBR.y) / pxSize.y);
+    auto offYTop = static_cast<int>(ceilf((overTL.y - bMin.y) / pxSize.y));
+    auto offYBot = height - static_cast<int>(ceilf((bMax.y - overBR.y) / pxSize.y));
 
     //      Check pixels
     bool isColliding = false;
@@ -383,7 +378,7 @@ void CrlVsPxl(const Box &a, const Box &b, bool first)
     auto width = sr.sprite->texture->texture->width;
     auto height = sr.sprite->texture->texture->height;
 
-    Vec2 pxSize = {b.size.x / width, b.size.y / height};
+    Vec2 pxSize = {b.size.x / static_cast<float>(width), b.size.y / static_cast<float>(height)};
 
     //      Overlap
     auto aMin = a.pos - a.size / 2.f;
@@ -395,11 +390,11 @@ void CrlVsPxl(const Box &a, const Box &b, bool first)
     Vec2 overBR = {Clamp(bMax.x, aMax.x, aMin.x), Clamp(bMax.y, aMax.y, aMin.y)};
 
     //      Offsets
-    auto offXLeft = (int)floorf((overTL.x - bMin.x) / pxSize.x);
-    auto offXRight = width - (int)floorf((bMax.x - overBR.x) / pxSize.x);
+    auto offXLeft = static_cast<int>(floorf((overTL.x - bMin.x) / pxSize.x));
+    auto offXRight = width - static_cast<int>(floorf((bMax.x - overBR.x) / pxSize.x));
 
-    auto offYTop = (int)floorf((overTL.y - bMin.y) / pxSize.y);
-    auto offYBot = height - (int)floorf((bMax.y - overBR.y) / pxSize.y);
+    auto offYTop = static_cast<int>(floorf((overTL.y - bMin.y) / pxSize.y));
+    auto offYBot = height - static_cast<int>(floorf((bMax.y - overBR.y) / pxSize.y));
 
     //      Check pixels
     Vec2 tl = b.pos - Vec2::Hadamard(b.size, sr.pivot) + pxSize / 2.f;
@@ -444,8 +439,8 @@ void PxlVsPxl(const Box &a, const Box &b)
     auto bWidth = bSR.sprite->texture->texture->width;
     auto bHeight = bSR.sprite->texture->texture->height;
 
-    Vec2 aPxSize = {a.size.x / aWidth, a.size.y / bHeight};
-    Vec2 bPxSize = {b.size.x / bWidth, b.size.y / bHeight};
+    Vec2 aPxSize = {a.size.x / static_cast<float>(aWidth), a.size.y / static_cast<float>(bHeight)};
+    Vec2 bPxSize = {b.size.x / static_cast<float>(bWidth), b.size.y / static_cast<float>(bHeight)};
     Vec2 aPxSizeHalf = aPxSize / 2.f;
     Vec2 bPxSizeHalf = bPxSize / 2.f;
 
@@ -459,15 +454,15 @@ void PxlVsPxl(const Box &a, const Box &b)
     Vec2 overBR = {Clamp(bMax.x, aMax.x, aMin.x), Clamp(bMax.y, aMax.y, aMin.y)};
 
     //      Offsets
-    auto aOffXLeft = (int)floorf((overTL.x - aMin.x) / aPxSize.x);
-    auto aOffXRight = aWidth - (int)floorf((aMax.x - overBR.x) / aPxSize.x);
-    auto aOffYTop = (int)floorf((overTL.y - aMin.y) / aPxSize.y);
-    auto aOffYBot = aHeight - (int)floorf((aMax.y - overBR.y) / aPxSize.y);
+    auto aOffXLeft = static_cast<int>(floorf((overTL.x - aMin.x) / aPxSize.x));
+    auto aOffXRight = aWidth - static_cast<int>(floorf((aMax.x - overBR.x) / aPxSize.x));
+    auto aOffYTop = static_cast<int>(floorf((overTL.y - aMin.y) / aPxSize.y));
+    auto aOffYBot = aHeight - static_cast<int>(floorf((aMax.y - overBR.y) / aPxSize.y));
 
-    auto bOffXLeft = (int)floorf((overTL.x - bMin.x) / bPxSize.x);
-    auto bOffXRight = bWidth - (int)floorf((bMax.x - overBR.x) / bPxSize.x);
-    auto bOffYTop = (int)floorf((overTL.y - bMin.y) / bPxSize.y);
-    auto bOffYBot = bHeight - (int)floorf((bMax.y - overBR.y) / bPxSize.y);
+    auto bOffXLeft = static_cast<int>(floorf((overTL.x - bMin.x) / bPxSize.x));
+    auto bOffXRight = bWidth - static_cast<int>(floorf((bMax.x - overBR.x) / bPxSize.x));
+    auto bOffYTop = static_cast<int>(floorf((overTL.y - bMin.y) / bPxSize.y));
+    auto bOffYBot = bHeight - static_cast<int>(floorf((bMax.y - overBR.y) / bPxSize.y));
 
     //      Check pixels
     Vec2 aTL = a.pos - Vec2::Hadamard(a.size, aSR.pivot) + aPxSizeHalf;
@@ -488,7 +483,7 @@ void PxlVsPxl(const Box &a, const Box &b)
     if (lines < threadNum)
         threadNum = lines;
 
-    int linesPerThread = (int)floorf((float)lines / (float)threadNum);
+    int linesPerThread = static_cast<int>(floorf(static_cast<float>(lines) / static_cast<float>(threadNum)));
 
     int each = 0;
 
@@ -509,7 +504,7 @@ void PxlVsPxl(const Box &a, const Box &b)
 
     while (each < threadNum && !isColliding)
     {
-    };
+    }
 
     if (isColliding)
         Resolution<PixelCollider, PixelCollider>(a, b);
@@ -520,25 +515,25 @@ void PxlVsPxlJob(int aOffYTop, int aOffYBot, Vec2 &aTL, Vec2 &aPxSize, int aOffX
                  Vec2 &bPxSize, int bOffXLeft, int bOffXRight, int bWidth, Vec2 &bPxSizeHalf, bool *isColliding,
                  int *each)
 {
-    Vec2 aPos = aTL, aPxMax, aPxMin, bPos = bTL, bPxMax, bPxMin;
+    Vec2 aPos = aTL, bPos = bTL;
 
     for (int ah = aOffYTop; ah < aOffYBot; ah++)
     {
-        aPos.y = aTL.y + aPxSize.y * ah;
+        aPos.y = aTL.y + aPxSize.y * static_cast<float>(ah);
 
         for (int aw = aOffXLeft; aw < aOffXRight; aw++)
         {
             if (aSR.sprite->texture->alphaMap[ah * aWidth + aw] == '\0')
                 continue;
 
-            aPos.x = aTL.x + aPxSize.x * aw;
+            aPos.x = aTL.x + aPxSize.x * static_cast<float>(aw);
 
-            aPxMax = aPos + aPxSizeHalf;
-            aPxMin = aPos - aPxSizeHalf;
+            Vec2 aPxMax = aPos + aPxSizeHalf;
+            Vec2 aPxMin = aPos - aPxSizeHalf;
 
             for (int bh = bOffYTop; bh < bOffYBot; bh++)
             {
-                bPos.y = bTL.y + bPxSize.y * bh;
+                bPos.y = bTL.y + bPxSize.y * static_cast<float>(bh);
 
                 for (int bw = bOffXLeft; bw < bOffXRight; bw++)
                 {
@@ -548,10 +543,10 @@ void PxlVsPxlJob(int aOffYTop, int aOffYBot, Vec2 &aTL, Vec2 &aPxSize, int aOffX
                     if (*isColliding)
                         return;
 
-                    bPos.x = bTL.x + bPxSize.x * bw;
+                    bPos.x = bTL.x + bPxSize.x * static_cast<float>(bw);
 
-                    bPxMax = bPos + bPxSizeHalf;
-                    bPxMin = bPos - bPxSizeHalf;
+                    Vec2 bPxMax = bPos + bPxSizeHalf;
+                    Vec2 bPxMin = bPos - bPxSizeHalf;
 
                     if ((bPxMax.x > aPxMax.x && bPxMin.x > aPxMax.x) || (bPxMax.x < aPxMin.x && bPxMin.x < aPxMin.x) ||
                         (bPxMax.y > aPxMax.y && bPxMin.y > aPxMax.y) || (bPxMax.y < aPxMin.y && bPxMin.y < aPxMin.y))

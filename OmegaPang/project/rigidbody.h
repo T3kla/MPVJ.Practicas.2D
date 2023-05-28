@@ -13,7 +13,7 @@ struct RigidBody
     bool gravity = false;
     float gravityScale = 1.f;
 
-    void AddForce(Vec2 force, float deltaTime)
+    void AddForce(const Vec2& force, float deltaTime)
     {
         velocity += (force / mass) * deltaTime;
     }

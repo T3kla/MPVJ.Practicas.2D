@@ -7,7 +7,7 @@
 
 struct Box
 {
-    entt::entity id;
+	entt::entity id;
     Vec2 pos;
     Vec2 size;
     const char *type;
@@ -22,6 +22,8 @@ struct Collision
 {
     Box a;
     Box b;
+
+	Collision(Box a, Box b) : a(std::move(a)), b(std::move(b)) {};
 
     bool operator==(const Collision &rhs) const
     {

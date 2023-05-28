@@ -1,6 +1,5 @@
 #include "sys_mapPlayer.h"
 
-#include "ball.h"
 #include "camera.h"
 #include "entity.h"
 #include "font_loader.h"
@@ -16,9 +15,6 @@
 #include "sprite_renderer.h"
 #include "square_collider.h"
 #include "stasis.h"
-#include "sys_hook.h"
-#include "sys_ui.h"
-#include "textbox.h"
 #include "transform.h"
 
 #include <entt/entt.hpp>
@@ -53,9 +49,9 @@ static void InstantiatePlayer()
     auto &rb = reg.get_or_emplace<RigidBody>(id);
     rb.enable = true;
     rb.velocity = Vec2::Zero();
-    rb.linearDrag = 0.2f;
+    rb.linearDrag = 0.1f;
     rb.gravity = true;
-    rb.gravityScale = 10.f;
+    rb.gravityScale = 3.f;
 
     auto &sc = reg.get_or_emplace<SquareCollider>(id);
     sc.enable = true;
@@ -109,6 +105,7 @@ static void UpdateAnimation()
     else if (pl.state == stateIdle)
     {
         sa.enable = false;
+        sr.reverse = !pl.reversed;
         sr.sprite = &SpriteLoader::sprMapPlayerIdle;
     }
 }
@@ -120,8 +117,6 @@ SysMapPlayer::SysMapPlayer()
 
 void SysMapPlayer::Fixed()
 {
-    auto time = (float)Stasis::GetDeltaScaled() * 0.001f;
-
     auto &reg = Game::GetRegistry();
     auto playerID = player.GetID();
 
@@ -146,7 +141,7 @@ void SysMapPlayer::Fixed()
 
     actionJump = Input::GetKey(GLFW_KEY_SPACE);
     if (actionJump && !actionJumpOld)
-        rb.velocity.y = -6.f;
+        rb.velocity.y = -20.f;
     actionJumpOld = actionJump;
 
     // Debug
@@ -157,7 +152,16 @@ void SysMapPlayer::Fixed()
     // Velocity
     rb.velocity.x = add;
 
-    sr.reverse = rb.velocity.x < 0.f ? true : false;
+    if (rb.velocity.x < 0.f)
+    {
+        pl.reversed = true;
+        sr.reverse = true;
+    }
+    else if (rb.velocity.x > 0.f)
+    {
+        pl.reversed = false;
+        sr.reverse = false;
+    }
 
     // State Machine
     pl.state = fabsf(rb.velocity.x) < 1.f ? stateIdle : stateMoving;

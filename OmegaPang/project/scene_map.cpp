@@ -82,14 +82,12 @@ void SceneMap::CreateTile(entt::registry &reg, int gid, Vec2i pos)
 
     auto id = reg.create();
 
-    auto &go = reg.emplace<GameObject>(id, true);
-    auto &tf = reg.emplace<Transform>(id, Vec2(pos), Vec2::One(), 0.f);
+    reg.emplace<GameObject>(id, true);
+    reg.emplace<Transform>(id, Vec2(pos), Vec2::One(), 0.f);
     auto &sc = reg.emplace<SquareCollider>(id);
     sc.center = {0.f, 0.f};
     sc.size = Vec2(tileSize);
-    // sc.OnTriggerEnter = &OnTriggerEnter;
-    // sc.OnTriggerStay = &OnTriggerStay;
-    // sc.OnTriggerExit = &OnTriggerExit;
+
     auto &sr = reg.emplace<SpriteRenderer>(id);
     sr.size = Vec2(tileSize);
     sr.blend = BLEND_ALPHA;

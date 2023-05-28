@@ -9,6 +9,7 @@
 #include "circle_collider.h"
 #include "gameobject.h"
 #include "pixel_collider.h"
+#include "rigidbody.h"
 #include "sprite_renderer.h"
 #include "square_collider.h"
 #include "transform.h"
@@ -17,11 +18,13 @@
 
 #include "sprite_loader.h"
 
-entt::entity CreateSqr(entt::registry &);
-entt::entity CreateCrl(entt::registry &);
-entt::entity CreateBox(entt::registry &);
-entt::entity CreateBall(entt::registry &);
-entt::entity CreateBee(entt::registry &);
+entt::entity CreateSqrMouse(entt::registry &);
+entt::entity CreateCrlMouse(entt::registry &);
+entt::entity CreateBeeMouse(entt::registry &);
+
+entt::entity CreateSqrProp(entt::registry &);
+entt::entity CreateBallProp(entt::registry &);
+entt::entity CreateBeeProp(entt::registry &);
 
 void OnTriggerEnter(Collision *);
 void OnTriggerStay(Collision *);
@@ -42,12 +45,12 @@ void SceneCollisions::LoadScene()
     auto &reg = Game::GetRegistry();
 
     // Props
-    staticSquare = CreateBox(reg);
-    staticBall = CreateBall(reg);
-    staticBee = CreateBee(reg);
+    staticSquare = CreateSqrProp(reg);
+    staticBall = CreateBallProp(reg);
+    staticBee = CreateBeeProp(reg);
 
     // Mouse follower
-    mouseFigure = CreateSqr(reg);
+    mouseFigure = CreateSqrMouse(reg);
 
     // Systems
     sysPhysics = new SysPhysics();
@@ -69,17 +72,17 @@ void SceneCollisions::Fixed()
     if (Input::GetKey(GLFW_MOUSE_BUTTON_LEFT))
     {
         reg.destroy(mouseFigure);
-        mouseFigure = CreateCrl(reg);
+        mouseFigure = CreateCrlMouse(reg);
     }
     else if (Input::GetKey(GLFW_MOUSE_BUTTON_RIGHT))
     {
         reg.destroy(mouseFigure);
-        mouseFigure = CreateSqr(reg);
+        mouseFigure = CreateSqrMouse(reg);
     }
     else if (Input::GetKey(GLFW_MOUSE_BUTTON_MIDDLE))
     {
         reg.destroy(mouseFigure);
-        mouseFigure = CreateBee(reg);
+        mouseFigure = CreateBeeMouse(reg);
     }
 
     reg.get<Transform>(mouseFigure).position = Input::GetMousePos();
@@ -90,12 +93,15 @@ void SceneCollisions::Fixed()
     reg.get<Transform>(staticBee).scale = Vec2::One() * (sinf(t) / 2.f + 1.f);
 }
 
-entt::entity CreateSqr(entt::registry &reg)
+entt::entity CreateSqrMouse(entt::registry &reg)
 {
     auto id = reg.create();
 
     reg.emplace<GameObject>(id, true);
     reg.emplace<Transform>(id, Vec2(25.f, 25.f), Vec2::One(), 0.f);
+
+    auto &rb = reg.get_or_emplace<RigidBody>(id);
+    rb.velocity = Vec2::Zero();
 
     auto &sc = reg.emplace<SquareCollider>(id);
     sc.center = {0.f, 0.f};
@@ -109,12 +115,15 @@ entt::entity CreateSqr(entt::registry &reg)
     return id;
 }
 
-entt::entity CreateCrl(entt::registry &reg)
+entt::entity CreateCrlMouse(entt::registry &reg)
 {
     auto id = reg.create();
 
     reg.emplace<GameObject>(id, true);
     reg.emplace<Transform>(id, Vec2(25.f, 25.f), Vec2::One(), 0.f);
+
+	auto &rb = reg.get_or_emplace<RigidBody>(id);
+    rb.velocity = Vec2::Zero();
 
     auto &sc = reg.emplace<CircleCollider>(id);
     sc.center = {0.f, 0.f};
@@ -128,7 +137,30 @@ entt::entity CreateCrl(entt::registry &reg)
     return id;
 }
 
-entt::entity CreateBox(entt::registry &reg)
+entt::entity CreateBeeMouse(entt::registry &reg)
+{
+    auto id = reg.create();
+
+    reg.emplace<GameObject>(id, true);
+    reg.emplace<Transform>(id, Vec2(800.f, 300.f), Vec2::One(), 0.f);
+
+	auto &rb = reg.get_or_emplace<RigidBody>(id);
+    rb.velocity = Vec2::Zero();
+
+    auto &pc = reg.emplace<PixelCollider>(id);
+    pc.OnTriggerEnter = OnTriggerEnter;
+    pc.OnTriggerStay = OnTriggerStay;
+    pc.OnTriggerExit = OnTriggerExit;
+
+    auto &sr = reg.emplace<SpriteRenderer>(id);
+    sr.sprite = &SpriteLoader::sprBee;
+    sr.size = {200.f, 200.f};
+    sr.layer = 0;
+
+    return id;
+}
+
+entt::entity CreateSqrProp(entt::registry &reg)
 {
     auto id = reg.create();
 
@@ -138,9 +170,10 @@ entt::entity CreateBox(entt::registry &reg)
     auto &sc = reg.emplace<SquareCollider>(id);
     sc.center = {0.f, 0.f};
     sc.size = {100.f, 100.f};
-    sc.OnTriggerEnter = &OnTriggerEnter;
-    sc.OnTriggerStay = &OnTriggerStay;
-    sc.OnTriggerExit = &OnTriggerExit;
+    sc.isTrigger = true;
+    sc.OnTriggerEnter = OnTriggerEnter;
+    sc.OnTriggerStay = OnTriggerStay;
+    sc.OnTriggerExit = OnTriggerExit;
 
     auto &sr = reg.emplace<SpriteRenderer>(id);
     sr.sprite = &SpriteLoader::sprBox;
@@ -150,19 +183,20 @@ entt::entity CreateBox(entt::registry &reg)
     return id;
 }
 
-entt::entity CreateBall(entt::registry &reg)
+entt::entity CreateBallProp(entt::registry &reg)
 {
     auto id = reg.create();
 
     reg.emplace<GameObject>(id, true);
     reg.emplace<Transform>(id, Vec2(500.f, 300.f), Vec2::One(), 0.f);
 
-    auto &sc = reg.emplace<CircleCollider>(id);
-    sc.center = {0.f, 0.f};
-    sc.radius = 100.f;
-    sc.OnTriggerEnter = &OnTriggerEnter;
-    sc.OnTriggerStay = &OnTriggerStay;
-    sc.OnTriggerExit = &OnTriggerExit;
+    auto &cc = reg.emplace<CircleCollider>(id);
+    cc.center = {0.f, 0.f};
+    cc.radius = 100.f;
+    cc.isTrigger = true;
+    cc.OnTriggerEnter = OnTriggerEnter;
+    cc.OnTriggerStay = OnTriggerStay;
+    cc.OnTriggerExit = OnTriggerExit;
 
     auto &sr = reg.emplace<SpriteRenderer>(id);
     sr.sprite = &SpriteLoader::sprBall;
@@ -172,17 +206,18 @@ entt::entity CreateBall(entt::registry &reg)
     return id;
 }
 
-entt::entity CreateBee(entt::registry &reg)
+entt::entity CreateBeeProp(entt::registry &reg)
 {
     auto id = reg.create();
 
     reg.emplace<GameObject>(id, true);
     reg.emplace<Transform>(id, Vec2(800.f, 300.f), Vec2::One(), 0.f);
 
-    auto &sc = reg.emplace<PixelCollider>(id);
-    sc.OnTriggerEnter = &OnTriggerEnter;
-    sc.OnTriggerStay = &OnTriggerStay;
-    sc.OnTriggerExit = &OnTriggerExit;
+    auto &pc = reg.emplace<PixelCollider>(id);
+    pc.isTrigger = true;
+    pc.OnTriggerEnter = OnTriggerEnter;
+    pc.OnTriggerStay = OnTriggerStay;
+    pc.OnTriggerExit = OnTriggerExit;
 
     auto &sr = reg.emplace<SpriteRenderer>(id);
     sr.sprite = &SpriteLoader::sprBee;
