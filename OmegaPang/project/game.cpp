@@ -80,11 +80,10 @@ void Game::Run()
         {
             FreqRefresh(nowFx, oldFx, freqFx);
 
-            Render::Fixed(); // FIXME: debug mode
             Logic::Fixed();
+            Render::Fixed();
             Audio::Fixed();
 
-            glfwSwapBuffers(Render::GetWindow()); // FIXME: debug mode
             fxCount -= STP;
         }
     }

@@ -476,7 +476,7 @@ void PxlVsPxl(const Box &a, const Box &b)
 
     Vec2 aPxMax, aPxMin, bPxMax, bPxMin;
 
-    // Multithreading
+    // Multi threading
     int threadNum = ThreadPool::GetThreadNum();
     int lines = aOffYBot - aOffYTop;
 

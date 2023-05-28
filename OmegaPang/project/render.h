@@ -7,6 +7,39 @@
 
 struct GLFWwindow;
 
+struct DebugLine
+{
+    Vec2 a;
+    Vec2 b;
+    Color color;
+    Color revert;
+
+    DebugLine(Vec2 a, Vec2 b, const Color &color, const Color &revert)
+        : a(std::move(a)), b(std::move(b)), color(color), revert(revert){};
+};
+
+struct DebugSquare
+{
+    Vec2 a;
+    Vec2 b;
+    Color color;
+    Color revert;
+
+    DebugSquare(Vec2 a, Vec2 b, const Color &color, const Color &revert)
+        : a(std::move(a)), b(std::move(b)), color(color), revert(revert){};
+};
+
+struct DebugDot
+{
+    Vec2 pos;
+    float size;
+    Color color;
+    Color revert;
+
+    DebugDot(Vec2 a, float size, const Color &color, const Color &revert)
+        : pos(std::move(a)), size(size), color(color), revert(revert){};
+};
+
 class Render
 {
     friend class Game;
@@ -36,13 +69,14 @@ class Render
     static char *GetTitle();
     static void SetTitle(char *text);
 
-    static void SetOrigin(const Vec2& pos);
+    static void SetOrigin(const Vec2 &pos);
 
     static entt::entity GetMainCamera();
     static void SetMainCamera(entt::entity id);
 
     // Debug
-    static void DrawDebugLine(const Vec2& a, const Vec2& b, Color color, Color revert);
-    static void DrawDebugSquare(const Vec2& a, const Vec2& b, Color color, Color revert);
-    static void DrawDebugDot(const Vec2& pos, float size, Color color, Color revert);
+
+    static void DrawDebugLine(const Vec2 &a, const Vec2 &b, Color color, Color revert);
+    static void DrawDebugSquare(const Vec2 &a, const Vec2 &b, Color color, Color revert);
+    static void DrawDebugDot(const Vec2 &pos, float size, Color color, Color revert);
 };

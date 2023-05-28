@@ -27,11 +27,16 @@ static int h = 720;
 static Vec2 uv0 = {};
 static Vec2 uv1 = {};
 
+static std::vector<DebugSquare> DebugLines;
+static std::vector<DebugSquare> DebugSquares;
+static std::vector<DebugDot> DebugDots;
+
 void UpdateOrigin();
 void RenderRects();
 void RenderOvals();
 void RenderSprites();
 void RenderUI();
+void RenderDebug();
 
 Render Render::Instance;
 char *Render::Title = nullptr;
@@ -57,6 +62,10 @@ void Render::Init()
     glfwSetWindowSizeCallback(Window, OnWindowResize);
     lgfx_setup2d(w, h);
 
+    // Debug visualization
+    DebugSquares.reserve(64);
+    DebugDots.reserve(64);
+
     // Set Background
     SetBgColor(BGColor);
 
@@ -68,8 +77,8 @@ void Render::Fixed()
 {
     // Update window title
 
-    auto fFps = static_cast<double> (Game::GetFixedFPS());
-    auto uFps = static_cast<double> (Game::GetUpdateFPS());
+    auto fFps = static_cast<double>(Game::GetFixedFPS());
+    auto uFps = static_cast<double>(Game::GetUpdateFPS());
     sprintf_s(titleBuffer, 256, "fps: %0.0f | update: %0.2f", fFps, uFps);
     glfwSetWindowTitle(Window, titleBuffer);
 
@@ -83,9 +92,10 @@ void Render::Fixed()
     RenderOvals();
     RenderSprites();
     RenderUI();
+    RenderDebug();
 
     // Swap Buffers
-    // glfwSwapBuffers(Window); // FIXME: debug mode
+    glfwSwapBuffers(Window);
 }
 
 GLFWwindow *Render::GetWindow()
@@ -127,7 +137,7 @@ void Render::SetTitle(char *text)
         glfwSetWindowTitle(Window, Title);
 }
 
-void Render::SetOrigin(const Vec2& pos)
+void Render::SetOrigin(const Vec2 &pos)
 {
     lgfx_setorigin(pos.x, pos.y);
 }
@@ -268,31 +278,6 @@ void RenderSprites()
             lgfx_setblend(sr.blend);
             ltex_drawrotsized(sr.sprite->texture->texture, fPos.x, fPos.y, fRot, sr.pivot.x, sr.pivot.y, fScl.x, fScl.y,
                               uv0.x, uv0.y, uv1.x, uv1.y);
-
-            // Debug Alpha visualization
-            // auto width = sr.sprite->texture->width;
-            // auto height = sr.sprite->texture->height;
-            // Vec2 size = Vec2::Hadamard(sr.size, tf.scale);
-            // Vec2 pxSize = {size.x / width, size.y / height};
-            // auto pixels = new unsigned char[width * height * 4];
-            // Vec2 tl = tf.position - Vec2::Hadamard(size, sr.pivot) + pxSize / 2.f;
-            // Vec2 pos = tl;
-            // ltex_getpixels(sr.sprite->texture, pixels);
-            // for (int h = 0; h < height; h++)
-            // {
-            //    pos.y = tl.y + pxSize.y * h;
-            //    for (int w = 0; w < width; w++)
-            //    {
-            //        pos.x = tl.x + pxSize.x * w;
-            //        unsigned char alpha = pixels[h * width * 4 + w * 4 + 3];
-
-            //        if (alpha != '\0')
-            //        {
-            //            lgfx_drawpoint(pos.x, pos.y);
-            //        }
-            //    }
-            // }
-            // delete[] pixels;
         }
     }
 }
@@ -352,27 +337,48 @@ void RenderUI()
     }
 }
 
-void Render::DrawDebugLine(const Vec2& a, const Vec2& b, Color color, Color revert)
+void RenderDebug()
 {
-    lgfx_setcolor(color.r, color.g, color.b, color.a);
-    lgfx_drawline(a.x, a.y, b.x, b.y);
-    lgfx_setcolor(color.r, color.g, color.b, color.a);
-    lgfx_setcolor(revert.r, revert.g, revert.b, revert.a);
+    for (auto &&line : DebugLines)
+    {
+        lgfx_setcolor(line.color.r, line.color.g, line.color.b, line.color.a);
+        lgfx_drawline(line.a.x, line.a.y, line.b.x, line.b.y);
+        lgfx_setcolor(line.color.r, line.color.g, line.color.b, line.color.a);
+        lgfx_setcolor(line.revert.r, line.revert.g, line.revert.b, line.revert.a);
+    }
+    DebugLines.clear();
+
+    for (auto &&square : DebugSquares)
+    {
+        lgfx_setcolor(square.color.r, square.color.g, square.color.b, square.color.a);
+        lgfx_drawline(square.a.x, square.a.y, square.a.x, square.b.y);
+        lgfx_drawline(square.b.x, square.a.y, square.b.x, square.b.y);
+        lgfx_drawline(square.a.x, square.a.y, square.b.x, square.a.y);
+        lgfx_drawline(square.a.x, square.b.y, square.b.x, square.b.y);
+        lgfx_setcolor(square.revert.r, square.revert.g, square.revert.b, square.revert.a);
+    }
+    DebugSquares.clear();
+
+    for (auto &&dot : DebugDots)
+    {
+        lgfx_setcolor(dot.color.r, dot.color.g, dot.color.b, dot.color.a);
+        lgfx_drawoval(dot.pos.x - dot.size / 2.f, dot.pos.y - dot.size / 2.f, dot.size, dot.size);
+        lgfx_setcolor(dot.revert.r, dot.revert.g, dot.revert.b, dot.revert.a);
+    }
+    DebugDots.clear();
 }
 
-void Render::DrawDebugSquare(const Vec2& a, const Vec2& b, Color color, Color revert)
+void Render::DrawDebugLine(const Vec2 &a, const Vec2 &b, Color color, Color revert)
 {
-    lgfx_setcolor(color.r, color.g, color.b, color.a);
-    lgfx_drawline(a.x, a.y, a.x, b.y);
-    lgfx_drawline(b.x, a.y, b.x, b.y);
-    lgfx_drawline(a.x, a.y, b.x, a.y);
-    lgfx_drawline(a.x, b.y, b.x, b.y);
-    lgfx_setcolor(revert.r, revert.g, revert.b, revert.a);
+    DebugLines.emplace_back(a, b, color, color);
 }
 
-void Render::DrawDebugDot(const Vec2& pos, float size, Color color, Color revert)
+void Render::DrawDebugSquare(const Vec2 &a, const Vec2 &b, Color color, Color revert)
 {
-    lgfx_setcolor(color.r, color.g, color.b, color.a);
-    lgfx_drawoval(pos.x - size / 2.f, pos.y - size / 2.f, size, size);
-    lgfx_setcolor(revert.r, revert.g, revert.b, revert.a);
+    DebugSquares.emplace_back(a, b, color, color);
+}
+
+void Render::DrawDebugDot(const Vec2 &pos, float size, Color color, Color revert)
+{
+    DebugDots.emplace_back(pos, size, color, revert);
 }
